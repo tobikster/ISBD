@@ -21,7 +21,6 @@ public class Main
     {
       List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult("SELECT COUNT(*) FROM RozmiaryOpon;");
       System.out.println("Ilość rozmiarów opon: "+results.get(0).getInt(1));
-        System.out.println("COMMIT");
     }
     catch(SQLException ex)
     {

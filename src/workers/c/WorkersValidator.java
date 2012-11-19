@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package workers.c;
 
 import core.c.DatabaseException;
@@ -25,23 +21,31 @@ public class WorkersValidator implements EntityValidator<Worker>
 		
 		if(!ElementaryValidator.maxLengthValidator(object.getJob(), 20))
 		{
-			errors.add("Maksymalna długość nazwy stanowiska wynosi 20 znaków.");
+			errors.add("Nazwy stanowiska jest za długa. Maksymalna długość wynosi 20 znaków.");
 		}
 		if(!ElementaryValidator.maxLengthValidator(object.getName(), 20))
 		{
-			errors.add("Maksymalna długość imienia wynosi 20 znaków.");
+			errors.add("Imie jest za długie. Maksymalna długość wynosi 20 znaków.");
 		}
 		if(!ElementaryValidator.maxLengthValidator(object.getSurname(), 20))
 		{
-			errors.add("Maksymalna długość nazwiska wynosi 20 znaków.");
+			errors.add("Nazwisko jest za długie. Maksymalna długość wynosi 20 znaków.");
 		}
 		if(!ElementaryValidator.maxLengthValidator(object.getLogin(), 20))
 		{
-			errors.add("Maksymalna długość nazwy użytkownika wynosi 20 znaków.");
+			errors.add("Nazwa użytkownika jest za długa. Maksymalna długość wynosi 20 znaków.");
+		}
+		if(!ElementaryValidator.minLengthValidator(object.getLogin(), 3))
+		{
+			errors.add("Nazwa użytkownika jest za krótka. Minimalna długość wynosi 3 znaki.");
 		}
 		if(!ElementaryValidator.maxLengthValidator(object.getPassword(), 20))
 		{
-			errors.add("Maksymalna długość hasła wynosi 20 znaków.");
+			errors.add("Hasło jest za długie. Maksymalna długość wynosi 20 znaków.");
+		}
+		if(!ElementaryValidator.minLengthValidator(object.getPassword(), 3))
+		{
+			errors.add("Hasło jest za krótkie. Minimalna długość wynosi 3 znaki.");
 		}
 		
 		if(!errors.isEmpty())

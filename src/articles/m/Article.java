@@ -13,6 +13,10 @@ public class Article {
 	private double _grossPrice;
 	private int _count;
 	private Object _picture;
+        
+	public Article() {
+		this(null, null, null, null, Double.NaN, Double.NaN, 0, null);
+	}
 
 	public Article(ArticlesGroup group, Producer producer, String name, double margin, double grossPrice, int count) {
 		this(group, producer, null, name, margin, grossPrice, count, null);

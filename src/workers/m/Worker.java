@@ -11,6 +11,11 @@ public class Worker {
 	private String _login; // w bazie nie jest wymagane
 	private String _password; // w bazie nie jest wymagane
 
+	public Worker()
+	{
+		this(null, null, null, null, null);
+	}
+	
 	public Worker(String name, String surname, String job) {
 		this(name, surname, job, null, null);
 	}

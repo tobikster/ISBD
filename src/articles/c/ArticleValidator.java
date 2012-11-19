@@ -2,6 +2,7 @@ package articles.c;
 
 import articles.m.Article;
 import core.c.DataBaseException;
+import core.c.ElementaryValidator;
 import core.c.EntityValidator;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,7 +27,16 @@ public class ArticleValidator implements EntityValidator <Article>{
 	public boolean validate(Article object) throws DataBaseException{
 		boolean result = true;
 		if(object.getGroup() == null){
+			result = false;
 			_errors.add("Nie podano grupy towarowej!");
+		}
+		if(object.getProducer() == null){
+			result = false;
+			_errors.add("Nie podano producenta!");
+		}
+		if(!ElementaryValidator.maxLengthValidator(object.getCatalogNumber(), 20)){
+			result = false;
+			_errors.add("Numer katalogowy jest za długi! Maksymalna dopuszczalna długość to 20 znaków!");
 		}
 		return result;
 	}

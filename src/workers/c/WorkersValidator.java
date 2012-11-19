@@ -1,6 +1,6 @@
 package workers.c;
 
-import core.c.DatabaseException;
+import core.m.DatabaseException;
 import core.c.ElementaryValidator;
 import core.c.EntityValidator;
 import java.util.LinkedList;

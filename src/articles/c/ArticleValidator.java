@@ -1,7 +1,7 @@
 package articles.c;
 
 import articles.m.Article;
-import core.c.DatabaseException;
+import core.m.DatabaseException;
 import core.c.ElementaryValidator;
 import core.c.EntityValidator;
 import java.util.LinkedList;

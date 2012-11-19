@@ -1,9 +1,9 @@
 package articles.c;
 
 import articles.m.Article;
-import core.m.DatabaseException;
 import core.c.ElementaryValidator;
 import core.c.EntityValidator;
+import core.m.DatabaseException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,8 +31,13 @@ public class ArticleValidator implements EntityValidator <Article>{
 		if(!ElementaryValidator.maxLengthValidator(object.getCatalogNumber(), 20)){
 			errors.add("Numer katalogowy jest za długi! Maksymalna dopuszczalna długość to 20 znaków!");
 		}
-		if(!ElementaryValidator.maxLengthValidator(object.getName(), 30)){
-			errors.add("Podana nazwa jest za długa! Maksymalna dopuszczalna długość to 30 znaków!");
+		if(!ElementaryValidator.hasValue(object.getName())) {
+			errors.add("Nazwa części jest wymagana!");
+		}
+		else {
+			if(!ElementaryValidator.maxLengthValidator(object.getName(), 30)){
+				errors.add("Podana nazwa jest za długa! Maksymalna dopuszczalna długość to 30 znaków!");
+			}
 		}
 		if(!ElementaryValidator.minNumberValidator(object.getMargin(), 0.0)){
 			errors.add("Marża nie może być liczbą ujemną!");

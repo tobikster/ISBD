@@ -74,5 +74,9 @@ public class ElementaryValidator
 		
 		return result;
 	}
+	
+	public static boolean hasValue(String string) {
+		return string != null && !"".equals(string.trim());
+	}
 	// </editor-fold>
 }

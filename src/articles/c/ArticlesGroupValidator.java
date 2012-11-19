@@ -1,15 +1,14 @@
 package articles.c;
 
-import articles.m.ArticleAttribute;
+import articles.m.ArticlesGroup;
 import core.c.ElementaryValidator;
 import core.c.EntityValidator;
 import core.m.DatabaseException;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ArticleAttributeValidator implements EntityValidator<ArticleAttribute> {
+public class ArticlesGroupValidator implements EntityValidator<ArticlesGroup> {
 	// <editor-fold defaultstate="collapsed" desc="Object variables">
-
 	// </editor-fold>
 	// <editor-fold defaultstate="collapsed" desc="Creating object">
 	// </editor-fold>
@@ -21,16 +20,22 @@ public class ArticleAttributeValidator implements EntityValidator<ArticleAttribu
 	// <editor-fold defaultstate="collapsed" desc="Setters">
 	// </editor-fold>
 	@Override
-	public boolean validate(ArticleAttribute object) throws DatabaseException {
+	public boolean validate(ArticlesGroup object) throws DatabaseException {
 		List<String> errors = new LinkedList<>();
+		
 		if(!ElementaryValidator.hasValue(object.getName())) {
-			errors.add("Nazwa atrybutu jest wymagana!");
+			errors.add("Nazwa grupy jest wymagana!");
 		}
-		if(!ElementaryValidator.maxLengthValidator(object.getName(), 40)){
-			errors.add("Nazwa nie może być dłuższa niż 40 znaków!");
+		else {
+			if(!ElementaryValidator.maxLengthValidator(object.getName(), 30)) {
+				errors.add("Nazwa grupy może mieć co najwyżej 30 znaków!");
+			}
+		}
+		if(object.getVat() == null) {
+			errors.add("Stawka VAT jest wymagana!");
 		}
 		
-		if(!errors.isEmpty()){
+		if(!errors.isEmpty()) {
 			throw new DatabaseException(errors);
 		}
 		

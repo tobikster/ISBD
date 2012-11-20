@@ -1,13 +1,13 @@
 package articles.c;
 
-import articles.m.ArticleAttributeValue;
+import articles.m.DOT;
 import core.c.ElementaryValidator;
 import core.c.EntityValidator;
 import core.m.DatabaseException;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ArticleAttributeValueValidator implements EntityValidator<ArticleAttributeValue> {
+public class DOTValidator implements EntityValidator<DOT> {
 	// <editor-fold defaultstate="collapsed" desc="Object variables">
 
 	// </editor-fold>
@@ -21,23 +21,14 @@ public class ArticleAttributeValueValidator implements EntityValidator<ArticleAt
 	// <editor-fold defaultstate="collapsed" desc="Setters">
 	// </editor-fold>
 	@Override
-	public boolean validate(ArticleAttributeValue object) throws DatabaseException {
+	public boolean validate(DOT object) throws DatabaseException {
 		List<String> errors = new LinkedList<>();
 
-		if (object.getArticle() == null) {
-			errors.add("Nie podano części!");
-		}
-
-		if (object.getAttribute() == null) {
-			errors.add("Nie podano atrybutu!");
-		}
-
-		if (!ElementaryValidator.hasValue(object.getValue())) {
-			errors.add("Nie podano wartości atrybutu!");
-		} 
-		else {
-			if (ElementaryValidator.maxLengthValidator(object.getValue(), 100)) {
-				errors.add("Przekroczono dopuszczalną liczbę znaków! Wartość atrybutu może zawierać co najwyżej 100 znaków!");
+		if (!ElementaryValidator.hasValue(object.getDot())) {
+			errors.add("Nie podano wartości DOTu!");
+		} else {
+			if (!object.getDot().matches("^[0-9]{3,4}$")) {
+				errors.add("Podano niepoprawną wartość DOTu! Musi się on składać z 3 lub 4 cyfr!");
 			}
 		}
 

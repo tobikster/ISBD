@@ -31,6 +31,7 @@ public class ArticlesGroupValidator implements EntityValidator<ArticlesGroup> {
 				errors.add("Nazwa grupy może mieć co najwyżej 30 znaków!");
 			}
 		}
+		
 		if(object.getVat() == null) {
 			errors.add("Stawka VAT jest wymagana!");
 		}

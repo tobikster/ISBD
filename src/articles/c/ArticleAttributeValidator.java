@@ -23,11 +23,14 @@ public class ArticleAttributeValidator implements EntityValidator<ArticleAttribu
 	@Override
 	public boolean validate(ArticleAttribute object) throws DatabaseException {
 		List<String> errors = new LinkedList<>();
+		
 		if(!ElementaryValidator.hasValue(object.getName())) {
 			errors.add("Nazwa atrybutu jest wymagana!");
 		}
-		if(!ElementaryValidator.maxLengthValidator(object.getName(), 40)){
-			errors.add("Nazwa nie może być dłuższa niż 40 znaków!");
+		else {
+			if(!ElementaryValidator.maxLengthValidator(object.getName(), 40)){
+				errors.add("Nazwa nie może być dłuższa niż 40 znaków!");
+			}
 		}
 		
 		if(!errors.isEmpty()){

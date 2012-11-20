@@ -1,15 +1,13 @@
 package articles.c;
 
-import articles.m.ArticleAttributeValue;
-import core.c.ElementaryValidator;
+import articles.m.TireDOT;
 import core.c.EntityValidator;
 import core.m.DatabaseException;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ArticleAttributeValueValidator implements EntityValidator<ArticleAttributeValue> {
+public class TireDOTValidator implements EntityValidator<TireDOT> {
 	// <editor-fold defaultstate="collapsed" desc="Object variables">
-
 	// </editor-fold>
 	// <editor-fold defaultstate="collapsed" desc="Creating object">
 	// </editor-fold>
@@ -21,30 +19,23 @@ public class ArticleAttributeValueValidator implements EntityValidator<ArticleAt
 	// <editor-fold defaultstate="collapsed" desc="Setters">
 	// </editor-fold>
 	@Override
-	public boolean validate(ArticleAttributeValue object) throws DatabaseException {
+	public boolean validate(TireDOT object) throws DatabaseException {
 		List<String> errors = new LinkedList<>();
-
-		if (object.getArticle() == null) {
-			errors.add("Nie podano części!");
+		
+		if(object.getDot() == null) {
+			errors.add("Nie podano DOTu!");
 		}
-
-		if (object.getAttribute() == null) {
-			errors.add("Nie podano atrybutu!");
+		if(object.getTire() == null) {
+			errors.add("Nie podano opony!");
 		}
-
-		if (!ElementaryValidator.hasValue(object.getValue())) {
-			errors.add("Nie podano wartości atrybutu!");
-		} 
-		else {
-			if (ElementaryValidator.maxLengthValidator(object.getValue(), 100)) {
-				errors.add("Przekroczono dopuszczalną liczbę znaków! Wartość atrybutu może zawierać co najwyżej 100 znaków!");
-			}
+		if(object.getCount() < 0) {
+			errors.add("Podana ilość jest mniejsza od 0!");
 		}
-
-		if (!errors.isEmpty()) {
+		
+		if(!errors.isEmpty()) {
 			throw new DatabaseException(errors);
 		}
-
+		
 		return errors.isEmpty();
 	}
 	// </editor-fold>

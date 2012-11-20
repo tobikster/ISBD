@@ -23,7 +23,7 @@ public class VATRateValidator implements EntityValidator<VATRate>
 	{
 		List<String> errors = new LinkedList<>();
 
-		if (!ElementaryValidator.hasValue(object.getRate()))
+		if(object.getRate() == Double.NaN)
 		{
 			errors.add("Nie wprowadzono wartości podaktu VAT.");
 		} else

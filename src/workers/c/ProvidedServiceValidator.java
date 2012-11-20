@@ -29,14 +29,14 @@ public class ProvidedServiceValidator implements EntityValidator<ProvidedService
 			errors.add("Nie wprowadzono pracownika, kóry wykonał usługę.");
 		}
 
-		if (!ElementaryValidator.hasValue(object.getDate()))
+		if (object.getDate() == null)
 		{
-			errors.add("Nie wprowadzono daty wykonanej uśługi.");
+			errors.add("Nie wprowadzono daty wykonanej usługi.");
 		} else
 		{
 		}
 		
-		if (!ElementaryValidator.hasValue(object.getValue()))
+		if (object.getValue() == Double.NaN)
 		{
 			errors.add("Nie wprowadzono wartości wykonanej usługi.");
 		}else

@@ -26,6 +26,7 @@ public class ArticlesGroupAttributeValidator implements EntityValidator<Articles
 		if(object.getGroup() == null) {
 			errors.add("Grupa towarowa jest wymagana!");
 		}
+		
 		if(object.getAttribute() == null) {
 			errors.add("Atrybut jest wymagany!");
 		}

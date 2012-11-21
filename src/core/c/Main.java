@@ -2,7 +2,6 @@ package core.c;
 
 import articles.c.ArticlesService;
 import articles.m.Article;
-import core.c.TablePagination.PageNumberException;
 import core.m.ResultRow;
 import java.sql.SQLException;
 import java.util.List;
@@ -30,6 +29,8 @@ public class Main
       System.out.println("Grupa:\t\t"+article.getGroup().getName());
       System.out.println("Producent:\t"+article.getProducer().getName());
       System.out.println("Ilosc:\t\t"+article.getCount());
+      
+      ViewManager.getInstance().showMainWindow();
     }
     catch(SQLException ex)
     {

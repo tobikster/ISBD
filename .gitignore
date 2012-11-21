@@ -1,6 +1,7 @@
-/build/
-/build.xml
+build/
+build.xml
 .*/
-/nbproject/private/
+nbproject/private/
 resources/ISBD.accdb
 resources/ISBD.laccdb
+/dist/

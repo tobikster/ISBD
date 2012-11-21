@@ -1,5 +1,7 @@
 package core.c;
 
+import core.m.DatabaseException;
+
 /**
  *
  * @author tobikster

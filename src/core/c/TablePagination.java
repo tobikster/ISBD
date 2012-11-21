@@ -20,7 +20,7 @@ public class TablePagination
 		this.tableData = tableData;
 		this.rowsPerPage = rowsPerPage;
 		currentPage = 0;
-		pageCount = (int)Math.ceil((tableData.length * 1.0) / (rowsPerPage * 1.0));
+		pageCount = (int)Math.ceil((double)(tableData.length) / (double)(rowsPerPage));
 	}
 
 	public Object[][] getTableData()
@@ -59,7 +59,7 @@ public class TablePagination
 	{
 		Object[][] currentPageData = new Object[rowsPerPage][];
 		
-		for(int i = 0; i < rowsPerPage; ++i)
+		for(int i = 0; currentPage * rowsPerPage + i < tableData.length && i < rowsPerPage; ++i)
 		{
 			currentPageData[i] = tableData[currentPage * rowsPerPage + i];
 		}

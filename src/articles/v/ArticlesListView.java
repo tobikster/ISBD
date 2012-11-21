@@ -4,22 +4,14 @@
  */
 package articles.v;
 
+import articles.c.ArticlesViewController;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author tobikster
  */
-public class ArticlesListView extends javax.swing.JPanel {
-	private static final String[] _ARTICLES_LIST_COLUMN_NAMES = new String[] {
-		"Nazwa",
-		"Numer katalogowy",
-		"Grupa towarowa",
-		"Producent",
-		"Liczba",
-		"Cena",
-		"Marża"
-	};
+public class ArticlesListView extends javax.swing.JPanel {	
 
 	/**
 	 * Creates new form ArticlesListView
@@ -28,7 +20,8 @@ public class ArticlesListView extends javax.swing.JPanel {
 		initComponents();
 	}
 	
-	public void setArticlesListValues(Object[][] values) {
+	public void setArticlesListValues(Object[][] values, String[] columnNames) {
+		jTable1.setModel(new DefaultTableModel(values, columnNames));
 	}
 
 	/**
@@ -45,15 +38,8 @@ public class ArticlesListView extends javax.swing.JPanel {
         _navPanel = new javax.swing.JPanel();
         _backButton = new javax.swing.JButton();
 
-        jTable1.setModel(new DefaultTableModel(_ARTICLES_LIST_COLUMN_NAMES, 0));
+        jTable1.setModel(new DefaultTableModel(ArticlesViewController.ARTICLE_LIST_TABLE_HEADERS, 0));
         jScrollPane2.setViewportView(jTable1);
-        jTable1.getColumnModel().getColumn(0).setHeaderValue("Nazwa");
-        jTable1.getColumnModel().getColumn(1).setHeaderValue("Numer katalogowy");
-        jTable1.getColumnModel().getColumn(2).setHeaderValue("Grupa towarowa");
-        jTable1.getColumnModel().getColumn(3).setHeaderValue("Producent");
-        jTable1.getColumnModel().getColumn(4).setHeaderValue("Liczba");
-        jTable1.getColumnModel().getColumn(5).setHeaderValue("Cena");
-        jTable1.getColumnModel().getColumn(6).setHeaderValue("Marża");
 
         _backButton.setText("Powrót");
 

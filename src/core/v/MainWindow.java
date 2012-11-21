@@ -1,5 +1,10 @@
 package core.v;
 
+import articles.c.ArticlesViewController;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author tobikster
@@ -11,6 +16,11 @@ public class MainWindow extends javax.swing.JFrame {
 	 */
 	public MainWindow() {
 		initComponents();
+		try {
+			new ArticlesViewController(articlesListView1);
+		} catch (SQLException ex) {
+			Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+		}
 	}
 
 	/**

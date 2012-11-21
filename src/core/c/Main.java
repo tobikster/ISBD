@@ -22,21 +22,11 @@ public class Main
     {
       List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult("SELECT COUNT(*) FROM RozmiaryOpon;");
       System.out.println("Ilość rozmiarów opon: "+results.get(0).getInt(1));
-			
-			Object[][] o = {{"sss", "sss"},{"sss", "sss"},{"sss", "sss"},{"sss", "sss"},{"sss", "sss"},{"sss", "sss"},{"sss", "sss"},{"sss", "sss"},{"sss", "sss"},{"sss", "sss"},{"sss", "sss"}};
-			System.out.println(o.length);
-			
-			TablePagination tp = new TablePagination(o, 3);
-			
-			System.out.println(tp.getPageCount());
-			System.out.println(tp.getPageData(3).length);
-			for (Object[] object : tp.getPageData(3))
-			{
-				System.out.println((String)object[0]);
-			}
-    } catch (PageNumberException | SQLException ex)
-		{
-			Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-		}
+      
+    }
+    catch(SQLException ex)
+    {
+      Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+    }
   }
 }

@@ -20,6 +20,7 @@ public class DatabaseManager
    * Current database connection.
    */
   private Connection m_Connection;
+  private boolean m_bTransactionMode;
   // </editor-fold>
 
   // <editor-fold defaultstate="collapsed" desc="Creating object">
@@ -40,6 +41,7 @@ public class DatabaseManager
     try
     {
       DriverManager.registerDriver(new JdbcOdbcDriver());
+      m_bTransactionMode=false;
     }
     catch(SQLException ex)
     {
@@ -95,7 +97,7 @@ public class DatabaseManager
       }
       results.add(new ResultRow(resultsRow));
     }
-    if(m_Connection!=null && !m_Connection.isClosed())
+    if(m_Connection!=null && !m_Connection.isClosed() && !m_bTransactionMode)
       disconnect();
     return results;
   }
@@ -113,9 +115,36 @@ public class DatabaseManager
       connect();
     Statement stmt = m_Connection.createStatement();
     Boolean rs = stmt.execute(sQuery);
-    if(m_Connection!=null && !m_Connection.isClosed())
+    if(m_Connection!=null && !m_Connection.isClosed() && !m_bTransactionMode)
         disconnect();
     return rs;
+  }
+  
+  public void commitTransaction() throws SQLException {
+    if(m_bTransactionMode) {
+      m_Connection.commit();
+      m_Connection.setAutoCommit(m_bTransactionMode);
+      disconnect();
+      m_bTransactionMode=false;
+    }
+  }
+  
+  public void startTransaction() throws SQLException {
+    if(!m_bTransactionMode) {
+      if(m_Connection==null || m_Connection.isClosed())
+        connect();
+      m_Connection.setAutoCommit(m_bTransactionMode);
+      m_bTransactionMode=true;
+    }
+  }
+  
+  public void rollbackTransaction() throws SQLException {
+    if(m_bTransactionMode) {
+      m_Connection.rollback();
+      m_Connection.setAutoCommit(m_bTransactionMode);
+      disconnect();
+      m_bTransactionMode=false;
+    }
   }
   // </editor-fold>
 }

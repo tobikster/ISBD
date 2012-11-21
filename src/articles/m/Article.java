@@ -5,13 +5,14 @@ package articles.m;
  * @author tobikster
  */
 public class Article {
+  private int _id;
 	private ArticlesGroup _group;
 	private Producer _producer;
 	private String _catalogNumber;
 	private String _name;
 	private double _margin;
 	private double _grossPrice;
-	private int _count;
+	private float _count;
 	private Object _picture;
         
 	public Article() {
@@ -33,11 +34,15 @@ public class Article {
 		_picture = picture;
 	}
 
+  public int getId() {
+    return _id;
+  }
+
 	public String getCatalogNumber() {
 		return _catalogNumber;
 	}
 
-	public int getCount() {
+	public float getCount() {
 		return _count;
 	}
 
@@ -65,11 +70,15 @@ public class Article {
 		return _producer;
 	}
 
+  public void setId(int id) {
+    _id = id;
+  }
+
 	public void setCatalogNumber(String catalogNumber) {
 		_catalogNumber = catalogNumber;
 	}
 
-	public void setCount(int count) {
+	public void setCount(float count) {
 		_count = count;
 	}
 
@@ -96,4 +105,9 @@ public class Article {
 	public void setProducer(Producer producer) {
 		_producer = producer;
 	}
+  
+  @Override
+  public String toString() {
+    return _name;
+  }
 }

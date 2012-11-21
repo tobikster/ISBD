@@ -36,7 +36,6 @@ private static final String[] COLUMN_NAMES = {"ID", "Imię", "Nazwisko", "Stanow
 				//tableData[i][0] = Integer.toString(results.get(i).getInt(0));
 				for (int j = 1; j < tableData[i].length; ++j)
 				{
-					System.out.println(i + " " + j);
 					tableData[i][j] = results.get(i).getString(j+1);
 				}
 			}

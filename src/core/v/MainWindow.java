@@ -1,10 +1,5 @@
 package core.v;
 
-import articles.c.ArticlesViewController;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  *
  * @author tobikster
@@ -17,14 +12,7 @@ public class MainWindow extends javax.swing.JFrame
   public MainWindow()
   {
     initComponents();
-    try
-    {
-      new ArticlesViewController(articlesListView1);
-    }
-    catch(SQLException ex)
-    {
-      Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-    }
+    
   }
 
   /**
@@ -35,11 +23,8 @@ public class MainWindow extends javax.swing.JFrame
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        articlesListView1 = new articles.v.ArticlesListView();
-
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new java.awt.CardLayout());
-        getContentPane().add(articlesListView1, "card2");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -86,6 +71,5 @@ public class MainWindow extends javax.swing.JFrame
     });
   }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private articles.v.ArticlesListView articlesListView1;
     // End of variables declaration//GEN-END:variables
 }

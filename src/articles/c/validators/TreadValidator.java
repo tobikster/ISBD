@@ -1,4 +1,4 @@
-package articles.c;
+package articles.c.validators;
 
 import articles.m.Tread;
 import core.c.ElementaryValidator;

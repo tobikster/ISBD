@@ -1,13 +1,12 @@
-package articles.c;
+package articles.c.validators;
 
-import articles.m.ArticleAttribute;
-import core.c.ElementaryValidator;
+import articles.m.ArticlesGroupAttribute;
 import core.c.EntityValidator;
 import core.m.DatabaseException;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ArticleAttributeValidator implements EntityValidator<ArticleAttribute>
+public class ArticlesGroupAttributeValidator implements EntityValidator<ArticlesGroupAttribute>
 {
   // <editor-fold defaultstate="collapsed" desc="Object variables">
   // </editor-fold>
@@ -21,15 +20,15 @@ public class ArticleAttributeValidator implements EntityValidator<ArticleAttribu
   // <editor-fold defaultstate="collapsed" desc="Setters">
   // </editor-fold>
   @Override
-  public boolean validate(ArticleAttribute object) throws DatabaseException
+  public boolean validate(ArticlesGroupAttribute object) throws DatabaseException
   {
     List<String> errors=new LinkedList<>();
 
-    if(!ElementaryValidator.hasValue(object.getName()))
-      errors.add("Nazwa atrybutu jest wymagana!");
-    else
-      if(!ElementaryValidator.maxLengthValidator(object.getName(), 40))
-        errors.add("Nazwa nie może być dłuższa niż 40 znaków!");
+    if(object.getGroup()==null)
+      errors.add("Grupa towarowa jest wymagana!");
+
+    if(object.getAttribute()==null)
+      errors.add("Atrybut jest wymagany!");
 
     if(!errors.isEmpty())
       throw new DatabaseException(errors);

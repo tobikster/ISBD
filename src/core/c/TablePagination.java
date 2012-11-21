@@ -55,9 +55,14 @@ public class TablePagination
 		pageCount = (int)Math.ceil((tableData.length * 1.0) / (rowsPerPage * 1.0));
 	}
 	
-	public Object[][] getCurrentPageData()
+	public Object[][] getCurrentPageData() throws PageNumberException
 	{
-		Object[][] currentPageData = new Object[rowsPerPage][];
+		if (currentPage < 0 || currentPage > pageCount-1)
+		{
+			throw new PageNumberException("Numer strony (" + currentPage + ") poza zakresem (" + 0 + "-" + (pageCount-1) + ").");
+		}
+		
+		Object[][] currentPageData = new Object[currentPage == pageCount-1 ? (tableData.length % rowsPerPage == 0 ? rowsPerPage : tableData.length % rowsPerPage) : rowsPerPage][];
 		
 		for(int i = 0; currentPage * rowsPerPage + i < tableData.length && i < rowsPerPage; ++i)
 		{
@@ -67,21 +72,32 @@ public class TablePagination
 		return currentPageData;
 	}
 	
-	public Object[][] getNextPage()
+	public Object[][] getNextPage() throws PageNumberException
 	{
 		++currentPage;
+		
 		return getCurrentPageData();
 	}
 	
-	public Object[][] getPreviousPage()
+	public Object[][] getPreviousPage() throws PageNumberException
 	{
 		--currentPage;
+		
 		return getCurrentPageData();
 	}
 	
-	public Object[][] getPageData(int page)
+	public Object[][] getPageData(int page) throws PageNumberException
 	{
 		currentPage = page;
+		
 		return getCurrentPageData();
+	}
+	
+	public class PageNumberException extends Exception
+	{
+		public PageNumberException(String msg)
+		{
+			super(msg);
+		}
 	}
 }

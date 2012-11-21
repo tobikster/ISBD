@@ -3,9 +3,12 @@ package articles.c;
 import articles.v.ArticlesListView;
 import core.c.DatabaseManager;
 import core.c.TablePagination;
+import core.c.TablePagination.PageNumberException;
 import core.m.ResultRow;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ArticlesViewController {
 	// <editor-fold defaultstate="collapsed" desc="Object variables">
@@ -43,7 +46,14 @@ public class ArticlesViewController {
 		}
 		_data = new TablePagination(tableData, 5);
 		_articlesListView = view;
-		_articlesListView.setArticlesListValues(_data.getCurrentPageData(), ARTICLE_LIST_TABLE_HEADERS);
+    try
+    {
+      _articlesListView.setArticlesListValues(_data.getCurrentPageData(), ARTICLE_LIST_TABLE_HEADERS);
+    }
+    catch(PageNumberException ex)
+    {
+      Logger.getLogger(ArticlesViewController.class.getName()).log(Level.SEVERE, null, ex);
+    }
 	}
 	// </editor-fold>
 	// <editor-fold defaultstate="collapsed" desc="Object PRIVATE methods">

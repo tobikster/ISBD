@@ -1,5 +1,6 @@
 package core.c;
 
+import core.c.TablePagination.PageNumberException;
 import core.m.ResultRow;
 import java.sql.SQLException;
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ *git
  * @author Paweł
  */
 public class Main

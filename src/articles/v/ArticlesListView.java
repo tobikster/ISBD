@@ -21,7 +21,14 @@ public class ArticlesListView extends javax.swing.JPanel {
 	}
 	
 	public void setArticlesListValues(Object[][] values, String[] columnNames) {
-		jTable1.setModel(new DefaultTableModel(values, columnNames));
+		jTable1.setModel(
+			new DefaultTableModel(values, columnNames) {
+				@Override
+				public boolean isCellEditable(int row, int column) {
+					return false;
+				}	
+			}
+		);
 	}
 
 	/**

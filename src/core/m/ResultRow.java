@@ -6,6 +6,7 @@ import java.util.Map;
 /**
  * Represents a row of results retrieved from database by execute of SQL query
  * (each result in the row represents one colum requested in SQL query).
+ * 
  * @author Damian Kaczybura
  */
 public class ResultRow

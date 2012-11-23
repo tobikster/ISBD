@@ -1,5 +1,10 @@
 package core.v;
 
+import articles.v.ArticleListView;
+import core.c.ViewManager;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
 /**
  *
  * @author tobikster
@@ -14,6 +19,10 @@ public class MainWindow extends javax.swing.JFrame
     initComponents();
     
   }
+  
+  public JPanel getMainPanel() {
+    return jpMainPanel;
+  }
 
   /**
    * This method is called from within the constructor to initialize the form.
@@ -23,53 +32,53 @@ public class MainWindow extends javax.swing.JFrame
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jpMainPanel = new javax.swing.JPanel();
+        jpMainMenu = new core.v.MainMenuView();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        mFile = new javax.swing.JMenu();
+        mFile_Exit = new javax.swing.JMenuItem();
+        mEdit = new javax.swing.JMenu();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Mechaniker v0.1");
         getContentPane().setLayout(new java.awt.CardLayout());
+
+        jpMainPanel.setLayout(new java.awt.BorderLayout());
+        jpMainPanel.add(jpMainMenu, java.awt.BorderLayout.CENTER);
+
+        getContentPane().add(jpMainPanel, "card2");
+
+        mFile.setText("Plik");
+
+        mFile_Exit.setText("Zakończ");
+        mFile_Exit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mFile_ExitActionPerformed(evt);
+            }
+        });
+        mFile.add(mFile_Exit);
+
+        jMenuBar1.add(mFile);
+
+        mEdit.setText("Edycja");
+        jMenuBar1.add(mEdit);
+
+        setJMenuBar(jMenuBar1);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-  /**
-   * @param args the command line arguments
-   */
-  public static void main(String args[])
-  {
-    /*
-     * Set the Nimbus look and feel
-     */
-    //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /*
-     * If Nimbus (introduced in Java SE 6) is not available, stay with the
-     * default look and feel. For details see
-     * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-     */
-    try
-    {
-      for(javax.swing.UIManager.LookAndFeelInfo info: javax.swing.UIManager.getInstalledLookAndFeels())
-        if("Nimbus".equals(info.getName()))
-        {
-          javax.swing.UIManager.setLookAndFeel(info.getClassName());
-          break;
-        }
-    }
-    catch(ClassNotFoundException|InstantiationException|IllegalAccessException|javax.swing.UnsupportedLookAndFeelException ex)
-    {
-      java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-    }
-    //</editor-fold>
+  private void mFile_ExitActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_mFile_ExitActionPerformed
+  {//GEN-HEADEREND:event_mFile_ExitActionPerformed
+    System.exit(0);
+  }//GEN-LAST:event_mFile_ExitActionPerformed
 
-    /*
-     * Create and display the form
-     */
-    java.awt.EventQueue.invokeLater(new Runnable()
-    {
-      @Override
-      public void run()
-      {
-        new MainWindow().setVisible(true);
-      }
-    });
-  }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuBar jMenuBar1;
+    private core.v.MainMenuView jpMainMenu;
+    private javax.swing.JPanel jpMainPanel;
+    private javax.swing.JMenu mEdit;
+    private javax.swing.JMenu mFile;
+    private javax.swing.JMenuItem mFile_Exit;
     // End of variables declaration//GEN-END:variables
 }

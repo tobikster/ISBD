@@ -79,11 +79,25 @@ public class TablePagination<T> {
 		return getCurrentPageData();
 	}
 
-	public List<T> getPageData(int page) {
+	public List<T> getPage(int page) {
 		if (currentPage >= 0 || currentPage < pageCount) {
 			currentPage = page;
 		}
 
+		return getCurrentPageData();
+	}
+	
+	public List<T> getFirstPage()
+	{
+		currentPage = 0;
+		
+		return getCurrentPageData();
+	}
+	
+	public List<T> getLastPage()
+	{
+		currentPage = pageCount - 1;
+		
 		return getCurrentPageData();
 	}
 }

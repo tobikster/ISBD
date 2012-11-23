@@ -1,4 +1,4 @@
-package workers.c;
+package workers.c.validators;
 
 import core.m.DatabaseException;
 import core.c.ElementaryValidator;

@@ -1,4 +1,4 @@
-package workers.c;
+package workers.c.validators;
 
 import core.c.ElementaryValidator;
 import core.c.EntityValidator;

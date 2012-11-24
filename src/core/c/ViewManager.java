@@ -3,6 +3,7 @@ package core.c;
 import core.v.MainWindow;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 
 public class ViewManager {
@@ -30,6 +31,9 @@ public class ViewManager {
 	// </editor-fold>
 	// <editor-fold defaultstate="collapsed" desc="Object PUBLIC methods">
 	// <editor-fold defaultstate="collapsed" desc="Getters">
+		public MainWindow getMainWindow() {
+			return _mainWindow;
+		}
 	// </editor-fold>
 	// <editor-fold defaultstate="collapsed" desc="Setters">
 	// </editor-fold>
@@ -44,9 +48,18 @@ public class ViewManager {
 	}
 
 	public void showMainWindow() {
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		_mainWindow.setLocation((int) ((screenSize.width - _mainWindow.getSize().width) / 2), (int) (screenSize.height - _mainWindow.getSize().height) / 2);
+		_mainWindow.setLocationRelativeTo(null);
 		_mainWindow.setVisible(true);
+	}
+	
+	public void showDialog(JDialog dialog) {
+		dialog.setLocationRelativeTo(_mainWindow);
+		dialog.setVisible(true);
+	}
+	
+	public void closeDialog(JDialog dialog) {
+		dialog.setVisible(false);
+		dialog.dispose();
 	}
 	// </editor-fold>
 }

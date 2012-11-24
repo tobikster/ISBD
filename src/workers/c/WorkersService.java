@@ -1,12 +1,14 @@
 package workers.c;
 
 import core.c.DatabaseManager;
+import core.m.DatabaseException;
 import core.m.ResultRow;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import workers.c.validators.WorkerValidator;
 import workers.m.Worker;
 
 public class WorkersService {
@@ -36,11 +38,43 @@ public class WorkersService {
 	// </editor-fold>
 	public List<Worker> getWorkers() throws SQLException {
 		List<Worker> result = new LinkedList<>();
-		List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult("SELECT Imie, Nazwisko, Stanowisko FROM Pracownicy");
+		List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult("SELECT IdPracownika, Imie, Nazwisko, Stanowisko FROM Pracownicy");
 		for (ResultRow resultRow : results) {
-			result.add(new Worker(resultRow.getString(1),
+			result.add(new Worker(resultRow.getInt(1),
 								  resultRow.getString(2),
-								  resultRow.getString(3)));
+								  resultRow.getString(3),
+								  resultRow.getString(4)));
+		}
+		return result;
+	}
+
+	public Worker getWorker(int id) throws SQLException {
+		Worker result = null;
+		List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult("SELECT IdPracownika, Imie, Nazwisko, Stanowisko, Login, Haslo FROM Pracownicy WHERE IdPracownika = " + id + ";");
+		if (results.size() > 1) {
+			throw new SQLException("W bazie danych istnieje " + results.size() + " pracowników o podanym identyfikatorze!");
+		}
+		else {
+			ResultRow resultRow = results.get(0);
+			result = new Worker(resultRow.getInt(1),
+								resultRow.getString(2),
+								resultRow.getString(3),
+								resultRow.getString(4),
+								resultRow.getString(5),
+								resultRow.getString(6));
+		}
+		return result;
+	}
+
+	public boolean saveWorker(Worker worker) throws SQLException, DatabaseException {
+		boolean result = false;
+		WorkerValidator validator = new WorkerValidator();
+		if(validator.validate(worker)) {
+			String query = "UPDATE Pracownicy "
+				+ "SET Imie = '" + worker.getName() + "', Nazwisko = '" + worker.getSurname() + "', Stanowisko = '" + worker.getJob() + "', Login = '" + worker.getLogin() + "', Haslo = '" + worker.getPassword() + "' "
+				+ "WHERE IdPracownika = " + worker.getId() + ";";
+			System.out.println(query);
+			result = DatabaseManager.getInstance().executeQuery(query);
 		}
 		return result;
 	}

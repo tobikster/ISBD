@@ -4,8 +4,12 @@
  */
 package workers.v;
 
-import core.c.DatabaseManager;
-import core.m.ResultRow;
+import core.c.ErrorHandler;
+import core.c.TablePagination;
+import core.c.ViewManager;
+import core.v.MainMenuView;
+import core.v.MainWindow;
+import core.v.PaginationPanel;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
@@ -20,24 +24,52 @@ import workers.m.Worker;
  * @author Zjamnik
  */
 public class WorkersView extends javax.swing.JPanel {
-	private static final String[] COLUMN_NAMES = {
+	public static final int ROWS_PER_PAGE = 20;
+	public static final String[] COLUMN_NAMES = {
 		"Imię",
 		"Nazwisko",
 		"Stanowisko"
 	};
-	private List<Worker> _workers;
+	private TablePagination<Worker> _pagination;
 
 	/**
 	 * Creates new form WorkersView
 	 */
 	public WorkersView() {
 		try {
-			_workers = WorkersService.getInstance().getWorkers();
+			_pagination = new TablePagination<>(WorkersService.getInstance().getWorkers(), ROWS_PER_PAGE);
 		}
 		catch (SQLException ex) {
 			Logger.getLogger(WorkersView.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		initComponents();
+		_navPanel.setCurrentPage(_pagination.getCurrentPage());
+		_navPanel.setPageCount(_pagination.getPageCount());
+		_navPanel.setButtonsListener(new PaginationPanel.ButtonsListener() {
+			@Override
+			public void nextButtonClicked() {
+				_workersTable.setModel(getTableModel(_pagination.getNextPage()));
+				_navPanel.setCurrentPage(_pagination.getCurrentPage());
+			}
+
+			@Override
+			public void previousButtonClicked() {
+				_workersTable.setModel(getTableModel(_pagination.getPreviousPage()));
+				_navPanel.setCurrentPage(_pagination.getCurrentPage());
+			}
+
+			@Override
+			public void firstButtonClicked() {
+				_workersTable.setModel(getTableModel(_pagination.getFirstPage()));
+				_navPanel.setCurrentPage(_pagination.getCurrentPage());
+			}
+
+			@Override
+			public void lastButtonClicked() {
+				_workersTable.setModel(getTableModel(_pagination.getLastPage()));
+				_navPanel.setCurrentPage(_pagination.getCurrentPage());
+			}
+		});
 	}
 
 	public TableModel getTableModel(List<Worker> workers) {
@@ -66,77 +98,88 @@ public class WorkersView extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        workersTable = new javax.swing.JTable();
-        jPanel3 = new javax.swing.JPanel();
-        _goToFirstPageButton = new javax.swing.JButton();
-        _goToPreviousPageButton = new javax.swing.JButton();
-        _currentPageLabel = new javax.swing.JLabel();
-        _goToNextPageButton = new javax.swing.JButton();
-        _goToLastPageButton = new javax.swing.JButton();
+        _optionPanel = new javax.swing.JPanel();
+        _backButton = new javax.swing.JButton();
+        _addWorkerButton = new javax.swing.JButton();
+        _editWorkerButton = new javax.swing.JButton();
+        _removeWorkerButton = new javax.swing.JButton();
+        _tablePanel = new javax.swing.JPanel();
+        _tableScrollPanel = new javax.swing.JScrollPane();
+        _workersTable = new javax.swing.JTable();
+        _workersTable.setColumnSelectionAllowed(false);
+        _workersTable.setShowVerticalLines(false);
+        _navPanel = new core.v.PaginationPanel();
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        _optionPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jButton1.setText("jButton1");
+        _backButton.setText("Wstecz");
+        _backButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                _backButtonActionPerformed(evt);
+            }
+        });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
+        _addWorkerButton.setText("Dodaj pracownika");
+
+        _editWorkerButton.setText("Edytuj pracownika");
+        _editWorkerButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                _editWorkerButtonActionPerformed(evt);
+            }
+        });
+
+        _removeWorkerButton.setText("Usuń pracownika");
+
+        javax.swing.GroupLayout _optionPanelLayout = new javax.swing.GroupLayout(_optionPanel);
+        _optionPanel.setLayout(_optionPanelLayout);
+        _optionPanelLayout.setHorizontalGroup(
+            _optionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(_optionPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(_backButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(_removeWorkerButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(_editWorkerButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(_addWorkerButton)
                 .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+        _optionPanelLayout.setVerticalGroup(
+            _optionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, _optionPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(_optionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(_backButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(_addWorkerButton)
+                    .addComponent(_editWorkerButton)
+                    .addComponent(_removeWorkerButton))
                 .addContainerGap())
         );
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        _tablePanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        workersTable.setModel(getTableModel(_workers));
-        jScrollPane1.setViewportView(workersTable);
+        _workersTable.setModel(getTableModel(_pagination.getCurrentPageData()));
+        _tableScrollPanel.setViewportView(_workersTable);
 
-        _goToFirstPageButton.setText("<<");
-        jPanel3.add(_goToFirstPageButton);
-
-        _goToPreviousPageButton.setText("<");
-        jPanel3.add(_goToPreviousPageButton);
-
-        _currentPageLabel.setText("jLabel1");
-        jPanel3.add(_currentPageLabel);
-
-        _goToNextPageButton.setText(">");
-        jPanel3.add(_goToNextPageButton);
-
-        _goToLastPageButton.setText(">>");
-        jPanel3.add(_goToLastPageButton);
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+        javax.swing.GroupLayout _tablePanelLayout = new javax.swing.GroupLayout(_tablePanel);
+        _tablePanel.setLayout(_tablePanelLayout);
+        _tablePanelLayout.setHorizontalGroup(
+            _tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(_tablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(_tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(_tableScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE)
+                    .addComponent(_navPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        _tablePanelLayout.setVerticalGroup(
+            _tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(_tablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 353, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(_tableScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(_navPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -144,34 +187,48 @@ public class WorkersView extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(_optionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(_tablePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(_tablePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(_optionPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void _backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__backButtonActionPerformed
+		ViewManager.getInstance().openView(new MainMenuView());
+    }//GEN-LAST:event__backButtonActionPerformed
+
+    private void _editWorkerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__editWorkerButtonActionPerformed
+		if (_workersTable.getSelectedRow() >= 0) {
+			try {
+				Worker worker = WorkersService.getInstance().getWorker(_pagination.getCurrentPageData().get(_workersTable.getSelectedRow()).getId());
+				ViewManager.getInstance().showDialog(new EditWorkerView(ViewManager.getInstance().getMainWindow(), true, worker));
+			}
+			catch (SQLException ex) {
+				Logger.getLogger(WorkersView.class.getName()).log(Level.SEVERE, null, ex);
+			}
+		}
+    }//GEN-LAST:event__editWorkerButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel _currentPageLabel;
-    private javax.swing.JButton _goToFirstPageButton;
-    private javax.swing.JButton _goToLastPageButton;
-    private javax.swing.JButton _goToNextPageButton;
-    private javax.swing.JButton _goToPreviousPageButton;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable workersTable;
+    private javax.swing.JButton _addWorkerButton;
+    private javax.swing.JButton _backButton;
+    private javax.swing.JButton _editWorkerButton;
+    private core.v.PaginationPanel _navPanel;
+    private javax.swing.JPanel _optionPanel;
+    private javax.swing.JButton _removeWorkerButton;
+    private javax.swing.JPanel _tablePanel;
+    private javax.swing.JScrollPane _tableScrollPanel;
+    private javax.swing.JTable _workersTable;
     // End of variables declaration//GEN-END:variables
 }

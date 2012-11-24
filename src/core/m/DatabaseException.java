@@ -35,4 +35,8 @@ public class DatabaseException extends Exception {
 	public boolean hasErrors() {
 		return !_errors.isEmpty();
 	}
+	
+	public List<String> getErrors() {
+		return _errors;
+	}
 }

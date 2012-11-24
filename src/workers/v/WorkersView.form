@@ -16,11 +16,11 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="1" attributes="0">
+          <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="jPanel2" max="32767" attributes="0"/>
-                  <Component id="jPanel1" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="_optionPanel" max="32767" attributes="0"/>
+                  <Component id="_tablePanel" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -30,16 +30,16 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jPanel2" max="32767" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
+              <Component id="_tablePanel" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="_optionPanel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="javax.swing.JPanel" name="jPanel1">
+    <Container class="javax.swing.JPanel" name="_optionPanel">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
@@ -51,10 +51,16 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="1" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="_backButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
-                  <Component id="jButton1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <Component id="_removeWorkerButton" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="_editWorkerButton" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="_addWorkerButton" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -62,21 +68,47 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="jButton1" max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="_backButton" alignment="3" max="32767" attributes="0"/>
+                      <Component id="_addWorkerButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="_editWorkerButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="_removeWorkerButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JButton" name="jButton1">
+        <Component class="javax.swing.JButton" name="_backButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="jButton1"/>
+            <Property name="text" type="java.lang.String" value="Wstecz"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="_backButtonActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="_addWorkerButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Dodaj pracownika"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="_editWorkerButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Edytuj pracownika"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="_editWorkerButtonActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="_removeWorkerButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Usu&#x144; pracownika"/>
           </Properties>
         </Component>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JPanel" name="jPanel2">
+    <Container class="javax.swing.JPanel" name="_tablePanel">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
@@ -88,11 +120,11 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="1" attributes="0">
+              <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="jScrollPane1" pref="538" max="32767" attributes="0"/>
-                      <Component id="jPanel3" max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="_tableScrollPanel" alignment="0" pref="538" max="32767" attributes="0"/>
+                      <Component id="_navPanel" alignment="1" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -102,62 +134,36 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" pref="353" max="32767" attributes="0"/>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
+                  <Component id="_tableScrollPanel" pref="332" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="_navPanel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Container class="javax.swing.JScrollPane" name="jScrollPane1">
+        <Container class="javax.swing.JScrollPane" name="_tableScrollPanel">
           <AuxValues>
             <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
           </AuxValues>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
-            <Component class="javax.swing.JTable" name="workersTable">
+            <Component class="javax.swing.JTable" name="_workersTable">
               <Properties>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="getTableModel(_workers)" type="code"/>
+                  <Connection code="getTableModel(_pagination.getCurrentPageData())" type="code"/>
                 </Property>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="_workersTable.setColumnSelectionAllowed(false);&#xa;_workersTable.setShowVerticalLines(false);"/>
+              </AuxValues>
             </Component>
           </SubComponents>
         </Container>
-        <Container class="javax.swing.JPanel" name="jPanel3">
-
-          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
-          <SubComponents>
-            <Component class="javax.swing.JButton" name="_goToFirstPageButton">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="&lt;&lt;"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JButton" name="_goToPreviousPageButton">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="&lt;"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JLabel" name="_currentPageLabel">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="jLabel1"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JButton" name="_goToNextPageButton">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="&gt;"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JButton" name="_goToLastPageButton">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="&gt;&gt;"/>
-              </Properties>
-            </Component>
-          </SubComponents>
-        </Container>
+        <Component class="core.v.PaginationPanel" name="_navPanel">
+        </Component>
       </SubComponents>
     </Container>
   </SubComponents>

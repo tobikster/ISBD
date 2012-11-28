@@ -10,14 +10,7 @@ import core.c.Reloadable;
 import core.m.ApplicationException;
 import core.m.DatabaseException;
 import core.v.ApplicationDialog;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.sql.SQLException;
-import javax.swing.AbstractAction;
-import javax.swing.ActionMap;
-import javax.swing.InputMap;
-import javax.swing.JComponent;
-import javax.swing.KeyStroke;
 import workers.c.WorkersService;
 import workers.m.Worker;
 
@@ -25,7 +18,7 @@ import workers.m.Worker;
  *
  * @author tobikster
  */
-public class EditWorkerView extends ApplicationDialog {
+public class AddWorkerView extends ApplicationDialog {
 	/**
 	 * A return status code - returned if Cancel button has been pressed
 	 */
@@ -39,9 +32,9 @@ public class EditWorkerView extends ApplicationDialog {
 	/**
 	 * Creates new form EditWorkerView
 	 */
-	public EditWorkerView(java.awt.Frame parent, boolean modal, Reloadable reloadableParent, Worker worker) {
+	public AddWorkerView(java.awt.Frame parent, boolean modal, Reloadable reloadableParent) {
 		super(parent, modal, reloadableParent);
-		_worker = worker;
+		_worker = new Worker();
 		initComponents();
 	}
 
@@ -78,7 +71,8 @@ public class EditWorkerView extends ApplicationDialog {
         _repeatPasswordField = new javax.swing.JPasswordField();
         _titleLabel = new javax.swing.JLabel();
 
-        setTitle("Edycja pracownika");
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Dodawanie pracownika");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 closeDialog(evt);
@@ -187,7 +181,7 @@ public class EditWorkerView extends ApplicationDialog {
         );
 
         _titleLabel.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        _titleLabel.setText(_worker.getName() + " " + _worker.getSurname());
+        _titleLabel.setText("Wprowadź dane pracownika");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -260,7 +254,7 @@ public class EditWorkerView extends ApplicationDialog {
 					else {
 						_worker.setPassword(new String(_passwordField.getPassword()));
 					}
-					WorkersService.getInstance().saveWorker(_worker);
+					WorkersService.getInstance().addWorker(_worker);
 					setHaveToReloadParent(true);
 					super.close();
 				}

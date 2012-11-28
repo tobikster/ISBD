@@ -69,11 +69,29 @@ public class WorkersService {
 	public boolean saveWorker(Worker worker) throws SQLException, DatabaseException {
 		boolean result = false;
 		WorkerValidator validator = new WorkerValidator();
-		if(validator.validate(worker)) {
+		if (validator.validate(worker)) {
 			String query = "UPDATE Pracownicy "
-				+ "SET Imie = '" + worker.getName() + "', Nazwisko = '" + worker.getSurname() + "', Stanowisko = '" + worker.getJob() + "', Login = '" + worker.getLogin() + "', Haslo = '" + worker.getPassword() + "' "
-				+ "WHERE IdPracownika = " + worker.getId() + ";";
+					+ "SET Imie = '" + worker.getName() + "', Nazwisko = '" + worker.getSurname() + "', Stanowisko = '" + worker.getJob() + "', Login = '" + worker.getLogin() + "', Haslo = '" + worker.getPassword() + "' "
+					+ "WHERE IdPracownika = " + worker.getId() + ";";
 			System.out.println(query);
+			result = DatabaseManager.getInstance().executeQuery(query);
+		}
+		return result;
+	}
+
+	public boolean removeWorker(Worker worker) throws SQLException {
+		String query = "DELETE * "
+				+ "FROM Pracownicy "
+				+ "WHERE IdPracownika = " + worker.getId() + ";";
+		return DatabaseManager.getInstance().executeQuery(query);
+	}
+
+	public boolean addWorker(Worker worker) throws SQLException, DatabaseException {
+		boolean result = false;
+		WorkerValidator validator = new WorkerValidator();
+		if (validator.validate(worker)) {
+			String query = "INSERT INTO Pracownicy (Imie, Nazwisko, Stanowisko, Login, Haslo) "
+					+ "VALUES ('" + worker.getName() + "', '" + worker.getSurname() + "', '" + worker.getJob() + "', '" + worker.getLogin() + "', '" + worker.getPassword() + "');";
 			result = DatabaseManager.getInstance().executeQuery(query);
 		}
 		return result;

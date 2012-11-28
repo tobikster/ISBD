@@ -5,6 +5,7 @@ package workers.m;
  * @author tobikster
  */
 public class Worker {
+	private int _id;
 	private String _name;
 	private String _surname;
 	private String _job;
@@ -13,19 +14,24 @@ public class Worker {
 
 	public Worker()
 	{
-		this(null, null, null, null, null);
+		this(0, null, null, null, null, null);
 	}
 	
-	public Worker(String name, String surname, String job) {
-		this(name, surname, job, null, null);
+	public Worker(int id, String name, String surname, String job) {
+		this(id, name, surname, job, null, null);
 	}
 
-	public Worker(String name, String surname, String job, String login, String password) {
+	public Worker(int id, String name, String surname, String job, String login, String password) {
+		_id = id;
 		_name = name;
 		_surname = surname;
 		_job = job;
 		_login = login;
 		_password = password;
+	}
+	
+	public int getId() {
+		return _id;
 	}
 
 	public String getJob() {
@@ -47,6 +53,10 @@ public class Worker {
 	public String getSurname() {
 		return _surname;
 	}
+	
+	public void setId(int id) {
+		_id = id;
+	}
 
 	public void setJob(String job) {
 		_job = job;
@@ -66,5 +76,9 @@ public class Worker {
 
 	public void setSurname(String surname) {
 		_surname = surname;
+	}
+	
+	public String getFullName() {
+		return getName() + " " + getSurname();
 	}
 }

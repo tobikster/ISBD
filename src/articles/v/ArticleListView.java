@@ -4,27 +4,20 @@
  */
 package articles.v;
 
-import core.c.ViewManager;
-import core.v.MainMenuView;
-import java.awt.Color;
-
 /**
  *
  * @author MRKACZOR
  */
 public class ArticleListView extends javax.swing.JPanel
 {
-  private boolean _bGroupsVisible;
-  
   /**
    * Creates new form ArticleListView
    */
   public ArticleListView()
   {
-    _bGroupsVisible=true;
     initComponents();
   }
-  
+
   /**
    * This method is called from within the constructor to initialize the form.
    * WARNING: Do NOT modify this code. The content of this method is always
@@ -33,42 +26,22 @@ public class ArticleListView extends javax.swing.JPanel
   @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
-        jpmGroupsMenu = new javax.swing.JPopupMenu();
-        miAddGroup = new javax.swing.JMenuItem();
-        miEditGroup = new javax.swing.JMenuItem();
-        miDeleteGroup = new javax.swing.JMenuItem();
-        jLabel1 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jtArticles = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        jpArticlesGroupsHider = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jtArticleGroups = new javax.swing.JTree();
-        lArrow = new javax.swing.JLabel();
+        lTitle = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTree1 = new javax.swing.JTree();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jButton2 = new javax.swing.JButton();
 
-        miAddGroup.setText("Dodaj grupę");
-        miAddGroup.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                miAddGroupActionPerformed(evt);
-            }
-        });
-        jpmGroupsMenu.add(miAddGroup);
+        lTitle.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        lTitle.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lTitle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/64x64/Stacked-Boxes-64.png"))); // NOI18N
+        lTitle.setText("  MAGAZYN");
 
-        miEditGroup.setText("Edytuj grupę");
-        jpmGroupsMenu.add(miEditGroup);
+        jScrollPane3.setViewportView(jTree1);
 
-        miDeleteGroup.setText("Usuń grupę");
-        jpmGroupsMenu.add(miDeleteGroup);
-
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/64x64/Stacked-Boxes-64.png"))); // NOI18N
-        jLabel1.setText("  MAGAZYN");
-        jLabel1.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
-
-        jtArticles.setModel(new javax.swing.table.DefaultTableModel(
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -79,52 +52,9 @@ public class ArticleListView extends javax.swing.JPanel
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jtArticles);
+        jScrollPane4.setViewportView(jTable1);
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/Back-48.png"))); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        jpArticlesGroupsHider.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jpArticlesGroupsHiderMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                jpArticlesGroupsHiderMouseExited(evt);
-            }
-        });
-
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jpmGroupsMenu, org.jdesktop.beansbinding.ObjectProperty.create(), jtArticleGroups, org.jdesktop.beansbinding.BeanProperty.create("componentPopupMenu"), "");
-        bindingGroup.addBinding(binding);
-
-        jScrollPane2.setViewportView(jtArticleGroups);
-
-        lArrow.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        lArrow.setText("<");
-        lArrow.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lArrowMouseClicked(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jpArticlesGroupsHiderLayout = new javax.swing.GroupLayout(jpArticlesGroupsHider);
-        jpArticlesGroupsHider.setLayout(jpArticlesGroupsHiderLayout);
-        jpArticlesGroupsHiderLayout.setHorizontalGroup(
-            jpArticlesGroupsHiderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpArticlesGroupsHiderLayout.createSequentialGroup()
-                .addGap(2, 2, 2)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lArrow))
-        );
-        jpArticlesGroupsHiderLayout.setVerticalGroup(
-            jpArticlesGroupsHiderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lArrow, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
-        );
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/Back-48.png"))); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -133,14 +63,14 @@ public class ArticleListView extends javax.swing.JPanel
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jpArticlesGroupsHider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 565, Short.MAX_VALUE))
+                    .addComponent(lTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 457, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 571, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jButton2))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -148,59 +78,22 @@ public class ArticleListView extends javax.swing.JPanel
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addComponent(lTitle)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jpArticlesGroupsHider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
-
-        bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
-
-  private void jpArticlesGroupsHiderMouseEntered(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jpArticlesGroupsHiderMouseEntered
-  {//GEN-HEADEREND:event_jpArticlesGroupsHiderMouseEntered
-    jpArticlesGroupsHider.setBackground(new Color(200,200,200));
-  }//GEN-LAST:event_jpArticlesGroupsHiderMouseEntered
-
-  private void jpArticlesGroupsHiderMouseExited(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jpArticlesGroupsHiderMouseExited
-  {//GEN-HEADEREND:event_jpArticlesGroupsHiderMouseExited
-    jpArticlesGroupsHider.setBackground(new Color(240,240,240));
-  }//GEN-LAST:event_jpArticlesGroupsHiderMouseExited
-
-  private void lArrowMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_lArrowMouseClicked
-  {//GEN-HEADEREND:event_lArrowMouseClicked
-    _bGroupsVisible=!_bGroupsVisible;
-    jScrollPane2.setVisible(_bGroupsVisible);
-    jpArticlesGroupsHider.setSize(20, jpArticlesGroupsHider.getSize().height);
-  }//GEN-LAST:event_lArrowMouseClicked
-
-  private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton1ActionPerformed
-  {//GEN-HEADEREND:event_jButton1ActionPerformed
-    ViewManager.getInstance().openView(new MainMenuView());
-  }//GEN-LAST:event_jButton1ActionPerformed
-
-  private void miAddGroupActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_miAddGroupActionPerformed
-  {//GEN-HEADEREND:event_miAddGroupActionPerformed
-    // TODO add your handling code here:
-  }//GEN-LAST:event_miAddGroupActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JPanel jpArticlesGroupsHider;
-    private javax.swing.JPopupMenu jpmGroupsMenu;
-    private javax.swing.JTree jtArticleGroups;
-    private javax.swing.JTable jtArticles;
-    private javax.swing.JLabel lArrow;
-    private javax.swing.JMenuItem miAddGroup;
-    private javax.swing.JMenuItem miDeleteGroup;
-    private javax.swing.JMenuItem miEditGroup;
-    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTree jTree1;
+    private javax.swing.JLabel lTitle;
     // End of variables declaration//GEN-END:variables
 }

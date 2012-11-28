@@ -7,6 +7,7 @@ package core.v;
 import articles.v.ArticleListView;
 import core.c.ViewManager;
 import javax.swing.JOptionPane;
+import workers.v.WorkersView;
 
 /**
  *
@@ -133,7 +134,7 @@ public class MainMenuView extends javax.swing.JPanel
 
   private void bContractorsActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bContractorsActionPerformed
   {//GEN-HEADEREND:event_bContractorsActionPerformed
-    JOptionPane.showMessageDialog(this, "Wybrana funkcjonalność nie jest dostępna w tej wersji aplikacji.");
+    ViewManager.getInstance().openView(new WorkersView());
   }//GEN-LAST:event_bContractorsActionPerformed
 
   private void bSaleActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bSaleActionPerformed

@@ -13,8 +13,6 @@ import core.v.PaginationPanel;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -26,7 +24,8 @@ import workers.m.Worker;
  * @author Zjamnik
  */
 public class WorkersView extends JPanel implements Reloadable {
-	public static final int ROWS_PER_PAGE = 20;
+	public static final int ROWS_PER_PAGE = 5
+	;
 	public static final String[] COLUMN_NAMES = {
 		"Imię",
 		"Nazwisko",
@@ -129,6 +128,11 @@ public class WorkersView extends JPanel implements Reloadable {
         });
 
         _addWorkerButton.setText("Dodaj pracownika");
+        _addWorkerButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                _addWorkerButtonActionPerformed(evt);
+            }
+        });
 
         _editWorkerButton.setText("Edytuj pracownika");
         _editWorkerButton.addActionListener(new java.awt.event.ActionListener() {
@@ -138,6 +142,11 @@ public class WorkersView extends JPanel implements Reloadable {
         });
 
         _removeWorkerButton.setText("Usuń pracownika");
+        _removeWorkerButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                _removeWorkerButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout _optionPanelLayout = new javax.swing.GroupLayout(_optionPanel);
         _optionPanel.setLayout(_optionPanelLayout);
@@ -225,10 +234,26 @@ public class WorkersView extends JPanel implements Reloadable {
 				ViewManager.getInstance().showDialog(new EditWorkerView(ViewManager.getInstance().getMainWindow(), true, this, worker));
 			}
 			catch (SQLException ex) {
-				Logger.getLogger(WorkersView.class.getName()).log(Level.SEVERE, null, ex);
+				ErrorHandler.getInstance().reportError(ex);
 			}
 		}
     }//GEN-LAST:event__editWorkerButtonActionPerformed
+
+    private void _removeWorkerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__removeWorkerButtonActionPerformed
+		if (_workersTable.getSelectedRow() >= 0) {
+			try {
+				Worker worker = WorkersService.getInstance().getWorker(_pagination.getCurrentPageData().get(_workersTable.getSelectedRow()).getId());
+				ViewManager.getInstance().showDialog(new RemoveWorkerConfirmDialog(ViewManager.getInstance().getMainWindow(), true, this, worker));
+			}
+			catch (SQLException ex) {
+				ErrorHandler.getInstance().reportError(ex);
+			}
+		}
+    }//GEN-LAST:event__removeWorkerButtonActionPerformed
+
+    private void _addWorkerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__addWorkerButtonActionPerformed
+		ViewManager.getInstance().showDialog(new AddWorkerView(ViewManager.getInstance().getMainWindow(), true, this));
+    }//GEN-LAST:event__addWorkerButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton _addWorkerButton;
     private javax.swing.JButton _backButton;

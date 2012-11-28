@@ -77,4 +77,8 @@ public class Worker {
 	public void setSurname(String surname) {
 		_surname = surname;
 	}
+	
+	public String getFullName() {
+		return getName() + " " + getSurname();
+	}
 }

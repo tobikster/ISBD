@@ -1,9 +1,7 @@
 package core.c;
 
+import core.v.ApplicationDialog;
 import core.v.MainWindow;
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import javax.swing.JDialog;
 import javax.swing.JPanel;
 
 public class ViewManager {
@@ -31,12 +29,13 @@ public class ViewManager {
 	// </editor-fold>
 	// <editor-fold defaultstate="collapsed" desc="Object PUBLIC methods">
 	// <editor-fold defaultstate="collapsed" desc="Getters">
-		public MainWindow getMainWindow() {
-			return _mainWindow;
-		}
+	public MainWindow getMainWindow() {
+		return _mainWindow;
+	}
 	// </editor-fold>
 	// <editor-fold defaultstate="collapsed" desc="Setters">
 	// </editor-fold>
+
 	public void hideMainWindow() {
 		_mainWindow.setVisible(false);
 	}
@@ -51,15 +50,18 @@ public class ViewManager {
 		_mainWindow.setLocationRelativeTo(null);
 		_mainWindow.setVisible(true);
 	}
-	
-	public void showDialog(JDialog dialog) {
+
+	public void showDialog(ApplicationDialog dialog) {
 		dialog.setLocationRelativeTo(_mainWindow);
 		dialog.setVisible(true);
 	}
-	
-	public void closeDialog(JDialog dialog) {
+
+	public void closeDialog(ApplicationDialog dialog, boolean reloadParent) {
 		dialog.setVisible(false);
 		dialog.dispose();
+		if (dialog.getReloadableParent() != null && reloadParent) {
+			dialog.getReloadableParent().reload();
+		}
 	}
 	// </editor-fold>
 }

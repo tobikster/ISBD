@@ -5,15 +5,17 @@
 package workers.v;
 
 import core.c.ErrorHandler;
+import core.c.Reloadable;
 import core.c.TablePagination;
 import core.c.ViewManager;
 import core.v.MainMenuView;
-import core.v.MainWindow;
 import core.v.PaginationPanel;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import workers.c.WorkersService;
@@ -23,7 +25,7 @@ import workers.m.Worker;
  *
  * @author Zjamnik
  */
-public class WorkersView extends javax.swing.JPanel {
+public class WorkersView extends JPanel implements Reloadable {
 	public static final int ROWS_PER_PAGE = 20;
 	public static final String[] COLUMN_NAMES = {
 		"Imię",
@@ -36,15 +38,9 @@ public class WorkersView extends javax.swing.JPanel {
 	 * Creates new form WorkersView
 	 */
 	public WorkersView() {
-		try {
-			_pagination = new TablePagination<>(WorkersService.getInstance().getWorkers(), ROWS_PER_PAGE);
-		}
-		catch (SQLException ex) {
-			Logger.getLogger(WorkersView.class.getName()).log(Level.SEVERE, null, ex);
-		}
+		_pagination = new TablePagination<>(new LinkedList<Worker>(), ROWS_PER_PAGE);
 		initComponents();
-		_navPanel.setCurrentPage(_pagination.getCurrentPage());
-		_navPanel.setPageCount(_pagination.getPageCount());
+		reload();
 		_navPanel.setButtonsListener(new PaginationPanel.ButtonsListener() {
 			@Override
 			public void nextButtonClicked() {
@@ -87,6 +83,19 @@ public class WorkersView extends javax.swing.JPanel {
 				return false;
 			}
 		};
+	}
+
+	@Override
+	public final void reload() {
+		try {
+			_pagination.setTableData(WorkersService.getInstance().getWorkers());
+			_workersTable.setModel(getTableModel(_pagination.getCurrentPageData()));
+			_navPanel.setCurrentPage(_pagination.getCurrentPage());
+			_navPanel.setPageCount(_pagination.getPageCount());
+		}
+		catch (SQLException ex) {
+			ErrorHandler.getInstance().reportError(ex);
+		}
 	}
 
 	/**
@@ -213,7 +222,7 @@ public class WorkersView extends javax.swing.JPanel {
 		if (_workersTable.getSelectedRow() >= 0) {
 			try {
 				Worker worker = WorkersService.getInstance().getWorker(_pagination.getCurrentPageData().get(_workersTable.getSelectedRow()).getId());
-				ViewManager.getInstance().showDialog(new EditWorkerView(ViewManager.getInstance().getMainWindow(), true, worker));
+				ViewManager.getInstance().showDialog(new EditWorkerView(ViewManager.getInstance().getMainWindow(), true, this, worker));
 			}
 			catch (SQLException ex) {
 				Logger.getLogger(WorkersView.class.getName()).log(Level.SEVERE, null, ex);

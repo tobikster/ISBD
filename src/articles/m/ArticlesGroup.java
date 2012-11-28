@@ -8,21 +8,20 @@ import finance.m.VATRate;
  */
 public class ArticlesGroup {
 	private int _code;
-  private String _name;
+	private String _name;
 	private VATRate _vat;
 
-  public ArticlesGroup() {
-    
-  }
+	public ArticlesGroup() {
+	}
 
 	public ArticlesGroup(String name, VATRate vat) {
 		_name = name;
 		_vat = vat;
 	}
 
-  public int getCode() {
-    return _code;
-  }
+	public int getCode() {
+		return _code;
+	}
 
 	public String getName() {
 		return _name;
@@ -32,9 +31,9 @@ public class ArticlesGroup {
 		return _vat;
 	}
 
-  public void setCode(int code) {
-    _code=code;
-  }
+	public void setCode(int code) {
+		_code = code;
+	}
 
 	public void setName(String name) {
 		_name = name;
@@ -42,5 +41,5 @@ public class ArticlesGroup {
 
 	public void setVat(VATRate vat) {
 		_vat = vat;
-	}	
+	}
 }

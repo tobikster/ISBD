@@ -105,100 +105,79 @@ public class WorkersView extends JPanel implements Reloadable {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        _optionPanel = new javax.swing.JPanel();
-        _backButton = new javax.swing.JButton();
-        _addWorkerButton = new javax.swing.JButton();
-        _editWorkerButton = new javax.swing.JButton();
-        _removeWorkerButton = new javax.swing.JButton();
-        _tablePanel = new javax.swing.JPanel();
+        lTitle = new javax.swing.JLabel();
+        _navPanel = new core.v.PaginationPanel();
         _tableScrollPanel = new javax.swing.JScrollPane();
         _workersTable = new javax.swing.JTable();
         _workersTable.setColumnSelectionAllowed(false);
         _workersTable.setShowVerticalLines(false);
-        _navPanel = new core.v.PaginationPanel();
+        jPanel1 = new javax.swing.JPanel();
+        _editWorker = new javax.swing.JLabel();
+        _addWorker = new javax.swing.JLabel();
+        _deleteWorker = new javax.swing.JLabel();
+        _searchWorker = new javax.swing.JLabel();
+        bBack = new javax.swing.JButton();
 
-        _optionPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        _backButton.setText("Wstecz");
-        _backButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                _backButtonActionPerformed(evt);
-            }
-        });
-
-        _addWorkerButton.setText("Dodaj pracownika");
-        _addWorkerButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                _addWorkerButtonActionPerformed(evt);
-            }
-        });
-
-        _editWorkerButton.setText("Edytuj pracownika");
-        _editWorkerButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                _editWorkerButtonActionPerformed(evt);
-            }
-        });
-
-        _removeWorkerButton.setText("Usuń pracownika");
-        _removeWorkerButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                _removeWorkerButtonActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout _optionPanelLayout = new javax.swing.GroupLayout(_optionPanel);
-        _optionPanel.setLayout(_optionPanelLayout);
-        _optionPanelLayout.setHorizontalGroup(
-            _optionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(_optionPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(_backButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(_removeWorkerButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(_editWorkerButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(_addWorkerButton)
-                .addContainerGap())
-        );
-        _optionPanelLayout.setVerticalGroup(
-            _optionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, _optionPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(_optionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(_backButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(_addWorkerButton)
-                    .addComponent(_editWorkerButton)
-                    .addComponent(_removeWorkerButton))
-                .addContainerGap())
-        );
-
-        _tablePanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        lTitle.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        lTitle.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lTitle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/64x64/Group-64.png"))); // NOI18N
+        lTitle.setText("  PRACOWNICY");
 
         _workersTable.setModel(getTableModel(_pagination.getCurrentPageData()));
         _tableScrollPanel.setViewportView(_workersTable);
 
-        javax.swing.GroupLayout _tablePanelLayout = new javax.swing.GroupLayout(_tablePanel);
-        _tablePanel.setLayout(_tablePanelLayout);
-        _tablePanelLayout.setHorizontalGroup(
-            _tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(_tablePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(_tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(_tableScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE)
-                    .addComponent(_navPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        _editWorker.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/Male-user-Edit-48.png"))); // NOI18N
+        _editWorker.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                _editWorkerMouseClicked(evt);
+            }
+        });
+
+        _addWorker.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/Male-user-Add-48.png"))); // NOI18N
+        _addWorker.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                _addWorkerMouseClicked(evt);
+            }
+        });
+
+        _deleteWorker.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/Male-user-Remove-48.png"))); // NOI18N
+        _deleteWorker.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                _deleteWorkerMouseClicked(evt);
+            }
+        });
+
+        _searchWorker.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/Male-user-Search-48.png"))); // NOI18N
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(_searchWorker)
+                .addGap(18, 18, 18)
+                .addComponent(_addWorker)
+                .addGap(18, 18, 18)
+                .addComponent(_editWorker)
+                .addGap(18, 18, 18)
+                .addComponent(_deleteWorker)
                 .addContainerGap())
         );
-        _tablePanelLayout.setVerticalGroup(
-            _tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(_tablePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(_tableScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(_navPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(_searchWorker, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(_addWorker, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(_editWorker, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(_deleteWorker, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
+
+        bBack.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/Back-48.png"))); // NOI18N
+        bBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bBackActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -207,61 +186,82 @@ public class WorkersView extends JPanel implements Reloadable {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(_optionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(_tablePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(_tableScrollPanel)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(bBack)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(_navPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(_tablePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(_optionPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(_tableScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(_navPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bBack, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void _backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__backButtonActionPerformed
-		ViewManager.getInstance().openView(new MainMenuView());
-    }//GEN-LAST:event__backButtonActionPerformed
+  private void _deleteWorkerMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__deleteWorkerMouseClicked
+  {//GEN-HEADEREND:event__deleteWorkerMouseClicked
+    if(_workersTable.getSelectedRow()>=0)
+      try
+      {
+        Worker worker=WorkersService.getInstance().getWorker(_pagination.getCurrentPageData().get(_workersTable.getSelectedRow()).getId());
+        ViewManager.getInstance().showDialog(new RemoveWorkerConfirmDialog(ViewManager.getInstance().getMainWindow(), true, this, worker));
+      }
+      catch(SQLException ex)
+      {
+        ErrorHandler.getInstance().reportError(ex);
+      }
+  }//GEN-LAST:event__deleteWorkerMouseClicked
 
-    private void _editWorkerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__editWorkerButtonActionPerformed
-		if (_workersTable.getSelectedRow() >= 0) {
-			try {
-				Worker worker = WorkersService.getInstance().getWorker(_pagination.getCurrentPageData().get(_workersTable.getSelectedRow()).getId());
-				ViewManager.getInstance().showDialog(new EditWorkerView(ViewManager.getInstance().getMainWindow(), true, this, worker));
-			}
-			catch (SQLException ex) {
-				ErrorHandler.getInstance().reportError(ex);
-			}
-		}
-    }//GEN-LAST:event__editWorkerButtonActionPerformed
+  private void _editWorkerMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__editWorkerMouseClicked
+  {//GEN-HEADEREND:event__editWorkerMouseClicked
+    if(_workersTable.getSelectedRow()>=0)
+      try
+      {
+        Worker worker=WorkersService.getInstance().getWorker(_pagination.getCurrentPageData().get(_workersTable.getSelectedRow()).getId());
+        ViewManager.getInstance().showDialog(new EditWorkerView(ViewManager.getInstance().getMainWindow(), true, this, worker));
+      }
+      catch(SQLException ex)
+      {
+        ErrorHandler.getInstance().reportError(ex);
+      }
+  }//GEN-LAST:event__editWorkerMouseClicked
 
-    private void _removeWorkerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__removeWorkerButtonActionPerformed
-		if (_workersTable.getSelectedRow() >= 0) {
-			try {
-				Worker worker = WorkersService.getInstance().getWorker(_pagination.getCurrentPageData().get(_workersTable.getSelectedRow()).getId());
-				ViewManager.getInstance().showDialog(new RemoveWorkerConfirmDialog(ViewManager.getInstance().getMainWindow(), true, this, worker));
-			}
-			catch (SQLException ex) {
-				ErrorHandler.getInstance().reportError(ex);
-			}
-		}
-    }//GEN-LAST:event__removeWorkerButtonActionPerformed
+  private void _addWorkerMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__addWorkerMouseClicked
+  {//GEN-HEADEREND:event__addWorkerMouseClicked
+    ViewManager.getInstance().showDialog(new AddWorkerView(ViewManager.getInstance().getMainWindow(), true, this));
+  }//GEN-LAST:event__addWorkerMouseClicked
 
-    private void _addWorkerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__addWorkerButtonActionPerformed
-		ViewManager.getInstance().showDialog(new AddWorkerView(ViewManager.getInstance().getMainWindow(), true, this));
-    }//GEN-LAST:event__addWorkerButtonActionPerformed
+  private void bBackActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bBackActionPerformed
+  {//GEN-HEADEREND:event_bBackActionPerformed
+    ViewManager.getInstance().openView(new MainMenuView());
+  }//GEN-LAST:event_bBackActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton _addWorkerButton;
-    private javax.swing.JButton _backButton;
-    private javax.swing.JButton _editWorkerButton;
+    private javax.swing.JLabel _addWorker;
+    private javax.swing.JLabel _deleteWorker;
+    private javax.swing.JLabel _editWorker;
     private core.v.PaginationPanel _navPanel;
-    private javax.swing.JPanel _optionPanel;
-    private javax.swing.JButton _removeWorkerButton;
-    private javax.swing.JPanel _tablePanel;
+    private javax.swing.JLabel _searchWorker;
     private javax.swing.JScrollPane _tableScrollPanel;
     private javax.swing.JTable _workersTable;
+    private javax.swing.JButton bBack;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel lTitle;
     // End of variables declaration//GEN-END:variables
 }

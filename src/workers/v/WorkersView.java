@@ -24,8 +24,7 @@ import workers.m.Worker;
  * @author Zjamnik
  */
 public class WorkersView extends JPanel implements Reloadable {
-	public static final int ROWS_PER_PAGE = 5
-	;
+	public static final int ROWS_PER_PAGE = 5;
 	public static final String[] COLUMN_NAMES = {
 		"Imię",
 		"Nazwisko",

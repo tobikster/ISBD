@@ -6,9 +6,10 @@ package workers.v;
 
 import core.c.ErrorHandler;
 import core.c.FormManager;
-import core.c.ViewManager;
+import core.c.Reloadable;
 import core.m.ApplicationException;
 import core.m.DatabaseException;
+import core.v.ApplicationDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
@@ -18,14 +19,13 @@ import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import workers.c.WorkersService;
-import workers.c.validators.WorkerValidator;
 import workers.m.Worker;
 
 /**
  *
  * @author tobikster
  */
-public class EditWorkerView extends javax.swing.JDialog {
+public class EditWorkerView extends ApplicationDialog {
 	/**
 	 * A return status code - returned if Cancel button has been pressed
 	 */
@@ -39,22 +39,10 @@ public class EditWorkerView extends javax.swing.JDialog {
 	/**
 	 * Creates new form EditWorkerView
 	 */
-	public EditWorkerView(java.awt.Frame parent, boolean modal, Worker worker) {
-		super(parent, modal);
+	public EditWorkerView(java.awt.Frame parent, boolean modal, Reloadable reloadableParent, Worker worker) {
+		super(parent, modal, reloadableParent);
 		_worker = worker;
 		initComponents();
-
-		// Close the dialog when Esc is pressed
-		String cancelName = "cancel";
-		InputMap inputMap = getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), cancelName);
-		ActionMap actionMap = getRootPane().getActionMap();
-		actionMap.put(cancelName, new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				doClose(RET_CANCEL);
-			}
-		});
 	}
 
 	/**
@@ -274,7 +262,8 @@ public class EditWorkerView extends javax.swing.JDialog {
 						_worker.setPassword(new String(_passwordField.getPassword()));
 					}
 					WorkersService.getInstance().saveWorker(_worker);
-					ViewManager.getInstance().closeDialog(this);
+					setHaveToReloadParent(true);
+					super.close();
 				}
 				catch (DatabaseException | IllegalArgumentException | SQLException | ApplicationException ex) {
 					ErrorHandler.getInstance().reportError(ex);
@@ -282,7 +271,7 @@ public class EditWorkerView extends javax.swing.JDialog {
 				break;
 
 			case RET_CANCEL:
-				ViewManager.getInstance().closeDialog(this);
+				super.close();
 				break;
 		}
 	}

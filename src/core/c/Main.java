@@ -3,10 +3,10 @@ package core.c;
 import articles.c.ArticlesService;
 import articles.m.Article;
 import core.m.ResultRow;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.UIManager;
 
 /**
  *git
@@ -21,6 +21,8 @@ public class Main
   {
     try
     {
+      UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+
       List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult("SELECT COUNT(*) FROM RozmiaryOpon;");
       System.out.println("Ilość rozmiarów opon: "+results.get(0).getInt(1));
       
@@ -32,7 +34,7 @@ public class Main
       
       ViewManager.getInstance().showMainWindow();
     }
-    catch(SQLException ex)
+    catch(Exception ex)
     {
       Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
     }

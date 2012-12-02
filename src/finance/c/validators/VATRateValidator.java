@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package finance.c;
+package finance.c.validators;
 
 import core.c.ElementaryValidator;
 import core.c.EntityValidator;

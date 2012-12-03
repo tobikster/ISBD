@@ -216,42 +216,39 @@ public class WorkersView extends JPanel implements Reloadable {
 
   private void _deleteWorkerMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__deleteWorkerMouseClicked
   {//GEN-HEADEREND:event__deleteWorkerMouseClicked
-    if(_workersTable.getSelectedRow()>=0)
-      try
-      {
-        Worker worker=WorkersService.getInstance().getWorker(_pagination.getCurrentPageData().get(_workersTable.getSelectedRow()).getId());
-        ViewManager.getInstance().showDialog(new RemoveWorkerConfirmDialog(ViewManager.getInstance().getMainWindow(), true, this, worker));
-      }
-      catch(SQLException ex)
-      {
-        ErrorHandler.getInstance().reportError(ex);
-      }
+	  if (_workersTable.getSelectedRow() >= 0) {
+		  try {
+			  Worker worker = WorkersService.getInstance().getWorker(_pagination.getCurrentPageData().get(_workersTable.getSelectedRow()).getId());
+			  ViewManager.getInstance().showDialog(new RemoveWorkerConfirmDialog(ViewManager.getInstance().getMainWindow(), true, this, worker));
+		  }
+		  catch (SQLException ex) {
+			  ErrorHandler.getInstance().reportError(ex);
+		  }
+	  }
   }//GEN-LAST:event__deleteWorkerMouseClicked
 
   private void _editWorkerMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__editWorkerMouseClicked
   {//GEN-HEADEREND:event__editWorkerMouseClicked
-    if(_workersTable.getSelectedRow()>=0)
-      try
-      {
-        Worker worker=WorkersService.getInstance().getWorker(_pagination.getCurrentPageData().get(_workersTable.getSelectedRow()).getId());
-        ViewManager.getInstance().showDialog(new EditWorkerView(ViewManager.getInstance().getMainWindow(), true, this, worker));
-      }
-      catch(SQLException ex)
-      {
-        ErrorHandler.getInstance().reportError(ex);
-      }
+	  if (_workersTable.getSelectedRow() >= 0) {
+		  try {
+			  Worker worker = WorkersService.getInstance().getWorker(_pagination.getCurrentPageData().get(_workersTable.getSelectedRow()).getId());
+			  ViewManager.getInstance().showDialog(new EditWorkerView(ViewManager.getInstance().getMainWindow(), true, this, worker));
+		  }
+		  catch (SQLException ex) {
+			  ErrorHandler.getInstance().reportError(ex);
+		  }
+	  }
   }//GEN-LAST:event__editWorkerMouseClicked
 
   private void _addWorkerMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__addWorkerMouseClicked
   {//GEN-HEADEREND:event__addWorkerMouseClicked
-    ViewManager.getInstance().showDialog(new AddWorkerView(ViewManager.getInstance().getMainWindow(), true, this));
+	  ViewManager.getInstance().showDialog(new AddWorkerView(ViewManager.getInstance().getMainWindow(), true, this));
   }//GEN-LAST:event__addWorkerMouseClicked
 
   private void bBackActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bBackActionPerformed
   {//GEN-HEADEREND:event_bBackActionPerformed
-    ViewManager.getInstance().openView(new MainMenuView());
+	  ViewManager.getInstance().openView(new MainMenuView());
   }//GEN-LAST:event_bBackActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel _addWorker;
     private javax.swing.JLabel _deleteWorker;

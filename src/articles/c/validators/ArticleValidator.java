@@ -9,17 +9,6 @@ import java.util.List;
 
 public class ArticleValidator implements EntityValidator<Article>
 {
-  // <editor-fold defaultstate="collapsed" desc="Object variables">
-  // </editor-fold>
-  // <editor-fold defaultstate="collapsed" desc="Creating object">
-  // </editor-fold>
-  // <editor-fold defaultstate="collapsed" desc="Object PRIVATE methods">
-  // </editor-fold>
-  // <editor-fold defaultstate="collapsed" desc="Object PUBLIC methods">
-  // <editor-fold defaultstate="collapsed" desc="Getters">
-  // </editor-fold>
-  // <editor-fold defaultstate="collapsed" desc="Setters">
-  // </editor-fold>
   @Override
   public boolean validate(Article object) throws DatabaseException
   {
@@ -59,5 +48,4 @@ public class ArticleValidator implements EntityValidator<Article>
       throw new DatabaseException(errors);
     return errors.isEmpty();
   }
-  // </editor-fold>
 }

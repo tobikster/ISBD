@@ -92,7 +92,7 @@ public class EditWorkerView extends ApplicationDialog {
             }
         });
 
-        _cancelButton.setText("Cancel");
+        _cancelButton.setText("Anuluj");
         _cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 _cancelButtonActionPerformed(evt);

@@ -77,16 +77,11 @@
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Component id="_vatRateLabel" max="32767" attributes="0"/>
                       <Component id="_nameLabel" max="32767" attributes="0"/>
-                      <Component id="_codeLabel" max="32767" attributes="0"/>
                   </Group>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
                           <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                          <Component id="_vatRateComboBox" max="32767" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="1" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="_codeTextField" max="32767" attributes="0"/>
+                          <Component id="_vatRateComboBox" pref="156" max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
@@ -100,22 +95,17 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="_nameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="_nameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="_codeTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="_codeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="_vatRateLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="_vatRateComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="15" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -127,13 +117,6 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="_nameTextField">
-        </Component>
-        <Component class="javax.swing.JLabel" name="_codeLabel">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Kod:"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JTextField" name="_codeTextField">
         </Component>
         <Component class="javax.swing.JLabel" name="_vatRateLabel">
           <Properties>
@@ -171,13 +154,12 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="_atributesListLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="119" max="32767" attributes="0"/>
                       </Group>
                       <Component id="_attributesListScrollPane" alignment="0" max="32767" attributes="0"/>
                       <Group type="102" alignment="1" attributes="0">
-                          <Component id="_removeAttributeButton" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
-                          <Component id="_addAtributeButton" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <Component id="_manageAtributesButton" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -192,10 +174,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="_attributesListScrollPane" min="-2" pref="100" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="_addAtributeButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="_removeAttributeButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="_manageAtributesButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -229,26 +208,17 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JButton" name="_addAtributeButton">
+        <Component class="javax.swing.JButton" name="_manageAtributesButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Dodaj"/>
+            <Property name="text" type="java.lang.String" value="Zarz&#x105;dzaj"/>
           </Properties>
-        </Component>
-        <Component class="javax.swing.JButton" name="_removeAttributeButton">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Usu&#x144;"/>
-          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="_manageAtributesButtonActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="_controlPanel">
-      <Properties>
-        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
-            <EtchetBorder/>
-          </Border>
-        </Property>
-      </Properties>
 
       <Layout>
         <DimensionLayout dim="0">
@@ -280,11 +250,17 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="OK"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="_okButtonActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="_cancelButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="Anuluj"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="_cancelButtonActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

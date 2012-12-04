@@ -10,6 +10,7 @@ import core.c.TablePagination;
 import core.c.ViewManager;
 import core.v.MainMenuView;
 import core.v.PaginationPanel;
+import java.awt.Cursor;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
@@ -142,27 +143,49 @@ public class WorkersView extends JPanel implements Reloadable
         _tableScrollPanel.setViewportView(_workersTable);
 
         _editWorker.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/Male-user-Edit-48.png"))); // NOI18N
+        _editWorker.setToolTipText("Edytuj wybranego pracownika");
         _editWorker.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 _editWorkerMouseClicked(evt);
             }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                _editWorkerMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                _editWorkerMouseExited(evt);
+            }
         });
 
         _addWorker.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/Male-user-Add-48.png"))); // NOI18N
+        _addWorker.setToolTipText("Dodaj nowego pracownika");
         _addWorker.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 _addWorkerMouseClicked(evt);
             }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                _addWorkerMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                _addWorkerMouseExited(evt);
+            }
         });
 
         _deleteWorker.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/Male-user-Remove-48.png"))); // NOI18N
+        _deleteWorker.setToolTipText("Usuń wybranego pracownika");
         _deleteWorker.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 _deleteWorkerMouseClicked(evt);
             }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                _deleteWorkerMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                _deleteWorkerMouseExited(evt);
+            }
         });
 
         _searchWorker.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/Male-user-Search-48.png"))); // NOI18N
+        _searchWorker.setToolTipText("Wyszukaj pracownika");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -188,6 +211,7 @@ public class WorkersView extends JPanel implements Reloadable
         );
 
         bBack.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/Back-48.png"))); // NOI18N
+        bBack.setToolTipText("Wróć do menu głównego");
         bBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bBackActionPerformed(evt);
@@ -266,6 +290,41 @@ public class WorkersView extends JPanel implements Reloadable
   {//GEN-HEADEREND:event_bBackActionPerformed
     ViewManager.getInstance().openView(new MainMenuView());
   }//GEN-LAST:event_bBackActionPerformed
+
+  private void _addWorkerMouseEntered(java.awt.event.MouseEvent evt)//GEN-FIRST:event__addWorkerMouseEntered
+  {//GEN-HEADEREND:event__addWorkerMouseEntered
+    setCursor(new Cursor(Cursor.HAND_CURSOR));
+  }//GEN-LAST:event__addWorkerMouseEntered
+
+  private void _addWorkerMouseExited(java.awt.event.MouseEvent evt)//GEN-FIRST:event__addWorkerMouseExited
+  {//GEN-HEADEREND:event__addWorkerMouseExited
+    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+  }//GEN-LAST:event__addWorkerMouseExited
+
+  private void _editWorkerMouseEntered(java.awt.event.MouseEvent evt)//GEN-FIRST:event__editWorkerMouseEntered
+  {//GEN-HEADEREND:event__editWorkerMouseEntered
+    if(_workersTable.getSelectedRow() >= 0) {
+      setCursor(new Cursor(Cursor.HAND_CURSOR));
+    }
+  }//GEN-LAST:event__editWorkerMouseEntered
+
+  private void _editWorkerMouseExited(java.awt.event.MouseEvent evt)//GEN-FIRST:event__editWorkerMouseExited
+  {//GEN-HEADEREND:event__editWorkerMouseExited
+    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+  }//GEN-LAST:event__editWorkerMouseExited
+
+  private void _deleteWorkerMouseEntered(java.awt.event.MouseEvent evt)//GEN-FIRST:event__deleteWorkerMouseEntered
+  {//GEN-HEADEREND:event__deleteWorkerMouseEntered
+    if(_workersTable.getSelectedRow() >= 0) {
+      setCursor(new Cursor(Cursor.HAND_CURSOR));
+    }
+  }//GEN-LAST:event__deleteWorkerMouseEntered
+
+  private void _deleteWorkerMouseExited(java.awt.event.MouseEvent evt)//GEN-FIRST:event__deleteWorkerMouseExited
+  {//GEN-HEADEREND:event__deleteWorkerMouseExited
+    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+  }//GEN-LAST:event__deleteWorkerMouseExited
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel _addWorker;
     private javax.swing.JLabel _deleteWorker;

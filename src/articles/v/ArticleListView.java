@@ -4,6 +4,7 @@
  */
 package articles.v;
 
+import core.c.Reloadable;
 import core.c.ViewManager;
 import core.v.MainMenuView;
 
@@ -11,7 +12,7 @@ import core.v.MainMenuView;
  *
  * @author MRKACZOR
  */
-public class ArticleListView extends javax.swing.JPanel
+public class ArticleListView extends javax.swing.JPanel implements Reloadable
 {
   /**
    * Creates new form ArticleListView
@@ -36,6 +37,7 @@ public class ArticleListView extends javax.swing.JPanel
         jScrollPane4 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         bBack = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         lTitle.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         lTitle.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -64,6 +66,13 @@ public class ArticleListView extends javax.swing.JPanel
             }
         });
 
+        jButton1.setText("jButton1");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -76,7 +85,10 @@ public class ArticleListView extends javax.swing.JPanel
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 571, Short.MAX_VALUE))
-                    .addComponent(bBack))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(bBack)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton1)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -89,7 +101,9 @@ public class ArticleListView extends javax.swing.JPanel
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE)
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(bBack, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(bBack, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -99,8 +113,18 @@ public class ArticleListView extends javax.swing.JPanel
     ViewManager.getInstance().openView(new MainMenuView());
   }//GEN-LAST:event_bBackActionPerformed
 
+	@Override
+	public void reload() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+		ViewManager.getInstance().showDialog(new AddArticlesGroupDialog(ViewManager.getInstance().getMainWindow(), true, this));
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bBack;
+    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTable jTable1;

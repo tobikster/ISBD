@@ -1,10 +1,8 @@
 package articles.m;
 
 import finance.m.VATRate;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -15,6 +13,7 @@ public class ArticlesGroup {
 	private int _code;
 	private String _name;
 	private VATRate _vat;
+	private ArticlesGroup _parentGroup;
 	private Set<ArticleAttribute> _attributes;
 
 	public ArticlesGroup() {
@@ -22,13 +21,14 @@ public class ArticlesGroup {
 	}
 
 	public ArticlesGroup(int id, String name, VATRate vat) {
-		this(id, name, vat, new HashSet<ArticleAttribute>());
+		this(id, name, vat, null, new HashSet<ArticleAttribute>());
 	}
 
-	public ArticlesGroup(int id, String name, VATRate vat, Set<ArticleAttribute> attributes) {
+	public ArticlesGroup(int id, String name, VATRate vat, ArticlesGroup parentGroup, Set<ArticleAttribute> attributes) {
 		_id = id;
 		_name = name;
 		_vat = vat;
+		_parentGroup = parentGroup;
 		_attributes = attributes;
 	}
 
@@ -46,6 +46,10 @@ public class ArticlesGroup {
 
 	public VATRate getVat() {
 		return _vat;
+	}
+	
+	public ArticlesGroup getParentGroup() {
+		return _parentGroup;
 	}
 
 	public Set<ArticleAttribute> getAttributes() {
@@ -66,6 +70,10 @@ public class ArticlesGroup {
 
 	public void setVat(VATRate vat) {
 		_vat = vat;
+	}
+	
+	public void setParentGroup(ArticlesGroup parentGroup) {
+		_parentGroup = parentGroup;
 	}
 
 	public void setAttributes(Set<ArticleAttribute> attributes) {

@@ -5,6 +5,7 @@ import articles.m.ArticleAttribute;
 import articles.m.ArticlesGroup;
 import core.c.ErrorHandler;
 import core.c.Reloadable;
+import core.c.ViewManager;
 import core.v.ApplicationDialog;
 import java.sql.SQLException;
 import javax.swing.DefaultListModel;
@@ -47,6 +48,7 @@ public class AttributeChooser extends ApplicationDialog implements Reloadable {
         _selectedAttributesListLabel = new javax.swing.JLabel();
         _selectedAttributesListScrollPane = new javax.swing.JScrollPane();
         _selectedAttributesList = new javax.swing.JList();
+        _addAttributeButton = new javax.swing.JButton();
         _controlPanel = new javax.swing.JPanel();
         _cancelButton = new javax.swing.JButton();
         _okButton = new javax.swing.JButton();
@@ -121,6 +123,13 @@ public class AttributeChooser extends ApplicationDialog implements Reloadable {
 
         _selectedAttributesListScrollPane.setViewportView(_selectedAttributesList);
 
+        _addAttributeButton.setText("Dodaj");
+        _addAttributeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                _addAttributeButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout _attributesListsPanelLayout = new javax.swing.GroupLayout(_attributesListsPanel);
         _attributesListsPanel.setLayout(_attributesListsPanelLayout);
         _attributesListsPanelLayout.setHorizontalGroup(
@@ -128,18 +137,15 @@ public class AttributeChooser extends ApplicationDialog implements Reloadable {
             .addGroup(_attributesListsPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(_attributesListsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(_availableAttributesListLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(_availableAttributesListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(_attributesListsPanelLayout.createSequentialGroup()
-                        .addComponent(_availableAttributesListLabel)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                    .addComponent(_addAttributeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(_buttonsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(_attributesListsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(_selectedAttributesListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(_attributesListsPanelLayout.createSequentialGroup()
-                        .addComponent(_selectedAttributesListLabel)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                    .addComponent(_selectedAttributesListLabel)
+                    .addComponent(_selectedAttributesListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
         );
         _attributesListsPanelLayout.setVerticalGroup(
@@ -154,7 +160,10 @@ public class AttributeChooser extends ApplicationDialog implements Reloadable {
                             .addComponent(_selectedAttributesListLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(_attributesListsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(_availableAttributesListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
+                            .addGroup(_attributesListsPanelLayout.createSequentialGroup()
+                                .addComponent(_availableAttributesListScrollPane)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(_addAttributeButton))
                             .addComponent(_selectedAttributesListScrollPane))
                         .addContainerGap())))
         );
@@ -202,12 +211,11 @@ public class AttributeChooser extends ApplicationDialog implements Reloadable {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(_attributesListsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(_controlPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(_titleLabel)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(_controlPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(_titleLabel)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -262,6 +270,10 @@ public class AttributeChooser extends ApplicationDialog implements Reloadable {
 		reload();
     }//GEN-LAST:event__removeAllButtonActionPerformed
 
+    private void _addAttributeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__addAttributeButtonActionPerformed
+		ViewManager.getInstance().showDialog(new AddAttributeDialog(ViewManager.getInstance().getMainWindow(), true, this));
+    }//GEN-LAST:event__addAttributeButtonActionPerformed
+
 	@Override
 	public final void reload() {
 		try {
@@ -284,6 +296,7 @@ public class AttributeChooser extends ApplicationDialog implements Reloadable {
 	private ArticlesGroup _articlesGroup;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton _addAllButton;
+    private javax.swing.JButton _addAttributeButton;
     private javax.swing.JButton _addButton;
     private javax.swing.JPanel _attributesListsPanel;
     private javax.swing.JList _availableAttributesList;

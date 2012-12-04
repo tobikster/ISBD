@@ -1,5 +1,6 @@
 package articles.c;
 
+import articles.c.validators.ArticleAttributeValidator;
 import articles.c.validators.ArticlesGroupValidator;
 import articles.m.Article;
 import articles.m.ArticleAttribute;
@@ -53,9 +54,23 @@ public class ArticlesService {
 		return article;
 	}
 	// </editor-fold>
+	//<editor-fold defaultstate="collapsed" desc="ATTRIBUTES method">
 
+	public boolean addAttribute(ArticleAttribute attribute) throws DatabaseException, SQLException {
+		boolean result = false;
+		ArticleAttributeValidator validator = new ArticleAttributeValidator();
+		if (validator.validate(attribute)) {
+			String query = "INSERT INTO AtrybutyCzesci (Nazwa) "
+					+ "VALUES ('" + attribute.getName() + "');";
+			DatabaseManager.getInstance().executeQuery(query);
+			result = true;
+		}
+		return result;
+	}
+	//</editor-fold>
 	// <editor-fold defaultstate="collapsed" desc="DOT methods">
 	// </editor-fold>
+
 	// <editor-fold defaultstate="collapsed" desc="GROUPS methods">
 	public ArticlesGroup getArticleGroup(int iGroupCode) throws SQLException {
 		String sQuery = "SELECT KodGrupy, Nazwa, VAT, Stawka FROM GrupyTowarowe "

@@ -122,9 +122,12 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/icons/48x48/Male-user-Edit-48.png"/>
             </Property>
+            <Property name="toolTipText" type="java.lang.String" value="Edytuj wybranego pracownika"/>
           </Properties>
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="_editWorkerMouseClicked"/>
+            <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="_editWorkerMouseEntered"/>
+            <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="_editWorkerMouseExited"/>
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="_addWorker">
@@ -132,9 +135,12 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/icons/48x48/Male-user-Add-48.png"/>
             </Property>
+            <Property name="toolTipText" type="java.lang.String" value="Dodaj nowego pracownika"/>
           </Properties>
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="_addWorkerMouseClicked"/>
+            <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="_addWorkerMouseEntered"/>
+            <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="_addWorkerMouseExited"/>
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="_deleteWorker">
@@ -142,9 +148,12 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/icons/48x48/Male-user-Remove-48.png"/>
             </Property>
+            <Property name="toolTipText" type="java.lang.String" value="Usu&#x144; wybranego pracownika"/>
           </Properties>
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="_deleteWorkerMouseClicked"/>
+            <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="_deleteWorkerMouseEntered"/>
+            <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="_deleteWorkerMouseExited"/>
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="_searchWorker">
@@ -152,6 +161,7 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/icons/48x48/Male-user-Search-48.png"/>
             </Property>
+            <Property name="toolTipText" type="java.lang.String" value="Wyszukaj pracownika"/>
           </Properties>
         </Component>
       </SubComponents>
@@ -161,6 +171,7 @@
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/icons/48x48/Back-48.png"/>
         </Property>
+        <Property name="toolTipText" type="java.lang.String" value="Wr&#xf3;&#x107; do menu g&#x142;&#xf3;wnego"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bBackActionPerformed"/>

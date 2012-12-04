@@ -17,7 +17,7 @@ import java.sql.SQLException;
  * @author tobikster
  */
 public class AddAttributeDialog extends ApplicationDialog implements Reloadable{
-	/**
+  /**
 	 * Creates new form AddAttributeDialog
 	 */
 	public AddAttributeDialog(java.awt.Frame parent, boolean modal, Reloadable reloadableParent) {

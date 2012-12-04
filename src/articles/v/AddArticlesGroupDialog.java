@@ -26,7 +26,7 @@ import javax.swing.DefaultListModel;
  * @author tobikster
  */
 public class AddArticlesGroupDialog extends ApplicationDialog implements Reloadable {
-	/**
+  /**
 	 * Creates new form EditArticlesGroupDialog
 	 */
 	public AddArticlesGroupDialog(java.awt.Frame parent, boolean modal, Reloadable reloadableParent) {

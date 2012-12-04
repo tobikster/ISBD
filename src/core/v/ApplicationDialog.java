@@ -17,7 +17,7 @@ import javax.swing.KeyStroke;
  * @author tobikster
  */
 public abstract class ApplicationDialog extends JDialog {
-	// <editor-fold defaultstate="collapsed" desc="Object variables">
+  // <editor-fold defaultstate="collapsed" desc="Object variables">
 	private Reloadable _reloadableParent;
 	private boolean _haveToReloadParent;
 	// </editor-fold>

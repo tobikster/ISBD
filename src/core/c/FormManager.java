@@ -40,7 +40,7 @@ public class FormManager
 
   // </editor-fold>
   public boolean passwordMatches(char[] password, char[] repeat){
-	  return Arrays.equals(password, repeat);
+    return Arrays.equals(password, repeat);
   }
   // </editor-fold>
 }

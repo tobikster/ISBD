@@ -16,7 +16,7 @@ import javax.swing.ListModel;
  * @author tobikster
  */
 public class AttributeChooser extends ApplicationDialog implements Reloadable {
-	/**
+  /**
 	 * Creates new form AttributeChooser
 	 */
 	public AttributeChooser(java.awt.Frame parent, boolean modal, Reloadable reloadableParent, ArticlesGroup articlesGroup) {

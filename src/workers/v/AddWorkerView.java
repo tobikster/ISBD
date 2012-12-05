@@ -33,9 +33,9 @@ public class AddWorkerView extends ApplicationDialog
   /**
    * Creates new form EditWorkerView
    */
-  public AddWorkerView(java.awt.Frame parent, boolean modal, Reloadable reloadableParent)
+  public AddWorkerView(boolean modal, Reloadable reloadableParent)
   {
-    super(parent, modal, reloadableParent);
+    super(modal, reloadableParent);
     _worker=new Worker();
     initComponents();
   }

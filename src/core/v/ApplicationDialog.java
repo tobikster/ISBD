@@ -23,8 +23,8 @@ public abstract class ApplicationDialog extends JDialog {
 	// </editor-fold>
 	// <editor-fold defaultstate="collapsed" desc="Creating object">
 
-	public ApplicationDialog(Frame owner, boolean modal, Reloadable parent) {
-		super(owner, modal);
+	public ApplicationDialog(boolean modal, Reloadable parent) {
+		super(ViewManager.getInstance().getMainWindow(), modal);
 		_reloadableParent = parent;
 		_haveToReloadParent = false;
 

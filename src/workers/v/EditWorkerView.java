@@ -10,14 +10,7 @@ import core.c.Reloadable;
 import core.m.ApplicationException;
 import core.m.DatabaseException;
 import core.v.ApplicationDialog;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.sql.SQLException;
-import javax.swing.AbstractAction;
-import javax.swing.ActionMap;
-import javax.swing.InputMap;
-import javax.swing.JComponent;
-import javax.swing.KeyStroke;
 import workers.c.WorkersService;
 import workers.m.Worker;
 
@@ -40,9 +33,9 @@ public class EditWorkerView extends ApplicationDialog
   /**
    * Creates new form EditWorkerView
    */
-  public EditWorkerView(java.awt.Frame parent, boolean modal, Reloadable reloadableParent, Worker worker)
+  public EditWorkerView(boolean modal, Reloadable reloadableParent, Worker worker)
   {
-    super(parent, modal, reloadableParent);
+    super(modal, reloadableParent);
     _worker=worker;
     initComponents();
   }

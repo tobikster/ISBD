@@ -6,11 +6,8 @@ package workers.v;
 
 import core.c.ErrorHandler;
 import core.c.Reloadable;
-import core.m.DatabaseException;
 import core.v.ApplicationDialog;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import workers.c.WorkersService;
 import workers.m.Worker;
 
@@ -23,9 +20,9 @@ public class RemoveWorkerConfirmDialog extends ApplicationDialog
   /**
    * Creates new form RemoveWorkerConfirmDialog
    */
-  public RemoveWorkerConfirmDialog(java.awt.Frame parent, boolean modal, Reloadable reloadableParent, Worker worker)
+  public RemoveWorkerConfirmDialog(boolean modal, Reloadable reloadableParent, Worker worker)
   {
-    super(parent, modal, reloadableParent);
+    super(modal, reloadableParent);
     _worker=worker;
     initComponents();
   }

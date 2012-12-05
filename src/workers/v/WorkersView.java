@@ -259,7 +259,7 @@ public class WorkersView extends JPanel implements Reloadable
       try
       {
         Worker worker=WorkersService.getInstance().getWorker(_pagination.getCurrentPageData().get(_workersTable.getSelectedRow()).getId());
-        ViewManager.getInstance().showDialog(new RemoveWorkerConfirmDialog(ViewManager.getInstance().getMainWindow(), true, this, worker));
+        ViewManager.getInstance().showDialog(new RemoveWorkerConfirmDialog(true, this, worker));
       }
       catch(SQLException ex)
       {
@@ -273,7 +273,7 @@ public class WorkersView extends JPanel implements Reloadable
       try
       {
         Worker worker=WorkersService.getInstance().getWorker(_pagination.getCurrentPageData().get(_workersTable.getSelectedRow()).getId());
-        ViewManager.getInstance().showDialog(new EditWorkerView(ViewManager.getInstance().getMainWindow(), true, this, worker));
+        ViewManager.getInstance().showDialog(new EditWorkerView(true, this, worker));
       }
       catch(SQLException ex)
       {
@@ -283,7 +283,7 @@ public class WorkersView extends JPanel implements Reloadable
 
   private void _addWorkerMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__addWorkerMouseClicked
   {//GEN-HEADEREND:event__addWorkerMouseClicked
-    ViewManager.getInstance().showDialog(new AddWorkerView(ViewManager.getInstance().getMainWindow(), true, this));
+    ViewManager.getInstance().showDialog(new AddWorkerView(true, this));
   }//GEN-LAST:event__addWorkerMouseClicked
 
   private void bBackActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bBackActionPerformed

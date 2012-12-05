@@ -20,8 +20,8 @@ public class AddAttributeDialog extends ApplicationDialog implements Reloadable{
   /**
 	 * Creates new form AddAttributeDialog
 	 */
-	public AddAttributeDialog(java.awt.Frame parent, boolean modal, Reloadable reloadableParent) {
-		super(parent, modal, reloadableParent);
+	public AddAttributeDialog(boolean modal, Reloadable reloadableParent) {
+		super(modal, reloadableParent);
 		_attribute = new ArticleAttribute();
 		initComponents();
 	}

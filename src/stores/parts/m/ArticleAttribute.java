@@ -1,4 +1,4 @@
-package stores.articles.m;
+package stores.parts.m;
 
 
 /**

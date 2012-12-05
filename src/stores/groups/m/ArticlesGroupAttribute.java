@@ -1,6 +1,6 @@
 package stores.groups.m;
 
-import stores.articles.m.ArticleAttribute;
+import stores.parts.m.ArticleAttribute;
 
 /**
  *

@@ -1,4 +1,4 @@
-package stores.articles.m;
+package stores.parts.m;
 
 import stores.groups.m.Producer;
 import stores.groups.m.ArticlesGroup;

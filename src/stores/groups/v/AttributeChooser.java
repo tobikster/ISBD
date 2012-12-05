@@ -1,8 +1,5 @@
-package stores.articles.v;
+package stores.groups.v;
 
-import stores.articles.c.ArticlesService;
-import stores.articles.m.ArticleAttribute;
-import stores.groups.m.ArticlesGroup;
 import core.c.ErrorHandler;
 import core.c.Reloadable;
 import core.c.ViewManager;
@@ -10,6 +7,10 @@ import core.v.ApplicationDialog;
 import java.sql.SQLException;
 import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
+import stores.parts.c.ArticlesService;
+import stores.parts.m.ArticleAttribute;
+import stores.groups.c.GroupsService;
+import stores.groups.m.ArticlesGroup;
 
 /**
  *
@@ -55,7 +56,6 @@ public class AttributeChooser extends ApplicationDialog implements Reloadable {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(320, 300));
-        setPreferredSize(new java.awt.Dimension(320, 300));
 
         _titleLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         _titleLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -278,7 +278,7 @@ public class AttributeChooser extends ApplicationDialog implements Reloadable {
 	public final void reload() {
 		try {
 			ListModel<ArticleAttribute> availableAttributesListModel = new DefaultListModel<>();
-			for (ArticleAttribute attribute : ArticlesService.getInstance().getAvailableAttributes(_articlesGroup.getCode())) {
+			for (ArticleAttribute attribute : GroupsService.getInstance().getAvailableAttributes(_articlesGroup.getCode())) {
 				((DefaultListModel<ArticleAttribute>)(availableAttributesListModel)).addElement(attribute);
 			}
 			_availableAttributesList.setModel(availableAttributesListModel);

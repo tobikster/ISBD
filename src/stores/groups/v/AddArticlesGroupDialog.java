@@ -2,11 +2,8 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package stores.articles.v;
+package stores.groups.v;
 
-import stores.articles.c.ArticlesService;
-import stores.articles.m.ArticleAttribute;
-import stores.groups.m.ArticlesGroup;
 import core.c.ErrorHandler;
 import core.c.Reloadable;
 import core.c.ViewManager;
@@ -19,6 +16,10 @@ import java.util.List;
 import java.util.Set;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import stores.parts.c.ArticlesService;
+import stores.parts.m.ArticleAttribute;
+import stores.groups.c.GroupsService;
+import stores.groups.m.ArticlesGroup;
 
 /**
  *
@@ -232,7 +233,7 @@ public class AddArticlesGroupDialog extends ApplicationDialog implements Reloada
     private void _okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__okButtonActionPerformed
 		try {
 			save();
-			if (ArticlesService.getInstance().addArticlesGroup(_articlesGroup)) {
+			if (GroupsService.getInstance().addArticlesGroup(_articlesGroup)) {
 				setHaveToReloadParent(true);
 				super.close();
 			}
@@ -264,7 +265,7 @@ public class AddArticlesGroupDialog extends ApplicationDialog implements Reloada
 			_vatRateComboBox.setModel(new DefaultComboBoxModel<>(vatRates));
 			_vatRateComboBox.setSelectedIndex(selectedIndex);
 			
-			_parentGroupTextField.setText(_articlesGroup.getParentGroup() != null ? _articlesGroup.getParentGroup().getName() : "");
+//			_parentGroupTextField.setText(_articlesGroup.getParentGroup() != null ? _articlesGroup.getParentGroup().getName() : "");
 
 			DefaultListModel<ArticleAttribute> model = new DefaultListModel<>();
 			Set<ArticleAttribute> articlesGroupAttributes = _articlesGroup.getAttributes();
@@ -281,9 +282,9 @@ public class AddArticlesGroupDialog extends ApplicationDialog implements Reloada
 	private void save() {
 		_articlesGroup.setName(_nameTextField.getText());
 		_articlesGroup.setVat((VATRate) (_vatRateComboBox.getSelectedItem()));
-		if(_articlesGroup.getParentGroup() != null) {
-			_articlesGroup.setType(_articlesGroup.getParentGroup().getType());
-		}
+//		if(_articlesGroup.getParentGroup() != null) {
+//			_articlesGroup.setType(_articlesGroup.getParentGroup().getType());
+//		}
 	}
 	private ArticlesGroup _articlesGroup;
     // Variables declaration - do not modify//GEN-BEGIN:variables

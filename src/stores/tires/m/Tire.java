@@ -15,7 +15,11 @@ public class Tire {
 	private double _margin;
 	private double _grossPrice;
 
-	public Tire(ArticlesGroup group, Tread tread, TireSize size, double loadIndex, String speedIndex, double margin, double grossPrice) {
+	public Tire() {
+    
+  }
+
+  public Tire(ArticlesGroup group, Tread tread, TireSize size, double loadIndex, String speedIndex, double margin, double grossPrice) {
 		_group = group;
 		_tread = tread;
 		_size = size;

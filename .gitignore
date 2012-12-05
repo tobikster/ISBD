@@ -4,5 +4,6 @@ build.xml
 nbproject/private/
 resources/ISBD.laccdb
 resources/ISBD.accdb.lnk
+resources/localISBD.accdb
 dist/
 docs/~*

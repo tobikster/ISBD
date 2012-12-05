@@ -1,6 +1,6 @@
 package core.v;
 
-import articles.v.ArticleListView;
+import stores.articles.v.ArticleListView;
 import core.c.ViewManager;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;

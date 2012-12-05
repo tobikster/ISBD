@@ -9,7 +9,7 @@ package core.v;
  * @author tobikster
  */
 public class PaginationPanel extends javax.swing.JPanel {
-	private int _currentPage;
+  private int _currentPage;
 	private int _pageCount;
 	private ButtonsListener _listener;
 	

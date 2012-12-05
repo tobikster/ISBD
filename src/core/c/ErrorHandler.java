@@ -39,7 +39,7 @@ public class ErrorHandler
 
   // </editor-fold>
   public void reportError(Throwable error) {
-	  error.printStackTrace();
+    error.printStackTrace();
 	  if(error instanceof DatabaseException) {
 		  for(String msg : ((DatabaseException)(error)).getErrors()){
 			  System.out.println(msg);

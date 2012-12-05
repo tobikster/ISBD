@@ -9,31 +9,28 @@ import java.util.Set;
  * @author tobikster
  */
 public class ArticlesGroup {
-	private int _id;
 	private int _code;
 	private String _name;
+  private ArticlesGroupType _type;
 	private VATRate _vat;
 	private ArticlesGroup _parentGroup;
 	private Set<ArticleAttribute> _attributes;
 
 	public ArticlesGroup() {
-		this(-1, null, null);
+		this(-1, null, null, null);
 	}
 
-	public ArticlesGroup(int id, String name, VATRate vat) {
-		this(id, name, vat, null, new HashSet<ArticleAttribute>());
+	public ArticlesGroup(int code, String name, ArticlesGroupType type, VATRate vat) {
+		this(code, name, type, vat, null, new HashSet<ArticleAttribute>());
 	}
 
-	public ArticlesGroup(int id, String name, VATRate vat, ArticlesGroup parentGroup, Set<ArticleAttribute> attributes) {
-		_id = id;
-		_name = name;
+	public ArticlesGroup(int code, String name, ArticlesGroupType type, VATRate vat, ArticlesGroup parentGroup, Set<ArticleAttribute> attributes) {
+		_code = code;
+    _name = name;
+    _type = type;
 		_vat = vat;
 		_parentGroup = parentGroup;
 		_attributes = attributes;
-	}
-
-	public int getId() {
-		return _id;
 	}
 
 	public int getCode() {
@@ -43,6 +40,10 @@ public class ArticlesGroup {
 	public String getName() {
 		return _name;
 	}
+
+  public void setType(ArticlesGroupType type) {
+    _type = type;
+  }
 
 	public VATRate getVat() {
 		return _vat;
@@ -56,10 +57,6 @@ public class ArticlesGroup {
 		return _attributes;
 	}
 
-	public void setId(int id) {
-		_id = id;
-	}
-
 	public void setCode(int code) {
 		_code = code;
 	}
@@ -67,6 +64,10 @@ public class ArticlesGroup {
 	public void setName(String name) {
 		_name = name;
 	}
+
+  public ArticlesGroupType getType() {
+    return _type;
+  }
 
 	public void setVat(VATRate vat) {
 		_vat = vat;
@@ -101,4 +102,9 @@ public class ArticlesGroup {
 	public void clearAttributes() {
 		_attributes.clear();
 	}
+  
+  @Override
+  public String toString() {
+    return _name;
+  }
 }

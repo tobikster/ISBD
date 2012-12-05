@@ -5,12 +5,14 @@ import articles.c.validators.ArticlesGroupValidator;
 import articles.m.Article;
 import articles.m.ArticleAttribute;
 import articles.m.ArticlesGroup;
+import articles.m.ArticlesGroupType;
 import articles.m.Producer;
 import core.c.DatabaseManager;
 import core.m.DatabaseException;
 import core.m.ResultRow;
 import finance.m.VATRate;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -53,7 +55,42 @@ public class ArticlesService {
 
 		return article;
 	}
+
+  public List<Article> getArticles(ArticlesGroup group) throws SQLException {
+    String sGroupsIds = "";
+    if(group!=null) {
+      sGroupsIds+=+group.getCode();
+      for(Integer id : getSubGroupsIds(group.getCode())) {
+        sGroupsIds+=", "+id;
+      }
+    }
+		String sQuery = "SELECT * FROM Czesci";
+    if(group!=null) {
+      sQuery+=" WHERE KodGrupyTowarowej IN (" + sGroupsIds + ")";
+    }
+    sQuery+=";";
+
+		List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult(sQuery);
+    List<Article> articles = new ArrayList<>();
+    
+    for(ResultRow result : results) {
+      Article article = new Article();
+      article.setId(result.getInt(1));
+      article.setGroup(getArticleGroup(result.getInt(2)));
+      article.setProducer(getProducer(result.getInt(3)));
+      article.setCatalogNumber(result.getString(4));
+      article.setName(result.getString(5));
+      article.setMargin(result.getDouble(6));
+      article.setGrossPrice(result.getDouble(7));
+      article.setCount(result.getFloat(8));
+      articles.add(article);
+    }
+		//TODO load image for article item
+
+		return articles;
+	}
 	// </editor-fold>
+  
 	//<editor-fold defaultstate="collapsed" desc="ATTRIBUTES method">
 
 	public boolean addAttribute(ArticleAttribute attribute) throws DatabaseException, SQLException {
@@ -68,6 +105,7 @@ public class ArticlesService {
 		return result;
 	}
 	//</editor-fold>
+  
 	// <editor-fold defaultstate="collapsed" desc="DOT methods">
 	// </editor-fold>
 
@@ -89,9 +127,30 @@ public class ArticlesService {
 		vat.setId(result.getInt(3));
 		vat.setRate(result.getDouble(4));
 		group.setVat(vat);
+    group.setType(ArticlesGroupType.PARTS);
 
 		return group;
 	}
+  
+  public List<ArticlesGroup> getRootArticleGroups() throws SQLException {
+    List rootGroups = new ArrayList<>();
+    String sqlQuery = "SELECT KodGrupy FROM GrupyTowarowe WHERE KodGrupy NOT IN (SELECT KodGrupy FROM GrupyNadrzedne);";
+    ArrayList<ResultRow> result = (ArrayList<ResultRow>) DatabaseManager.getInstance().executeQueryResult(sqlQuery);
+    for(ResultRow rr : result) {
+      rootGroups.add(getArticleGroup(rr.getInt(1)));
+    }
+    return rootGroups;
+  }
+    
+  public List<ArticlesGroup> getArticleSubgroups(ArticlesGroup group) throws SQLException {
+    List<ArticlesGroup> subgroups = new ArrayList<>();
+    String sqlQuery = "SELECT KodGrupy FROM GrupyNadrzedne WHERE KodGrupyNadrzednej="+group.getCode()+";";
+    ArrayList<ResultRow> result = (ArrayList<ResultRow>) DatabaseManager.getInstance().executeQueryResult(sqlQuery);
+    for(ResultRow rr : result) {
+      subgroups.add(getArticleGroup(rr.getInt(1)));
+    }
+    return subgroups;
+  }
 
 	public List<ArticleAttribute> getArticlesGroupAttributes(int groupCode) throws SQLException {
 		List<ArticleAttribute> result = new LinkedList<>();
@@ -133,10 +192,10 @@ public class ArticlesService {
 			if (results.size() != 1) {
 			}
 			else {
-				group.setId(results.get(0).getInt(1));
+				group.setCode(results.get(0).getInt(1));
 				for (ArticleAttribute attribute : group.getAttributes()) {
 					query = "INSERT INTO AtrybutyGrupTowarowych (KodGrupy, IdAtrybutu) "
-							+ "VALUES (" + group.getId() + ", " + attribute.getId() + ");";
+							+ "VALUES (" + group.getCode() + ", " + attribute.getId() + ");";
 					DatabaseManager.getInstance().executeQuery(query);
 				}
 				result = true;
@@ -150,6 +209,25 @@ public class ArticlesService {
 		}
 		return result;
 	}
+  
+  public boolean updateArticlesGroup(ArticlesGroup group) throws DatabaseException, SQLException {
+    //TODO code update articles group logic
+    return false;
+  }
+  
+  private List<Integer> getSubGroupsIds(int groupId) throws SQLException {
+    List<Integer> results=new ArrayList<>();
+
+    String sQuery="SELECT KodGrupy FROM GrupyNadrzedne WHERE KodGrupyNadrzednej="+groupId+";";
+    List<ResultRow> resultRows=DatabaseManager.getInstance().executeQueryResult(sQuery);
+    for(ResultRow rr: resultRows)
+    {
+      results.add(new Integer(rr.getInt(1)));
+      results.addAll(getSubGroupsIds(rr.getInt(1)));
+    }
+
+    return results;
+  }
 	// </editor-fold>
 
 	// <editor-fold defaultstate="collapsed" desc="PRODUCER methods">

@@ -23,16 +23,13 @@ import javax.swing.DefaultListModel;
  *
  * @author tobikster
  */
-public class AddArticlesGroupDialog extends ApplicationDialog implements Reloadable {
-  private ArticlesGroup _parentGroup;
+public class EditArticlesGroupDialog extends ApplicationDialog implements Reloadable {
   /**
 	 * Creates new form EditArticlesGroupDialog
 	 */
-	public AddArticlesGroupDialog(boolean modal, Reloadable reloadableParent, ArticlesGroup parentGroup) {
+	public EditArticlesGroupDialog(boolean modal, Reloadable reloadableParent, ArticlesGroup group) {
 		super(modal, reloadableParent);
-		_articlesGroup = new ArticlesGroup();
-    _articlesGroup.setType(parentGroup.getType());
-    _parentGroup=parentGroup.getCode()<0?null:parentGroup;
+		_articlesGroup = group;
 		initComponents();
 		reload();
 	}
@@ -65,10 +62,9 @@ public class AddArticlesGroupDialog extends ApplicationDialog implements Reloada
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(300, 410));
-        setPreferredSize(new java.awt.Dimension(300, 410));
 
         _titleLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        _titleLabel.setText("Nowa grupa towarowa");
+        _titleLabel.setText("Edycja grupy towarowej");
 
         _articlesGroupDataPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -83,7 +79,7 @@ public class AddArticlesGroupDialog extends ApplicationDialog implements Reloada
         _parentGroupLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         _parentGroupLabel.setText("Grupa nadrzędna:");
 
-        _parentGroupTextField.setText(_parentGroup==null?"":_parentGroup.toString());
+        _parentGroupTextField.setText(_articlesGroup.getParentGroup()==null?"":_articlesGroup.getParentGroup().toString());
         _parentGroupTextField.setEnabled(false);
 
         javax.swing.GroupLayout _articlesGroupDataPanelLayout = new javax.swing.GroupLayout(_articlesGroupDataPanel);
@@ -239,7 +235,7 @@ public class AddArticlesGroupDialog extends ApplicationDialog implements Reloada
     private void _okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__okButtonActionPerformed
 		try {
 			save();
-			if(ArticlesService.getInstance().addArticlesGroup(_articlesGroup)) {
+			if(ArticlesService.getInstance().updateArticlesGroup(_articlesGroup)) {
 				setHaveToReloadParent(true);
 				super.close();
 			}

@@ -17,14 +17,14 @@ import javax.swing.KeyStroke;
  * @author tobikster
  */
 public abstract class ApplicationDialog extends JDialog {
-	// <editor-fold defaultstate="collapsed" desc="Object variables">
+  // <editor-fold defaultstate="collapsed" desc="Object variables">
 	private Reloadable _reloadableParent;
 	private boolean _haveToReloadParent;
 	// </editor-fold>
 	// <editor-fold defaultstate="collapsed" desc="Creating object">
 
-	public ApplicationDialog(Frame owner, boolean modal, Reloadable parent) {
-		super(owner, modal);
+	public ApplicationDialog(boolean modal, Reloadable parent) {
+		super(ViewManager.getInstance().getMainWindow(), modal);
 		_reloadableParent = parent;
 		_haveToReloadParent = false;
 

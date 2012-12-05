@@ -2,11 +2,8 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package stores.articles.v;
+package stores.groups.v;
 
-import stores.articles.c.ArticlesService;
-import stores.articles.m.ArticleAttribute;
-import stores.groups.m.ArticlesGroup;
 import core.c.ErrorHandler;
 import core.c.Reloadable;
 import core.c.ViewManager;
@@ -15,16 +12,21 @@ import core.v.ApplicationDialog;
 import finance.c.FinanceService;
 import finance.m.VATRate;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Set;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import stores.parts.c.ArticlesService;
+import stores.parts.m.ArticleAttribute;
+import stores.groups.c.GroupsService;
+import stores.groups.m.ArticlesGroup;
 
 /**
  *
  * @author tobikster
  */
 public class EditArticlesGroupDialog extends ApplicationDialog implements Reloadable {
-  /**
+	/**
 	 * Creates new form EditArticlesGroupDialog
 	 */
 	public EditArticlesGroupDialog(boolean modal, Reloadable reloadableParent, ArticlesGroup group) {
@@ -74,12 +76,9 @@ public class EditArticlesGroupDialog extends ApplicationDialog implements Reload
         _vatRateLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         _vatRateLabel.setText("VAT:");
 
-        _vatRateComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         _parentGroupLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         _parentGroupLabel.setText("Grupa nadrzędna:");
 
-        _parentGroupTextField.setText(_articlesGroup.getParentGroup()==null?"":_articlesGroup.getParentGroup().toString());
         _parentGroupTextField.setEnabled(false);
 
         javax.swing.GroupLayout _articlesGroupDataPanelLayout = new javax.swing.GroupLayout(_articlesGroupDataPanel);
@@ -121,11 +120,6 @@ public class EditArticlesGroupDialog extends ApplicationDialog implements Reload
 
         _atributesListLabel.setText("Atrybuty grupy:");
 
-        _attributesList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
         _attributesListScrollPane.setViewportView(_attributesList);
 
         _manageAtributesButton.setText("Zarządzaj");
@@ -145,7 +139,7 @@ public class EditArticlesGroupDialog extends ApplicationDialog implements Reload
                     .addGroup(_attributesListPanelLayout.createSequentialGroup()
                         .addComponent(_atributesListLabel)
                         .addGap(0, 178, Short.MAX_VALUE))
-                    .addComponent(_attributesListScrollPane)
+                    .addComponent(_attributesListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, _attributesListPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(_manageAtributesButton)))
@@ -235,7 +229,7 @@ public class EditArticlesGroupDialog extends ApplicationDialog implements Reload
     private void _okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__okButtonActionPerformed
 		try {
 			save();
-			if(ArticlesService.getInstance().updateArticlesGroup(_articlesGroup)) {
+			if (GroupsService.getInstance().updateArticlesGroup(_articlesGroup)) {
 				setHaveToReloadParent(true);
 				super.close();
 			}
@@ -254,15 +248,17 @@ public class EditArticlesGroupDialog extends ApplicationDialog implements Reload
 	public final void reload() {
 		try {
 			_nameTextField.setText(_articlesGroup.getName());
-			Object[] vatRates = FinanceService.getInstance().getVatRates().toArray();
+			List<VATRate> vatRatesList = FinanceService.getInstance().getVatRates();
+			VATRate[] vatRates = new VATRate[vatRatesList.size()];
 			int selectedIndex = 0;
-			for (int vatRate = 0; vatRate < vatRates.length; ++vatRate) {
-				VATRate currentVatRate = (VATRate) (vatRates[vatRate]);
-				if (_articlesGroup.getVat() != null && _articlesGroup.getVat().getId() == currentVatRate.getId()) {
-					selectedIndex = vatRate;
+			for (int i = 0; i < vatRatesList.size(); ++i) {
+				VATRate vatRate = vatRatesList.get(i);
+				if (_articlesGroup.getVat() != null && _articlesGroup.getVat().getId() == vatRate.getId()) {
+					selectedIndex = i;
 				}
+				vatRates[i] = vatRate;
 			}
-			_vatRateComboBox.setModel(new DefaultComboBoxModel(vatRates));
+			_vatRateComboBox.setModel(new DefaultComboBoxModel<>(vatRates));
 			_vatRateComboBox.setSelectedIndex(selectedIndex);
 
 			DefaultListModel<ArticleAttribute> model = new DefaultListModel<>();

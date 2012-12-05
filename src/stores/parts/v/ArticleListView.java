@@ -1,7 +1,9 @@
-package stores.articles.v;
+package stores.parts.v;
 
-import stores.articles.c.ArticlesService;
-import stores.articles.m.Article;
+import stores.groups.v.AddArticlesGroupDialog;
+import stores.groups.v.EditArticlesGroupDialog;
+import stores.parts.c.ArticlesService;
+import stores.parts.m.Article;
 import stores.groups.m.ArticlesGroup;
 import stores.groups.m.ArticlesGroupType;
 import core.c.ErrorHandler;
@@ -17,6 +19,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
+import stores.groups.c.GroupsService;
 
 /**
  *
@@ -107,14 +110,14 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable
     try {
       DefaultMutableTreeNode root = new DefaultMutableTreeNode(new ArticlesGroup(0, "Magazyn", null, null));
       DefaultMutableTreeNode articles = new DefaultMutableTreeNode(new ArticlesGroup(ARTICLES_ROOT, "Części", ArticlesGroupType.PARTS, null));
-      for(ArticlesGroup group : ArticlesService.getInstance().getPartGroups())
+      for(ArticlesGroup group : GroupsService.getInstance().getRootArticleGroups())
       {
-        articles.add(new DefaultMutableTreeNode(group));
+        articles.add(loadGroupsTree(group));
       }
       DefaultMutableTreeNode tires = new DefaultMutableTreeNode(new ArticlesGroup(TIRES_ROOT, "Opony", ArticlesGroupType.TIRES, null));
-      for(ArticlesGroup group : ArticlesService.getInstance().getTireGroups())
+      for(ArticlesGroup group : GroupsService.getInstance().getRootArticleGroups())
       {
-        tires.add(new DefaultMutableTreeNode(group));
+        tires.add(loadGroupsTree(group));
       }
       root.add(articles);
       root.add(tires);
@@ -123,6 +126,15 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable
       ErrorHandler.getInstance().reportError(ex);
     }
     return null;
+  }
+  
+  private DefaultMutableTreeNode loadGroupsTree(ArticlesGroup start) throws SQLException
+  {
+    DefaultMutableTreeNode node = new DefaultMutableTreeNode(start);
+    for (ArticlesGroup subgroup : GroupsService.getInstance().getArticleSubgroups(start)) {
+      node.add(loadGroupsTree(subgroup));
+    }
+    return node;
   }
   
   private ArticlesGroup getSelectedGroup()
@@ -142,7 +154,7 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable
   public final void reload()
   {
     try {
-      _pagination.setTableData(ArticlesService.getInstance().getArticles(getSelectedGroup()));
+      _pagination.setTableData(ArticlesService.getInstance().getArticles(null));
       _articlesTable.setModel(getTableModel(_pagination.getCurrentPageData()));
       _navPanel.setCurrentPage(_pagination.getCurrentPage());
       _navPanel.setPageCount(_pagination.getPageCount());
@@ -174,6 +186,7 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable
         _articlesTable = new javax.swing.JTable();
         bBack = new javax.swing.JButton();
         _navPanel = new core.v.PaginationPanel();
+        jButton1 = new javax.swing.JButton();
 
         _addGroup.setText("Dodaj grupę");
         _addGroup.addActionListener(new java.awt.event.ActionListener() {
@@ -229,6 +242,13 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable
             }
         });
 
+        jButton1.setText("jButton1");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -236,7 +256,11 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton1)
+                        .addGap(77, 77, 77))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -253,7 +277,9 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lTitle)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lTitle)
+                    .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE)
@@ -288,6 +314,10 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable
     ViewManager.getInstance().showDialog(new EditArticlesGroupDialog(true, this, getSelectedGroup()));
   }//GEN-LAST:event__editGroupActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+		ViewManager.getInstance().showDialog(new AddArticleDialog(true, this));
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem _addGroup;
     private javax.swing.JTree _articleGroupsTree;
@@ -299,6 +329,7 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable
     private core.v.PaginationPanel _navPanel;
     private javax.swing.JPopupMenu.Separator _popupMenuSeparator;
     private javax.swing.JButton bBack;
+    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JLabel lTitle;

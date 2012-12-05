@@ -3,7 +3,7 @@ package stores.groups.m;
 import finance.m.VATRate;
 import java.util.HashSet;
 import java.util.Set;
-import stores.articles.m.ArticleAttribute;
+import stores.parts.m.ArticleAttribute;
 
 /**
  *
@@ -12,9 +12,9 @@ import stores.articles.m.ArticleAttribute;
 public class ArticlesGroup {
 	private int _code;
 	private String _name;
-  private ArticlesGroupType _type;
+	private ArticlesGroupType _type;
 	private VATRate _vat;
-	private ArticlesGroup _parentGroup;
+//	private ArticlesGroup _parentGroup;
 	private Set<ArticleAttribute> _attributes;
 
 	public ArticlesGroup() {
@@ -27,10 +27,10 @@ public class ArticlesGroup {
 
 	public ArticlesGroup(int code, String name, ArticlesGroupType type, VATRate vat, ArticlesGroup parentGroup, Set<ArticleAttribute> attributes) {
 		_code = code;
-    _name = name;
-    _type = type;
+		_name = name;
+		_type = type;
 		_vat = vat;
-		_parentGroup = parentGroup;
+//		_parentGroup = parentGroup;
 		_attributes = attributes;
 	}
 
@@ -42,17 +42,17 @@ public class ArticlesGroup {
 		return _name;
 	}
 
-  public void setType(ArticlesGroupType type) {
-    _type = type;
-  }
+	public void setType(ArticlesGroupType type) {
+		_type = type;
+	}
 
 	public VATRate getVat() {
 		return _vat;
 	}
-	
-	public ArticlesGroup getParentGroup() {
-		return _parentGroup;
-	}
+
+//	public ArticlesGroup getParentGroup() {
+//		return _parentGroup;
+//	}
 
 	public Set<ArticleAttribute> getAttributes() {
 		return _attributes;
@@ -66,17 +66,17 @@ public class ArticlesGroup {
 		_name = name;
 	}
 
-  public ArticlesGroupType getType() {
-    return _type;
-  }
+	public ArticlesGroupType getType() {
+		return _type;
+	}
 
 	public void setVat(VATRate vat) {
 		_vat = vat;
 	}
-	
-	public void setParentGroup(ArticlesGroup parentGroup) {
-		_parentGroup = parentGroup;
-	}
+
+//	public void setParentGroup(ArticlesGroup parentGroup) {
+//		_parentGroup = parentGroup;
+//	}
 
 	public void setAttributes(Set<ArticleAttribute> attributes) {
 		_attributes = attributes;
@@ -103,9 +103,9 @@ public class ArticlesGroup {
 	public void clearAttributes() {
 		_attributes.clear();
 	}
-  
-  @Override
-  public String toString() {
-    return _name;
-  }
+
+	@Override
+	public String toString() {
+		return _name;
+	}
 }

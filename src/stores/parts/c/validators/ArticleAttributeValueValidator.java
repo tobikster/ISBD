@@ -1,6 +1,6 @@
-package stores.articles.c.validators;
+package stores.parts.c.validators;
 
-import stores.articles.m.ArticleAttributeValue;
+import stores.parts.m.ArticleAttributeValue;
 import core.c.ElementaryValidator;
 import core.c.EntityValidator;
 import core.m.DatabaseException;

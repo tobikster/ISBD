@@ -2,15 +2,16 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package stores.articles.v;
+package stores.groups.v;
 
-import stores.articles.c.ArticlesService;
-import stores.articles.m.ArticleAttribute;
+import stores.parts.c.ArticlesService;
+import stores.parts.m.ArticleAttribute;
 import core.c.ErrorHandler;
 import core.c.Reloadable;
 import core.m.DatabaseException;
 import core.v.ApplicationDialog;
 import java.sql.SQLException;
+import stores.groups.c.GroupsService;
 
 /**
  *
@@ -117,7 +118,6 @@ public class AddAttributeDialog extends ApplicationDialog implements Reloadable{
                         .addComponent(_controlPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(_titleLabel)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(_dataPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
@@ -154,7 +154,7 @@ public class AddAttributeDialog extends ApplicationDialog implements Reloadable{
     private void _okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__okButtonActionPerformed
 		try {
 			save();
-			if(ArticlesService.getInstance().addAttribute(_attribute)) {
+			if(GroupsService.getInstance().addAttribute(_attribute)) {
 				setHaveToReloadParent(true);
 				super.close();
 			}

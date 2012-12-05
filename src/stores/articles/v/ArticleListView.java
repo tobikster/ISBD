@@ -107,14 +107,14 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable
     try {
       DefaultMutableTreeNode root = new DefaultMutableTreeNode(new ArticlesGroup(0, "Magazyn", null, null));
       DefaultMutableTreeNode articles = new DefaultMutableTreeNode(new ArticlesGroup(ARTICLES_ROOT, "Części", ArticlesGroupType.PARTS, null));
-      for(ArticlesGroup group : ArticlesService.getInstance().getRootArticleGroups())
+      for(ArticlesGroup group : ArticlesService.getInstance().getPartGroups())
       {
-        articles.add(loadGroupsTree(group));
+        articles.add(new DefaultMutableTreeNode(group));
       }
       DefaultMutableTreeNode tires = new DefaultMutableTreeNode(new ArticlesGroup(TIRES_ROOT, "Opony", ArticlesGroupType.TIRES, null));
-      for(ArticlesGroup group : ArticlesService.getInstance().getRootArticleGroups())
+      for(ArticlesGroup group : ArticlesService.getInstance().getTireGroups())
       {
-        tires.add(loadGroupsTree(group));
+        tires.add(new DefaultMutableTreeNode(group));
       }
       root.add(articles);
       root.add(tires);
@@ -123,15 +123,6 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable
       ErrorHandler.getInstance().reportError(ex);
     }
     return null;
-  }
-  
-  private DefaultMutableTreeNode loadGroupsTree(ArticlesGroup start) throws SQLException
-  {
-    DefaultMutableTreeNode node = new DefaultMutableTreeNode(start);
-    for (ArticlesGroup subgroup : ArticlesService.getInstance().getArticleSubgroups(start)) {
-      node.add(loadGroupsTree(subgroup));
-    }
-    return node;
   }
   
   private ArticlesGroup getSelectedGroup()
@@ -151,7 +142,7 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable
   public final void reload()
   {
     try {
-      _pagination.setTableData(ArticlesService.getInstance().getArticles(null));
+      _pagination.setTableData(ArticlesService.getInstance().getArticles(getSelectedGroup()));
       _articlesTable.setModel(getTableModel(_pagination.getCurrentPageData()));
       _navPanel.setCurrentPage(_pagination.getCurrentPage());
       _navPanel.setPageCount(_pagination.getPageCount());

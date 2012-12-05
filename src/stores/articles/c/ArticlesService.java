@@ -57,16 +57,9 @@ public class ArticlesService {
 	}
 
   public List<Article> getArticles(ArticlesGroup group) throws SQLException {
-    String sGroupsIds = "";
-    if(group!=null) {
-      sGroupsIds+=+group.getCode();
-      for(Integer id : getSubGroupsIds(group.getCode())) {
-        sGroupsIds+=", "+id;
-      }
-    }
 		String sQuery = "SELECT * FROM Czesci";
-    if(group!=null) {
-      sQuery+=" WHERE KodGrupyTowarowej IN (" + sGroupsIds + ")";
+    if(group!=null && group.getCode()>0) {
+      sQuery+=" WHERE KodGrupyTowarowej=" + group.getCode();
     }
     sQuery+=";";
 
@@ -127,12 +120,10 @@ public class ArticlesService {
 		vat.setId(result.getInt(3));
 		vat.setRate(result.getDouble(4));
 		group.setVat(vat);
-		switch (result.getString(5)) {
-			case "c":
+		switch (result.getString(5).toUpperCase()) {
 			case "C":
 				group.setType(ArticlesGroupType.PARTS);
 				break;
-			case "o":
 			case "O":
 				group.setType(ArticlesGroupType.TIRES);
 				break;
@@ -143,27 +134,37 @@ public class ArticlesService {
 		return group;
 	}
   
-  public List<ArticlesGroup> getRootArticleGroups() throws SQLException {
-    List rootGroups = new ArrayList<>();
-    String sqlQuery = "SELECT KodGrupy FROM GrupyTowarowe WHERE KodGrupy NOT IN (SELECT KodGrupy FROM GrupyNadrzedne);";
+  public List<ArticlesGroup> getArticleGroups() throws SQLException {
+    List articleGroups = new ArrayList<>();
+    String sqlQuery = "SELECT KodGrupy FROM GrupyTowarowe;";
     ArrayList<ResultRow> result = (ArrayList<ResultRow>) DatabaseManager.getInstance().executeQueryResult(sqlQuery);
     for(ResultRow rr : result) {
-      rootGroups.add(getArticleGroup(rr.getInt(1)));
+      articleGroups.add(getArticleGroup(rr.getInt(1)));
     }
-    return rootGroups;
-  }
-    
-  public List<ArticlesGroup> getArticleSubgroups(ArticlesGroup group) throws SQLException {
-    List<ArticlesGroup> subgroups = new ArrayList<>();
-    String sqlQuery = "SELECT KodGrupy FROM GrupyNadrzedne WHERE KodGrupyNadrzednej="+group.getCode()+";";
-    ArrayList<ResultRow> result = (ArrayList<ResultRow>) DatabaseManager.getInstance().executeQueryResult(sqlQuery);
-    for(ResultRow rr : result) {
-      subgroups.add(getArticleGroup(rr.getInt(1)));
-    }
-    return subgroups;
+    return articleGroups;
   }
 
-	public List<ArticleAttribute> getArticlesGroupAttributes(int groupCode) throws SQLException {
+  public List<ArticlesGroup> getPartGroups() throws SQLException {
+    List articleGroups = new ArrayList<>();
+    String sqlQuery = "SELECT KodGrupy FROM GrupyTowarowe WHERE Zawartosc='c';";
+    ArrayList<ResultRow> result = (ArrayList<ResultRow>) DatabaseManager.getInstance().executeQueryResult(sqlQuery);
+    for(ResultRow rr : result) {
+      articleGroups.add(getArticleGroup(rr.getInt(1)));
+    }
+    return articleGroups;
+  }
+
+  public List<ArticlesGroup> getTireGroups() throws SQLException {
+    List articleGroups = new ArrayList<>();
+    String sqlQuery = "SELECT KodGrupy FROM GrupyTowarowe WHERE Zawartosc='o';";
+    ArrayList<ResultRow> result = (ArrayList<ResultRow>) DatabaseManager.getInstance().executeQueryResult(sqlQuery);
+    for(ResultRow rr : result) {
+      articleGroups.add(getArticleGroup(rr.getInt(1)));
+    }
+    return articleGroups;
+  }
+
+  public List<ArticleAttribute> getArticlesGroupAttributes(int groupCode) throws SQLException {
 		List<ArticleAttribute> result = new LinkedList<>();
 		String query = "SELECT AtrybutyCzesci.IdAtrybutu, AtrybutyCzesci.Nazwa "
 				+ "FROM AtrybutyCzesci, AtrybutyGrupTowarowych "
@@ -224,20 +225,6 @@ public class ArticlesService {
   public boolean updateArticlesGroup(ArticlesGroup group) throws DatabaseException, SQLException {
     //TODO code update articles group logic
     return false;
-  }
-  
-  private List<Integer> getSubGroupsIds(int groupId) throws SQLException {
-    List<Integer> results=new ArrayList<>();
-
-    String sQuery="SELECT KodGrupy FROM GrupyNadrzedne WHERE KodGrupyNadrzednej="+groupId+";";
-    List<ResultRow> resultRows=DatabaseManager.getInstance().executeQueryResult(sQuery);
-    for(ResultRow rr: resultRows)
-    {
-      results.add(new Integer(rr.getInt(1)));
-      results.addAll(getSubGroupsIds(rr.getInt(1)));
-    }
-
-    return results;
   }
 	// </editor-fold>
 

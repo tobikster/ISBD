@@ -1,13 +1,12 @@
-package stores.groups.c.validators;
+package stores.articles.c.validators.tires;
 
-import stores.producers.m.Producer;
-import core.c.ElementaryValidator;
+import stores.articles.m.TireDOT;
 import core.c.EntityValidator;
 import core.m.DatabaseException;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ProducerValidator implements EntityValidator<Producer>
+public class TireDOTValidator implements EntityValidator<TireDOT>
 {
   // <editor-fold defaultstate="collapsed" desc="Object variables">
   // </editor-fold>
@@ -21,15 +20,16 @@ public class ProducerValidator implements EntityValidator<Producer>
   // <editor-fold defaultstate="collapsed" desc="Setters">
   // </editor-fold>
   @Override
-  public boolean validate(Producer object) throws DatabaseException
+  public boolean validate(TireDOT object) throws DatabaseException
   {
     List<String> errors=new LinkedList<>();
 
-    if(!ElementaryValidator.hasValue(object.getName()))
-      errors.add("Nie podano nazwy producenta!");
-    else
-      if(!ElementaryValidator.maxLengthValidator(object.getName(), 20))
-        errors.add("Podana nazwa producenta jest za długa! Maksymalna dopuszczalna długość to 20 znaków!");
+    if(object.getDot()==null)
+      errors.add("Nie podano DOTu!");
+    if(object.getTire()==null)
+      errors.add("Nie podano opony!");
+    if(object.getCount()<0)
+      errors.add("Podana ilość jest mniejsza od 0!");
 
     if(!errors.isEmpty())
       throw new DatabaseException(errors);

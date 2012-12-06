@@ -1,13 +1,13 @@
-package stores.groups.c.validators;
+package stores.articles.c.validators.parts;
 
-import stores.producers.m.Producer;
+import stores.articles.m.ArticleAttribute;
 import core.c.ElementaryValidator;
 import core.c.EntityValidator;
 import core.m.DatabaseException;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ProducerValidator implements EntityValidator<Producer>
+public class ArticleAttributeValidator implements EntityValidator<ArticleAttribute>
 {
   // <editor-fold defaultstate="collapsed" desc="Object variables">
   // </editor-fold>
@@ -21,15 +21,15 @@ public class ProducerValidator implements EntityValidator<Producer>
   // <editor-fold defaultstate="collapsed" desc="Setters">
   // </editor-fold>
   @Override
-  public boolean validate(Producer object) throws DatabaseException
+  public boolean validate(ArticleAttribute object) throws DatabaseException
   {
     List<String> errors=new LinkedList<>();
 
     if(!ElementaryValidator.hasValue(object.getName()))
-      errors.add("Nie podano nazwy producenta!");
+      errors.add("Nazwa atrybutu jest wymagana!");
     else
-      if(!ElementaryValidator.maxLengthValidator(object.getName(), 20))
-        errors.add("Podana nazwa producenta jest za długa! Maksymalna dopuszczalna długość to 20 znaków!");
+      if(!ElementaryValidator.maxLengthValidator(object.getName(), 40))
+        errors.add("Nazwa nie może być dłuższa niż 40 znaków!");
 
     if(!errors.isEmpty())
       throw new DatabaseException(errors);

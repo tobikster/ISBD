@@ -8,16 +8,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import stores.parts.c.validators.ArticleAttributeValidator;
-import stores.parts.m.ArticleAttribute;
 import stores.groups.c.validators.ArticlesGroupValidator;
 import stores.groups.m.ArticlesGroup;
 import stores.groups.m.ArticlesGroupType;
+import stores.articles.c.validators.parts.ArticleAttributeValidator;
+import stores.articles.m.ArticleAttribute;
 
 public class GroupsService {
-	// <editor-fold defaultstate="collapsed" desc="Object variables">
-	// </editor-fold>
-	
 	// <editor-fold defaultstate="collapsed" desc="Creating object">
 	// <editor-fold defaultstate="collapsed" desc="Singleton">
 	public static GroupsService getInstance() {
@@ -31,16 +28,6 @@ public class GroupsService {
 
 	private GroupsService() {
 	}
-	// </editor-fold>
-
-	// <editor-fold defaultstate="collapsed" desc="Object PRIVATE methods">
-	// </editor-fold>
-	
-	// <editor-fold defaultstate="collapsed" desc="Object PUBLIC methods">
-	// <editor-fold defaultstate="collapsed" desc="Getters">
-	// </editor-fold>
-	
-	// <editor-fold defaultstate="collapsed" desc="Setters">
 	// </editor-fold>
 	
 	public ArticlesGroup getArticleGroup(int iGroupCode) throws SQLException {
@@ -76,24 +63,35 @@ public class GroupsService {
 		return group;
 	}
 
-	public List<ArticlesGroup> getRootArticleGroups() throws SQLException {
-		List rootGroups = new ArrayList<>();
-		String sqlQuery = "SELECT KodGrupy FROM GrupyTowarowe WHERE KodGrupy NOT IN (SELECT KodGrupy FROM GrupyNadrzedne);";
+	public List<ArticlesGroup> getArticleGroups() throws SQLException {
+		List articleGroups = new ArrayList<>();
+		String sqlQuery = "SELECT KodGrupy FROM GrupyTowarowe;";
 		ArrayList<ResultRow> result = (ArrayList<ResultRow>) DatabaseManager.getInstance().executeQueryResult(sqlQuery);
 		for (ResultRow rr : result) {
-			rootGroups.add(getArticleGroup(rr.getInt(1)));
+			articleGroups.add(getArticleGroup(rr.getInt(1)));
 		}
-		return rootGroups;
+		return articleGroups;
 	}
 
-	public List<ArticlesGroup> getArticleSubgroups(ArticlesGroup group) throws SQLException {
-		List<ArticlesGroup> subgroups = new ArrayList<>();
-		String sqlQuery = "SELECT KodGrupy FROM GrupyNadrzedne WHERE KodGrupyNadrzednej=" + group.getCode() + ";";
+	public List<ArticlesGroup> getPartGroups() throws SQLException {
+		List articleGroups = new ArrayList<>();
+		String sqlQuery = "SELECT KodGrupy FROM GrupyTowarowe WHERE Zawartosc='c';";
 		ArrayList<ResultRow> result = (ArrayList<ResultRow>) DatabaseManager.getInstance().executeQueryResult(sqlQuery);
 		for (ResultRow rr : result) {
-			subgroups.add(getArticleGroup(rr.getInt(1)));
+			articleGroups.add(getArticleGroup(rr.getInt(1)));
 		}
-		return subgroups;
+		return articleGroups;
+	}
+
+  
+	public List<ArticlesGroup> getTireGroups() throws SQLException {
+		List articleGroups = new ArrayList<>();
+		String sqlQuery = "SELECT KodGrupy FROM GrupyTowarowe WHERE Zawartosc='o';";
+		ArrayList<ResultRow> result = (ArrayList<ResultRow>) DatabaseManager.getInstance().executeQueryResult(sqlQuery);
+		for (ResultRow rr : result) {
+			articleGroups.add(getArticleGroup(rr.getInt(1)));
+		}
+		return articleGroups;
 	}
 
 	public List<ArticleAttribute> getArticlesGroupAttributes(int groupCode) throws SQLException {
@@ -159,19 +157,6 @@ public class GroupsService {
 		return false;
 	}
 
-	public List<Integer> getSubGroupsIds(int groupId) throws SQLException {
-		List<Integer> results = new ArrayList<>();
-
-		String sQuery = "SELECT KodGrupy FROM GrupyNadrzedne WHERE KodGrupyNadrzednej=" + groupId + ";";
-		List<ResultRow> resultRows = DatabaseManager.getInstance().executeQueryResult(sQuery);
-		for (ResultRow rr : resultRows) {
-			results.add(new Integer(rr.getInt(1)));
-			results.addAll(getSubGroupsIds(rr.getInt(1)));
-		}
-
-		return results;
-	}
-
 	//<editor-fold defaultstate="collapsed" desc="ATTRIBUTES method">
 	public boolean addAttribute(ArticleAttribute attribute) throws DatabaseException, SQLException {
 		boolean result = false;
@@ -185,5 +170,4 @@ public class GroupsService {
 		return result;
 	}
 	//</editor-fold>
-	// </editor-fold>
 }

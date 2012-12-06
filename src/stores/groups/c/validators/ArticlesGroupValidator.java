@@ -5,8 +5,8 @@ import core.c.EntityValidator;
 import core.m.DatabaseException;
 import java.util.LinkedList;
 import java.util.List;
-import stores.parts.c.validators.ArticleAttributeValidator;
-import stores.parts.m.ArticleAttribute;
+import stores.articles.c.validators.parts.ArticleAttributeValidator;
+import stores.articles.m.ArticleAttribute;
 import stores.groups.m.ArticlesGroup;
 import stores.groups.m.ArticlesGroupType;
 

@@ -1,13 +1,13 @@
-package stores.groups.c.validators;
+package stores.articles.c.validators.tires;
 
-import stores.producers.m.Producer;
+import stores.articles.m.DOT;
 import core.c.ElementaryValidator;
 import core.c.EntityValidator;
 import core.m.DatabaseException;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ProducerValidator implements EntityValidator<Producer>
+public class DOTValidator implements EntityValidator<DOT>
 {
   // <editor-fold defaultstate="collapsed" desc="Object variables">
   // </editor-fold>
@@ -21,15 +21,15 @@ public class ProducerValidator implements EntityValidator<Producer>
   // <editor-fold defaultstate="collapsed" desc="Setters">
   // </editor-fold>
   @Override
-  public boolean validate(Producer object) throws DatabaseException
+  public boolean validate(DOT object) throws DatabaseException
   {
     List<String> errors=new LinkedList<>();
 
-    if(!ElementaryValidator.hasValue(object.getName()))
-      errors.add("Nie podano nazwy producenta!");
+    if(!ElementaryValidator.hasValue(object.getDot()))
+      errors.add("Nie podano wartości DOTu!");
     else
-      if(!ElementaryValidator.maxLengthValidator(object.getName(), 20))
-        errors.add("Podana nazwa producenta jest za długa! Maksymalna dopuszczalna długość to 20 znaków!");
+      if(!object.getDot().matches("^[0-9]{3,4}$"))
+        errors.add("Podano niepoprawną wartość DOTu! Musi się on składać z 3 lub 4 cyfr!");
 
     if(!errors.isEmpty())
       throw new DatabaseException(errors);

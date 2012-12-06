@@ -7,8 +7,8 @@ import core.v.ApplicationDialog;
 import java.sql.SQLException;
 import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
-import stores.parts.c.ArticlesService;
-import stores.parts.m.ArticleAttribute;
+import stores.articles.c.PartsService;
+import stores.articles.m.ArticleAttribute;
 import stores.groups.c.GroupsService;
 import stores.groups.m.ArticlesGroup;
 

@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Set;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
-import stores.parts.c.ArticlesService;
-import stores.parts.m.ArticleAttribute;
+import stores.articles.c.PartsService;
+import stores.articles.m.ArticleAttribute;
 import stores.groups.c.GroupsService;
 import stores.groups.m.ArticlesGroup;
 

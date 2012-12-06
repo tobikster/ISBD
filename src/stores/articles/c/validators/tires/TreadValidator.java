@@ -1,13 +1,13 @@
-package stores.groups.c.validators;
+package stores.articles.c.validators.tires;
 
-import stores.producers.m.Producer;
+import stores.articles.m.Tread;
 import core.c.ElementaryValidator;
 import core.c.EntityValidator;
 import core.m.DatabaseException;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ProducerValidator implements EntityValidator<Producer>
+public class TreadValidator implements EntityValidator<Tread>
 {
   // <editor-fold defaultstate="collapsed" desc="Object variables">
   // </editor-fold>
@@ -21,15 +21,17 @@ public class ProducerValidator implements EntityValidator<Producer>
   // <editor-fold defaultstate="collapsed" desc="Setters">
   // </editor-fold>
   @Override
-  public boolean validate(Producer object) throws DatabaseException
+  public boolean validate(Tread object) throws DatabaseException
   {
     List<String> errors=new LinkedList<>();
 
+    if(object.getProducer()==null)
+      errors.add("Nie podano producenta!");
     if(!ElementaryValidator.hasValue(object.getName()))
-      errors.add("Nie podano nazwy producenta!");
+      errors.add("Nie podano nazwy!");
     else
-      if(!ElementaryValidator.maxLengthValidator(object.getName(), 20))
-        errors.add("Podana nazwa producenta jest za długa! Maksymalna dopuszczalna długość to 20 znaków!");
+      if(!ElementaryValidator.maxLengthValidator(object.getName(), 30))
+        errors.add("Podana nazwa jest za długa! Dopuszczalna długość: 30 znaków!");
 
     if(!errors.isEmpty())
       throw new DatabaseException(errors);

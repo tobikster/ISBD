@@ -3,7 +3,7 @@ package stores.groups.m;
 import finance.m.VATRate;
 import java.util.HashSet;
 import java.util.Set;
-import stores.parts.m.ArticleAttribute;
+import stores.articles.m.ArticleAttribute;
 
 /**
  *

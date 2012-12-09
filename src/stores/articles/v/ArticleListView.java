@@ -13,6 +13,7 @@ import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import stores.articles.c.PartsService;
 import stores.articles.c.TiresService;
@@ -27,151 +28,169 @@ import stores.groups.v.AddEditArticlesGroupDialog;
  *
  * @author MRKACZOR
  */
-public class ArticleListView extends javax.swing.JPanel implements Reloadable {
-	public static final int ROWS_PER_PAGE = 5;
-	public static final String[] PARTS_COLUMN_NAMES = {
-		"Nazwa",
-		"Producent",
-		"Numer katalogowy",
-		"Cena brutto",
-		"Ilość"
-	};
-	public static final String[] TIRES_COLUMN_NAMES = {
-		"Rozmiar",
-		"",
-		"",
-		"Producent",
-		"Bieżnik",
-		"Cena brutto"
-	};
-	private static final int ARTICLES_ROOT = -1;
-	private static final int TIRES_ROOT = -2;
-	private TablePagination<Part> _partsPagination;
-	private TablePagination<Tire> _tiresPagination;
+public class ArticleListView extends javax.swing.JPanel implements Reloadable
+{
+  public static final int ROWS_PER_PAGE=5;
+  public static final String[] PARTS_COLUMN_NAMES=
+  {
+    "Nazwa",
+    "Producent",
+    "Numer katalogowy",
+    "Cena brutto",
+    "Ilość"
+  };
+  public static final String[] TIRES_COLUMN_NAMES=
+  {
+    "Rozmiar",
+    "",
+    "",
+    "Producent",
+    "Bieżnik",
+    "Cena brutto"
+  };
+  private static final int ARTICLES_ROOT = -1;
+  private static final int TIRES_ROOT = -2;
+  private TablePagination<Part> _partsPagination;
+  private TablePagination<Tire> _tiresPagination;
 
-	/**
-	 * Creates new form ArticleListView
-	 */
-	public ArticleListView() {
-		_partsPagination = new TablePagination<>(new ArrayList<Part>(), ROWS_PER_PAGE);
-		_tiresPagination = new TablePagination<>(new ArrayList<Tire>(), ROWS_PER_PAGE);
-		initComponents();
-		refreshPopupMenu();
-		refresArticlesToolbar();
-		reload();
-		_navPanel.setButtonsListener(new PaginationPanel.ButtonsListener() {
-			@Override
-			public void nextButtonClicked() {
-				_articlesTable.setModel(getPartsTableModel(_partsPagination.getNextPage()));
-				_navPanel.setCurrentPage(_partsPagination.getCurrentPage());
-			}
+  /**
+   * Creates new form ArticleListView
+   */
+  public ArticleListView()
+  {
+    _partsPagination=new TablePagination<>(new ArrayList<Part>(), ROWS_PER_PAGE);
+    _tiresPagination=new TablePagination<>(new ArrayList<Tire>(), ROWS_PER_PAGE);
+    initComponents();
+    refreshPopupMenu();
+    refresArticlesToolbar();
+    reload();
+    _navPanel.setButtonsListener(new PaginationPanel.ButtonsListener()
+    {
+      @Override
+      public void nextButtonClicked()
+      {
+        _articlesTable.setModel(getPartsTableModel(_partsPagination.getNextPage()));
+        _navPanel.setCurrentPage(_partsPagination.getCurrentPage());
+      }
 
-			@Override
-			public void previousButtonClicked() {
-				_articlesTable.setModel(getPartsTableModel(_partsPagination.getPreviousPage()));
-				_navPanel.setCurrentPage(_partsPagination.getCurrentPage());
-			}
+      @Override
+      public void previousButtonClicked()
+      {
+        _articlesTable.setModel(getPartsTableModel(_partsPagination.getPreviousPage()));
+        _navPanel.setCurrentPage(_partsPagination.getCurrentPage());
+      }
 
-			@Override
-			public void firstButtonClicked() {
-				_articlesTable.setModel(getPartsTableModel(_partsPagination.getFirstPage()));
-				_navPanel.setCurrentPage(_partsPagination.getCurrentPage());
-			}
+      @Override
+      public void firstButtonClicked()
+      {
+        _articlesTable.setModel(getPartsTableModel(_partsPagination.getFirstPage()));
+        _navPanel.setCurrentPage(_partsPagination.getCurrentPage());
+      }
 
-			@Override
-			public void lastButtonClicked() {
-				_articlesTable.setModel(getPartsTableModel(_partsPagination.getLastPage()));
-				_navPanel.setCurrentPage(_partsPagination.getCurrentPage());
-			}
-		});
-	}
+      @Override
+      public void lastButtonClicked()
+      {
+        _articlesTable.setModel(getPartsTableModel(_partsPagination.getLastPage()));
+        _navPanel.setCurrentPage(_partsPagination.getCurrentPage());
+      }
+    });
+  }
 
-	private void refreshPopupMenu() {
-		_editGroup.setEnabled(isValidGroupSelected());
-		_deleteGroup.setEnabled(isValidGroupSelected());
-	}
+  private void refreshPopupMenu() {
+    _editGroup.setEnabled(isValidGroupSelected());
+    _deleteGroup.setEnabled(isValidGroupSelected());
+  }
 
-	private void refresArticlesToolbar() {
-		ArticlesGroup selectedGroup = getSelectedGroup();
-		if (selectedGroup.getType().equals(ArticlesGroupType.PARTS)) {
-			_addPart.setVisible(true);
-			_editPart.setVisible(true);
-			_deletePart.setVisible(true);
-			_addTire.setVisible(false);
-			_editTire.setVisible(false);
-			_deleteTire.setVisible(false);
-		}
-		else {
-			_addPart.setVisible(false);
-			_editPart.setVisible(false);
-			_deletePart.setVisible(false);
-			_addTire.setVisible(true);
-			_editTire.setVisible(true);
-			_deleteTire.setVisible(true);
-		}
-	}
+  private void refresArticlesToolbar() {
+    ArticlesGroup selectedGroup = getSelectedGroup();
+    if(selectedGroup.getType().equals(ArticlesGroupType.PARTS)) {
+      _addPart.setVisible(true);
+      _editPart.setVisible(true);
+      _deletePart.setVisible(true);
+      _addTire.setVisible(false);
+      _editTire.setVisible(false);
+      _deleteTire.setVisible(false);
+    } else {
+      _addPart.setVisible(false);
+      _editPart.setVisible(false);
+      _deletePart.setVisible(false);
+      _addTire.setVisible(true);
+      _editTire.setVisible(true);
+      _deleteTire.setVisible(true);
+    }
+  }
 
-	public TableModel getPartsTableModel(List<Part> articles) {
-		Object[][] data = new Object[articles.size()][];
-		for (int i = 0; i < articles.size(); ++i) {
-			Part article = articles.get(i);
-			data[i] = new Object[5];
-			data[i][0] = article.getName();
-			data[i][1] = article.getProducer().getName();
-			data[i][2] = article.getCatalogNumber();
-			data[i][3] = article.getGrossPrice();
-			data[i][4] = article.getCount();
-		}
-		return new DefaultTableModel(data, PARTS_COLUMN_NAMES) {
-			@Override
-			public boolean isCellEditable(int row, int column) {
-				return false;
-			}
-		};
-	}
+  public TableModel getPartsTableModel(List<Part> articles)
+  {
+    Object[][] data=new Object[articles.size()][];
+    for(int i=0; i<articles.size(); ++i)
+    {
+      Part article=articles.get(i);
+      data[i]=new Object[5];
+      data[i][0]=article.getName();
+      data[i][1]=article.getProducer().getName();
+      data[i][2]=article.getCatalogNumber();
+      data[i][3]=article.getGrossPrice();
+      data[i][4]=article.getCount();
+    }
+    return new DefaultTableModel(data, PARTS_COLUMN_NAMES)
+    {
+      @Override
+      public boolean isCellEditable(int row, int column)
+      {
+        return false;
+      }
+    };
+  }
 
-	public TableModel getTiresTableModel(List<Tire> articles) {
-		Object[][] data = new Object[articles.size()][];
-		for (int i = 0; i < articles.size(); ++i) {
-			Tire article = articles.get(i);
-			data[i] = new Object[6];
-			data[i][0] = article.getSize();
-			data[i][1] = article.getLoadIndex();
-			data[i][2] = article.getSpeedIndex();
-			data[i][3] = article.getTread().getProducer().getName();
-			data[i][4] = article.getTread().getName();
-			data[i][5] = article.getGrossPrice();
-		}
-		return new DefaultTableModel(data, TIRES_COLUMN_NAMES) {
-			@Override
-			public boolean isCellEditable(int row, int column) {
-				return false;
-			}
-		};
-	}
-
-	private TreeModel getTreeModel() {
-		try {
-			DefaultMutableTreeNode root = new DefaultMutableTreeNode(new ArticlesGroup(0, "Magazyn", null, null));
-			DefaultMutableTreeNode articles = new DefaultMutableTreeNode(new ArticlesGroup(ARTICLES_ROOT, "Części", ArticlesGroupType.PARTS, null));
-			for (ArticlesGroup group : GroupsService.getInstance().getPartGroups()) {
-				articles.add(new DefaultMutableTreeNode(group));
-			}
-			DefaultMutableTreeNode tires = new DefaultMutableTreeNode(new ArticlesGroup(TIRES_ROOT, "Opony", ArticlesGroupType.TIRES, null));
-			for (ArticlesGroup group : GroupsService.getInstance().getTireGroups()) {
-				tires.add(new DefaultMutableTreeNode(group));
-			}
-			root.add(articles);
-			root.add(tires);
-			return new javax.swing.tree.DefaultTreeModel(root);
-		}
-		catch (SQLException ex) {
-			ErrorHandler.getInstance().reportError(ex);
-		}
-		return null;
-	}
-
-	private ArticlesGroup getSelectedGroup() {
+  public TableModel getTiresTableModel(List<Tire> articles)
+  {
+    Object[][] data=new Object[articles.size()][];
+    for(int i=0; i<articles.size(); ++i)
+    {
+      Tire article=articles.get(i);
+      data[i]=new Object[6];
+      data[i][0]=article.getSize();
+      data[i][1]=article.getLoadIndex();
+      data[i][2]=article.getSpeedIndex();
+      data[i][3]=article.getTread().getProducer().getName();
+      data[i][4]=article.getTread().getName();
+      data[i][5]=article.getGrossPrice();
+    }
+    return new DefaultTableModel(data, TIRES_COLUMN_NAMES)
+    {
+      @Override
+      public boolean isCellEditable(int row, int column)
+      {
+        return false;
+      }
+    };
+  }
+  
+  private TreeModel getTreeModel()
+  {
+    DefaultMutableTreeNode root = new DefaultMutableTreeNode(new ArticlesGroup(0, "Magazyn", null, null));
+    try {
+      DefaultMutableTreeNode articles = new DefaultMutableTreeNode(new ArticlesGroup(ARTICLES_ROOT, "Części", ArticlesGroupType.PARTS, null));
+      for(ArticlesGroup group : GroupsService.getInstance().getPartGroups())
+      {
+        articles.add(new DefaultMutableTreeNode(group));
+      }
+      DefaultMutableTreeNode tires = new DefaultMutableTreeNode(new ArticlesGroup(TIRES_ROOT, "Opony", ArticlesGroupType.TIRES, null));
+      for(ArticlesGroup group : GroupsService.getInstance().getTireGroups())
+      {
+        tires.add(new DefaultMutableTreeNode(group));
+      }
+      root.add(articles);
+      root.add(tires);
+    } catch(SQLException ex) {
+      ErrorHandler.getInstance().reportError(ex);
+    }
+    return new DefaultTreeModel(root);
+  }
+  
+  private ArticlesGroup getSelectedGroup()
+  {
 //    ArticlesGroup selectedGroup = (ArticlesGroup)(((DefaultMutableTreeNode)(_articleGroupsTree.getLastSelectedPathComponent())).getUserObject());
 //    if(selectedGroup.getCode()==ARTICLES_ROOT || selectedGroup.getCode()==TIRES_ROOT)
 //      return null;
@@ -473,17 +492,14 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 
   private void _editTireMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__editTireMouseClicked
   {//GEN-HEADEREND:event__editTireMouseClicked
-//    if(_workersTable.getSelectedRow()>=0) {
-//      try
-//      {
-//        Worker worker=WorkersService.getInstance().getWorker(_pagination.getCurrentPageData().get(_workersTable.getSelectedRow()).getId());
-//        ViewManager.getInstance().showDialog(new EditWorkerView(true, this, worker));
-//      }
-//      catch(SQLException ex)
-//      {
-//        ErrorHandler.getInstance().reportError(ex);
-//      }
-//    }
+    if(_articlesTable.getSelectedRow()>=0 && getSelectedGroup().getType().equals(ArticlesGroupType.TIRES)) {
+      try {
+        Tire tire=TiresService.getInstance().getTire(_tiresPagination.getCurrentPageData().get(_articlesTable.getSelectedRow()).getId());
+        ViewManager.getInstance().showDialog(new AddEditTireDialog(true, this, tire));
+      } catch(SQLException ex) {
+        ErrorHandler.getInstance().reportError(ex);
+      }
+    }
   }//GEN-LAST:event__editTireMouseClicked
 
   private void _editTireMouseEntered(java.awt.event.MouseEvent evt)//GEN-FIRST:event__editTireMouseEntered

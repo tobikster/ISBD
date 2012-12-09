@@ -5,9 +5,7 @@ import core.m.ResultRow;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import stores.articles.m.Tire;
-import stores.articles.m.TireSize;
-import stores.articles.m.Tread;
+import stores.articles.m.*;
 import stores.groups.c.GroupsService;
 import stores.groups.m.ArticlesGroup;
 import stores.producers.c.ProducersService;
@@ -34,6 +32,40 @@ public class TiresService
   }
   // </editor-fold>
 
+  // <editor-fold defaultstate="collapsed" desc="DOT methods">
+  public DOT getDOT(int DOTId) throws SQLException {
+    String sQuery="SELECT * FROM DOTyOpon WHERE IdDOTu="+DOTId+";";
+
+    List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult(sQuery);
+		if (results.isEmpty()) {
+			throw new SQLException("DOT with given ID does not exist!");
+		}
+		ResultRow result = results.get(0);
+
+    DOT dot = new DOT();
+    dot.setId(DOTId);
+    dot.setDot(result.getString(2));
+
+    return dot;
+  }
+
+  public List<DOT> getDOTs() throws SQLException {
+    String sQuery = "SELECT * FROM DOTyOpon;";
+
+    List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult(sQuery);
+    List<DOT> dots = new ArrayList<>();
+
+    for(ResultRow result : results) {
+      DOT dot = new DOT();
+      dot.setId(result.getInt(1));
+      dot.setDot(result.getString(2));
+      dots.add(dot);
+    }
+
+    return dots;
+  }
+  // </editor-fold>
+
   // <editor-fold defaultstate="collapsed" desc="TIRE methods">
   public Tire getTire(int tireId) throws SQLException {
     String sQuery="SELECT * FROM Opony WHERE IdOpony="+tireId+";";
@@ -45,11 +77,12 @@ public class TiresService
 		ResultRow result = results.get(0);
 
     Tire tire = new Tire();
+    tire.setId(tireId);
     tire.setGroup(GroupsService.getInstance().getArticleGroup(result.getInt(2)));
     tire.setTread(getTread(result.getInt(3)));
     tire.setSize(getTireSize(result.getInt(4)));
-    tire.setLoadIndex(result.getDouble(5));
-    tire.setSpeedIndex(result.getString(6));
+    tire.setLoadIndex(LoadIndex.valueOf(result.getInt(5)));
+    tire.setSpeedIndex(SpeedIndex.valueOf(result.getString(6)));
     tire.setMargin(result.getDouble(7));
     tire.setGrossPrice(result.getDouble(8));
 
@@ -69,11 +102,12 @@ public class TiresService
     List<Tire> tires = new ArrayList<>();
     for(ResultRow result : results) {
       Tire tire = new Tire();
+      tire.setId(result.getInt(1));
       tire.setGroup(GroupsService.getInstance().getArticleGroup(result.getInt(2)));
       tire.setTread(getTread(result.getInt(3)));
       tire.setSize(getTireSize(result.getInt(4)));
-      tire.setLoadIndex(result.getDouble(5));
-      tire.setSpeedIndex(result.getString(6));
+      tire.setLoadIndex(LoadIndex.valueOf(result.getInt(5)));
+      tire.setSpeedIndex(SpeedIndex.valueOf(result.getString(6)));
       tire.setMargin(result.getDouble(7));
       tire.setGrossPrice(result.getDouble(8));
       tires.add(tire);
@@ -100,6 +134,25 @@ public class TiresService
     tireSize.setDiameter(result.getString(4));
 
     return tireSize;
+  }
+
+  public List<TireSize> getTireSizes() throws SQLException {
+    String sQuery="SELECT * FROM RozmiaryOpon ORDER BY Szerokosc ASC, Profil ASC, Srednica ASC;";
+
+    List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult(sQuery);
+		List<TireSize> tireSizes = new ArrayList<>();
+    TireSize currentSize;
+
+		for(ResultRow result : results) {
+      currentSize = new TireSize();
+      currentSize.setId(result.getInt(1));
+      currentSize.setWidth(result.getString(2));
+      currentSize.setProfile(result.getString(3));
+      currentSize.setDiameter(result.getString(4));
+      tireSizes.add(currentSize);
+    }
+
+    return tireSizes;
   }
   // </editor-fold>
 

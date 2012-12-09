@@ -29,7 +29,7 @@ public class GroupsService {
 	private GroupsService() {
 	}
 	// </editor-fold>
-	
+
 	public ArticlesGroup getArticleGroup(int iGroupCode) throws SQLException {
 		String sQuery = "SELECT KodGrupy, Nazwa, VAT, Stawka, Zawartosc FROM GrupyTowarowe "
 				+ "INNER JOIN StawkiVAT ON GrupyTowarowe.VAT=StawkiVAT.IdStawki WHERE KodGrupy=" + iGroupCode + ";";
@@ -83,7 +83,6 @@ public class GroupsService {
 		return articleGroups;
 	}
 
-  
 	public List<ArticlesGroup> getTireGroups() throws SQLException {
 		List articleGroups = new ArrayList<>();
 		String sqlQuery = "SELECT KodGrupy FROM GrupyTowarowe WHERE Zawartosc='o';";
@@ -125,8 +124,8 @@ public class GroupsService {
 		ArticlesGroupValidator validator = new ArticlesGroupValidator();
 		if (validator.validate(group)) {
 			DatabaseManager.getInstance().startTransaction();
-			String query = "INSERT INTO GrupyTowarowe (Nazwa, VAT) "
-					+ "VALUES('" + group.getName() + "', " + group.getVat().getId() + ");";
+			String query = "INSERT INTO GrupyTowarowe (Nazwa, VAT, Zawartosc) "
+					+ "VALUES('" + group.getName() + "', " + group.getVat().getId() + ", '" + group.getType().toString() + "');";
 			DatabaseManager.getInstance().executeQuery(query);
 
 			query = "SELECT KodGrupy FROM GrupyTowarowe WHERE Nazwa = '" + group.getName() + "' AND VAT = " + group.getVat().getId() + ";";
@@ -153,8 +152,57 @@ public class GroupsService {
 	}
 
 	public boolean updateArticlesGroup(ArticlesGroup group) throws DatabaseException, SQLException {
-		//TODO code update articles group logic
-		return false;
+		boolean result = false;
+		ArticlesGroupValidator validator = new ArticlesGroupValidator();
+		if (validator.validate(group)) {
+			DatabaseManager.getInstance().startTransaction();
+			String query = "UPDATE GrupyTowarowe "
+					+ "SET Nazwa='" + group.getName() + "', VAT=" + group.getVat().getId() + " "
+					+ "WHERE KodGrupy=" + group.getCode() + ";";
+			DatabaseManager.getInstance().executeQuery(query);
+			StringBuilder groupAttributesIds = new StringBuilder();
+			if (!group.getAttributes().isEmpty()) {
+				for (ArticleAttribute attribute : group.getAttributes()) {
+					groupAttributesIds.append(attribute.getId()).append(", ");
+
+				}
+				groupAttributesIds.setLength(groupAttributesIds.length() - 2);
+			}
+			query = "SELECT IdAtrybutuGrupy "
+					+ "FROM AtrybutyGrupTowarowych "
+					+ "WHERE KodGrupy=" + group.getCode();
+			if (!"".equals(groupAttributesIds.toString())) {
+				query += " AND IdAtrybutu NOT IN (" + groupAttributesIds.toString() + ")";
+			}
+			query += ";";
+			System.out.println(query);
+			List<ResultRow> resultRows = DatabaseManager.getInstance().executeQueryResult(query);
+			for (ResultRow row : resultRows) {
+				query = "DELETE FROM AtrybutyGrupTowarowych "
+						+ "WHERE IdAtrybutuGrupy=" + row.getInt(1);
+				DatabaseManager.getInstance().executeQuery(query);
+			}
+			if (!"".equals(groupAttributesIds.toString())) {
+				query = "SELECT IdAtrybutu "
+						+ "FROM AtrybutyCzesci "
+						+ "WHERE IdAtrybutu NOT IN(SELECT IdAtrybutu FROM AtrybutyGrupTowarowych WHERE KodGrupy=" + group.getCode() + ")"
+						+ "AND IdAtrybutu IN (" + groupAttributesIds + ");";
+				resultRows = DatabaseManager.getInstance().executeQueryResult(query);
+				for (ResultRow row : resultRows) {
+					query = "INSERT INTO AtrybutyGrupTowarowych (KodGrupy, IdAtrybutu) "
+							+ "VALUES(" + group.getCode() + ", " + row.getInt(1) + ");";
+					DatabaseManager.getInstance().executeQuery(query);
+				}
+			}
+			result = true;
+			if (result) {
+				DatabaseManager.getInstance().commitTransaction();
+			}
+			else {
+				DatabaseManager.getInstance().rollbackTransaction();
+			}
+		}
+		return result;
 	}
 
 	//<editor-fold defaultstate="collapsed" desc="ATTRIBUTES method">

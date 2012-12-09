@@ -7,13 +7,9 @@ import core.c.ViewManager;
 import core.v.MainMenuView;
 import core.v.PaginationPanel;
 import java.awt.Cursor;
-import java.awt.Rectangle;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.GroupLayout;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -25,214 +21,195 @@ import stores.articles.m.Tire;
 import stores.groups.c.GroupsService;
 import stores.groups.m.ArticlesGroup;
 import stores.groups.m.ArticlesGroupType;
-import stores.groups.v.AddArticlesGroupDialog;
-import stores.groups.v.EditArticlesGroupDialog;
+import stores.groups.v.AddEditArticlesGroupDialog;
 
 /**
  *
  * @author MRKACZOR
  */
-public class ArticleListView extends javax.swing.JPanel implements Reloadable
-{
-  public static final int ROWS_PER_PAGE=5;
-  public static final String[] PARTS_COLUMN_NAMES=
-  {
-    "Nazwa",
-    "Producent",
-    "Numer katalogowy",
-    "Cena brutto",
-    "Ilość"
-  };
-  public static final String[] TIRES_COLUMN_NAMES=
-  {
-    "Rozmiar",
-    "",
-    "",
-    "Producent",
-    "Bieżnik",
-    "Cena brutto"
-  };
-  private static final int ARTICLES_ROOT = -1;
-  private static final int TIRES_ROOT = -2;
-  private TablePagination<Part> _partsPagination;
-  private TablePagination<Tire> _tiresPagination;
+public class ArticleListView extends javax.swing.JPanel implements Reloadable {
+	public static final int ROWS_PER_PAGE = 5;
+	public static final String[] PARTS_COLUMN_NAMES = {
+		"Nazwa",
+		"Producent",
+		"Numer katalogowy",
+		"Cena brutto",
+		"Ilość"
+	};
+	public static final String[] TIRES_COLUMN_NAMES = {
+		"Rozmiar",
+		"",
+		"",
+		"Producent",
+		"Bieżnik",
+		"Cena brutto"
+	};
+	private static final int ARTICLES_ROOT = -1;
+	private static final int TIRES_ROOT = -2;
+	private TablePagination<Part> _partsPagination;
+	private TablePagination<Tire> _tiresPagination;
 
-  /**
-   * Creates new form ArticleListView
-   */
-  public ArticleListView()
-  {
-    _partsPagination=new TablePagination<>(new ArrayList<Part>(), ROWS_PER_PAGE);
-    _tiresPagination=new TablePagination<>(new ArrayList<Tire>(), ROWS_PER_PAGE);
-    initComponents();
-    refreshPopupMenu();
-    refresArticlesToolbar();
-    reload();
-    _navPanel.setButtonsListener(new PaginationPanel.ButtonsListener()
-    {
-      @Override
-      public void nextButtonClicked()
-      {
-        _articlesTable.setModel(getPartsTableModel(_partsPagination.getNextPage()));
-        _navPanel.setCurrentPage(_partsPagination.getCurrentPage());
-      }
+	/**
+	 * Creates new form ArticleListView
+	 */
+	public ArticleListView() {
+		_partsPagination = new TablePagination<>(new ArrayList<Part>(), ROWS_PER_PAGE);
+		_tiresPagination = new TablePagination<>(new ArrayList<Tire>(), ROWS_PER_PAGE);
+		initComponents();
+		refreshPopupMenu();
+		refresArticlesToolbar();
+		reload();
+		_navPanel.setButtonsListener(new PaginationPanel.ButtonsListener() {
+			@Override
+			public void nextButtonClicked() {
+				_articlesTable.setModel(getPartsTableModel(_partsPagination.getNextPage()));
+				_navPanel.setCurrentPage(_partsPagination.getCurrentPage());
+			}
 
-      @Override
-      public void previousButtonClicked()
-      {
-        _articlesTable.setModel(getPartsTableModel(_partsPagination.getPreviousPage()));
-        _navPanel.setCurrentPage(_partsPagination.getCurrentPage());
-      }
+			@Override
+			public void previousButtonClicked() {
+				_articlesTable.setModel(getPartsTableModel(_partsPagination.getPreviousPage()));
+				_navPanel.setCurrentPage(_partsPagination.getCurrentPage());
+			}
 
-      @Override
-      public void firstButtonClicked()
-      {
-        _articlesTable.setModel(getPartsTableModel(_partsPagination.getFirstPage()));
-        _navPanel.setCurrentPage(_partsPagination.getCurrentPage());
-      }
+			@Override
+			public void firstButtonClicked() {
+				_articlesTable.setModel(getPartsTableModel(_partsPagination.getFirstPage()));
+				_navPanel.setCurrentPage(_partsPagination.getCurrentPage());
+			}
 
-      @Override
-      public void lastButtonClicked()
-      {
-        _articlesTable.setModel(getPartsTableModel(_partsPagination.getLastPage()));
-        _navPanel.setCurrentPage(_partsPagination.getCurrentPage());
-      }
-    });
-  }
+			@Override
+			public void lastButtonClicked() {
+				_articlesTable.setModel(getPartsTableModel(_partsPagination.getLastPage()));
+				_navPanel.setCurrentPage(_partsPagination.getCurrentPage());
+			}
+		});
+	}
 
-  private void refreshPopupMenu() {
-    _editGroup.setEnabled(isValidGroupSelected());
-    _deleteGroup.setEnabled(isValidGroupSelected());
-  }
+	private void refreshPopupMenu() {
+		_editGroup.setEnabled(isValidGroupSelected());
+		_deleteGroup.setEnabled(isValidGroupSelected());
+	}
 
-  private void refresArticlesToolbar() {
-    ArticlesGroup selectedGroup = getSelectedGroup();
-    if(selectedGroup.getType().equals(ArticlesGroupType.PARTS)) {
-      _addPart.setVisible(true);
-      _editPart.setVisible(true);
-      _deletePart.setVisible(true);
-      _addTire.setVisible(false);
-      _editTire.setVisible(false);
-      _deleteTire.setVisible(false);
-    } else {
-      _addPart.setVisible(false);
-      _editPart.setVisible(false);
-      _deletePart.setVisible(false);
-      _addTire.setVisible(true);
-      _editTire.setVisible(true);
-      _deleteTire.setVisible(true);
-    }
-  }
+	private void refresArticlesToolbar() {
+		ArticlesGroup selectedGroup = getSelectedGroup();
+		if (selectedGroup.getType().equals(ArticlesGroupType.PARTS)) {
+			_addPart.setVisible(true);
+			_editPart.setVisible(true);
+			_deletePart.setVisible(true);
+			_addTire.setVisible(false);
+			_editTire.setVisible(false);
+			_deleteTire.setVisible(false);
+		}
+		else {
+			_addPart.setVisible(false);
+			_editPart.setVisible(false);
+			_deletePart.setVisible(false);
+			_addTire.setVisible(true);
+			_editTire.setVisible(true);
+			_deleteTire.setVisible(true);
+		}
+	}
 
-  public TableModel getPartsTableModel(List<Part> articles)
-  {
-    Object[][] data=new Object[articles.size()][];
-    for(int i=0; i<articles.size(); ++i)
-    {
-      Part article=articles.get(i);
-      data[i]=new Object[5];
-      data[i][0]=article.getName();
-      data[i][1]=article.getProducer().getName();
-      data[i][2]=article.getCatalogNumber();
-      data[i][3]=article.getGrossPrice();
-      data[i][4]=article.getCount();
-    }
-    return new DefaultTableModel(data, PARTS_COLUMN_NAMES)
-    {
-      @Override
-      public boolean isCellEditable(int row, int column)
-      {
-        return false;
-      }
-    };
-  }
+	public TableModel getPartsTableModel(List<Part> articles) {
+		Object[][] data = new Object[articles.size()][];
+		for (int i = 0; i < articles.size(); ++i) {
+			Part article = articles.get(i);
+			data[i] = new Object[5];
+			data[i][0] = article.getName();
+			data[i][1] = article.getProducer().getName();
+			data[i][2] = article.getCatalogNumber();
+			data[i][3] = article.getGrossPrice();
+			data[i][4] = article.getCount();
+		}
+		return new DefaultTableModel(data, PARTS_COLUMN_NAMES) {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
+	}
 
-  public TableModel getTiresTableModel(List<Tire> articles)
-  {
-    Object[][] data=new Object[articles.size()][];
-    for(int i=0; i<articles.size(); ++i)
-    {
-      Tire article=articles.get(i);
-      data[i]=new Object[6];
-      data[i][0]=article.getSize();
-      data[i][1]=article.getLoadIndex();
-      data[i][2]=article.getSpeedIndex();
-      data[i][3]=article.getTread().getProducer().getName();
-      data[i][4]=article.getTread().getName();
-      data[i][5]=article.getGrossPrice();
-    }
-    return new DefaultTableModel(data, TIRES_COLUMN_NAMES)
-    {
-      @Override
-      public boolean isCellEditable(int row, int column)
-      {
-        return false;
-      }
-    };
-  }
-  
-  private TreeModel getTreeModel()
-  {
-    try {
-      DefaultMutableTreeNode root = new DefaultMutableTreeNode(new ArticlesGroup(0, "Magazyn", null, null));
-      DefaultMutableTreeNode articles = new DefaultMutableTreeNode(new ArticlesGroup(ARTICLES_ROOT, "Części", ArticlesGroupType.PARTS, null));
-      for(ArticlesGroup group : GroupsService.getInstance().getPartGroups())
-      {
-        articles.add(new DefaultMutableTreeNode(group));
-      }
-      DefaultMutableTreeNode tires = new DefaultMutableTreeNode(new ArticlesGroup(TIRES_ROOT, "Opony", ArticlesGroupType.TIRES, null));
-      for(ArticlesGroup group : GroupsService.getInstance().getTireGroups())
-      {
-        tires.add(new DefaultMutableTreeNode(group));
-      }
-      root.add(articles);
-      root.add(tires);
-      return new javax.swing.tree.DefaultTreeModel(root);
-    } catch(SQLException ex) {
-      ErrorHandler.getInstance().reportError(ex);
-    }
-    return null;
-  }
-  
-  private ArticlesGroup getSelectedGroup()
-  {
+	public TableModel getTiresTableModel(List<Tire> articles) {
+		Object[][] data = new Object[articles.size()][];
+		for (int i = 0; i < articles.size(); ++i) {
+			Tire article = articles.get(i);
+			data[i] = new Object[6];
+			data[i][0] = article.getSize();
+			data[i][1] = article.getLoadIndex();
+			data[i][2] = article.getSpeedIndex();
+			data[i][3] = article.getTread().getProducer().getName();
+			data[i][4] = article.getTread().getName();
+			data[i][5] = article.getGrossPrice();
+		}
+		return new DefaultTableModel(data, TIRES_COLUMN_NAMES) {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
+	}
+
+	private TreeModel getTreeModel() {
+		try {
+			DefaultMutableTreeNode root = new DefaultMutableTreeNode(new ArticlesGroup(0, "Magazyn", null, null));
+			DefaultMutableTreeNode articles = new DefaultMutableTreeNode(new ArticlesGroup(ARTICLES_ROOT, "Części", ArticlesGroupType.PARTS, null));
+			for (ArticlesGroup group : GroupsService.getInstance().getPartGroups()) {
+				articles.add(new DefaultMutableTreeNode(group));
+			}
+			DefaultMutableTreeNode tires = new DefaultMutableTreeNode(new ArticlesGroup(TIRES_ROOT, "Opony", ArticlesGroupType.TIRES, null));
+			for (ArticlesGroup group : GroupsService.getInstance().getTireGroups()) {
+				tires.add(new DefaultMutableTreeNode(group));
+			}
+			root.add(articles);
+			root.add(tires);
+			return new javax.swing.tree.DefaultTreeModel(root);
+		}
+		catch (SQLException ex) {
+			ErrorHandler.getInstance().reportError(ex);
+		}
+		return null;
+	}
+
+	private ArticlesGroup getSelectedGroup() {
 //    ArticlesGroup selectedGroup = (ArticlesGroup)(((DefaultMutableTreeNode)(_articleGroupsTree.getLastSelectedPathComponent())).getUserObject());
 //    if(selectedGroup.getCode()==ARTICLES_ROOT || selectedGroup.getCode()==TIRES_ROOT)
 //      return null;
-    return (ArticlesGroup)(((DefaultMutableTreeNode)(_articleGroupsTree.getLastSelectedPathComponent())).getUserObject());
-  }
+		return (ArticlesGroup) (((DefaultMutableTreeNode) (_articleGroupsTree.getLastSelectedPathComponent())).getUserObject());
+	}
 
-  private boolean isValidGroupSelected() {
-    ArticlesGroup group = getSelectedGroup();
-    return group.getCode()!=ARTICLES_ROOT && group.getCode()!=TIRES_ROOT;
-  }
+	private boolean isValidGroupSelected() {
+		ArticlesGroup group = getSelectedGroup();
+		return group.getCode() != ARTICLES_ROOT && group.getCode() != TIRES_ROOT;
+	}
 
-  @Override
-  public final void reload()
-  {
-    try {
-      if(getSelectedGroup().getType().equals(ArticlesGroupType.PARTS)) {
-        _partsPagination.setTableData(PartsService.getInstance().getParts(getSelectedGroup()));
-        _articlesTable.setModel(getPartsTableModel(_partsPagination.getCurrentPageData()));
-        _navPanel.setCurrentPage(_partsPagination.getCurrentPage());
-        _navPanel.setPageCount(_partsPagination.getPageCount());
-      } else {
-        _tiresPagination.setTableData(TiresService.getInstance().getTires(getSelectedGroup()));
-        _articlesTable.setModel(getTiresTableModel(_tiresPagination.getCurrentPageData()));
-        _navPanel.setCurrentPage(_tiresPagination.getCurrentPage());
-        _navPanel.setPageCount(_tiresPagination.getPageCount());
-      }
-    } catch(SQLException ex) {
-      ErrorHandler.getInstance().reportError(ex);
-    }
-  }
+	@Override
+	public final void reload() {
+		try {
+			if (getSelectedGroup().getType().equals(ArticlesGroupType.PARTS)) {
+				_partsPagination.setTableData(PartsService.getInstance().getParts(getSelectedGroup()));
+				_articlesTable.setModel(getPartsTableModel(_partsPagination.getCurrentPageData()));
+				_navPanel.setCurrentPage(_partsPagination.getCurrentPage());
+				_navPanel.setPageCount(_partsPagination.getPageCount());
+			}
+			else {
+				_tiresPagination.setTableData(TiresService.getInstance().getTires(getSelectedGroup()));
+				_articlesTable.setModel(getTiresTableModel(_tiresPagination.getCurrentPageData()));
+				_navPanel.setCurrentPage(_tiresPagination.getCurrentPage());
+				_navPanel.setPageCount(_tiresPagination.getPageCount());
+			}
+		}
+		catch (SQLException ex) {
+			ErrorHandler.getInstance().reportError(ex);
+		}
+	}
 
-  /**
-   * This method is called from within the constructor to initialize the form.
-   * WARNING: Do NOT modify this code. The content of this method is always
-   * regenerated by the Form Editor.
-   */
-  @SuppressWarnings("unchecked")
+	/**
+	 * This method is called from within the constructor to initialize the form.
+	 * WARNING: Do NOT modify this code. The content of this method is always
+	 * regenerated by the Form Editor.
+	 */
+	@SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
@@ -474,24 +451,24 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable
 
   private void bBackActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bBackActionPerformed
   {//GEN-HEADEREND:event_bBackActionPerformed
-    ViewManager.getInstance().openView(new MainMenuView());
+	  ViewManager.getInstance().openView(new MainMenuView());
   }//GEN-LAST:event_bBackActionPerformed
 
   private void _addGroupActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event__addGroupActionPerformed
   {//GEN-HEADEREND:event__addGroupActionPerformed
-    ViewManager.getInstance().showDialog(new AddArticlesGroupDialog(true, this, getSelectedGroup()));
+	  ViewManager.getInstance().showDialog(new AddEditArticlesGroupDialog(true, this, getSelectedGroup().getType()));
   }//GEN-LAST:event__addGroupActionPerformed
 
   private void _articleGroupsTreeMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__articleGroupsTreeMouseClicked
   {//GEN-HEADEREND:event__articleGroupsTreeMouseClicked
-    refreshPopupMenu();
-    refresArticlesToolbar();
-    reload();
+	  refreshPopupMenu();
+	  refresArticlesToolbar();
+	  reload();
   }//GEN-LAST:event__articleGroupsTreeMouseClicked
 
   private void _editGroupActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event__editGroupActionPerformed
   {//GEN-HEADEREND:event__editGroupActionPerformed
-    ViewManager.getInstance().showDialog(new EditArticlesGroupDialog(true, this, getSelectedGroup()));
+	  ViewManager.getInstance().showDialog(new AddEditArticlesGroupDialog(true, this, getSelectedGroup()));
   }//GEN-LAST:event__editGroupActionPerformed
 
   private void _editTireMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__editTireMouseClicked
@@ -511,30 +488,31 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable
 
   private void _editTireMouseEntered(java.awt.event.MouseEvent evt)//GEN-FIRST:event__editTireMouseEntered
   {//GEN-HEADEREND:event__editTireMouseEntered
-    if(_articlesTable.getSelectedRow()>=0)
-      setCursor(new Cursor(Cursor.HAND_CURSOR));
+	  if (_articlesTable.getSelectedRow() >= 0) {
+		  setCursor(new Cursor(Cursor.HAND_CURSOR));
+	  }
   }//GEN-LAST:event__editTireMouseEntered
 
   private void _editTireMouseExited(java.awt.event.MouseEvent evt)//GEN-FIRST:event__editTireMouseExited
   {//GEN-HEADEREND:event__editTireMouseExited
-    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+	  setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
   }//GEN-LAST:event__editTireMouseExited
 
   private void _addPartMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__addPartMouseClicked
   {//GEN-HEADEREND:event__addPartMouseClicked
-    if(getSelectedGroup().getType().equals(ArticlesGroupType.PARTS)) {
-      ViewManager.getInstance().showDialog(new AddEditPartDialog(true, this, getSelectedGroup()));
-    }
+	  if (getSelectedGroup().getType().equals(ArticlesGroupType.PARTS)) {
+		  ViewManager.getInstance().showDialog(new AddEditPartDialog(true, this, getSelectedGroup()));
+	  }
   }//GEN-LAST:event__addPartMouseClicked
 
   private void _addPartMouseEntered(java.awt.event.MouseEvent evt)//GEN-FIRST:event__addPartMouseEntered
   {//GEN-HEADEREND:event__addPartMouseEntered
-    setCursor(new Cursor(Cursor.HAND_CURSOR));
+	  setCursor(new Cursor(Cursor.HAND_CURSOR));
   }//GEN-LAST:event__addPartMouseEntered
 
   private void _addPartMouseExited(java.awt.event.MouseEvent evt)//GEN-FIRST:event__addPartMouseExited
   {//GEN-HEADEREND:event__addPartMouseExited
-    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+	  setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
   }//GEN-LAST:event__addPartMouseExited
 
   private void _deleteTireMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__deleteTireMouseClicked
@@ -554,69 +532,72 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable
 
   private void _deleteTireMouseEntered(java.awt.event.MouseEvent evt)//GEN-FIRST:event__deleteTireMouseEntered
   {//GEN-HEADEREND:event__deleteTireMouseEntered
-    if(_articlesTable.getSelectedRow()>=0)
-      setCursor(new Cursor(Cursor.HAND_CURSOR));
+	  if (_articlesTable.getSelectedRow() >= 0) {
+		  setCursor(new Cursor(Cursor.HAND_CURSOR));
+	  }
   }//GEN-LAST:event__deleteTireMouseEntered
 
   private void _deleteTireMouseExited(java.awt.event.MouseEvent evt)//GEN-FIRST:event__deleteTireMouseExited
   {//GEN-HEADEREND:event__deleteTireMouseExited
-    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+	  setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
   }//GEN-LAST:event__deleteTireMouseExited
 
   private void _editPartMouseEntered(java.awt.event.MouseEvent evt)//GEN-FIRST:event__editPartMouseEntered
   {//GEN-HEADEREND:event__editPartMouseEntered
-    if(_articlesTable.getSelectedRow()>=0)
-      setCursor(new Cursor(Cursor.HAND_CURSOR));
+	  if (_articlesTable.getSelectedRow() >= 0) {
+		  setCursor(new Cursor(Cursor.HAND_CURSOR));
+	  }
   }//GEN-LAST:event__editPartMouseEntered
 
   private void _editPartMouseExited(java.awt.event.MouseEvent evt)//GEN-FIRST:event__editPartMouseExited
   {//GEN-HEADEREND:event__editPartMouseExited
-    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+	  setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
   }//GEN-LAST:event__editPartMouseExited
 
   private void _editPartMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__editPartMouseClicked
   {//GEN-HEADEREND:event__editPartMouseClicked
-    if(_articlesTable.getSelectedRow()>=0 && getSelectedGroup().getType().equals(ArticlesGroupType.PARTS)) {
-      try {
-        Part part=PartsService.getInstance().getPart(_partsPagination.getCurrentPageData().get(_articlesTable.getSelectedRow()).getId());
-        ViewManager.getInstance().showDialog(new AddEditPartDialog(true, this, part));
-      } catch(SQLException ex) {
-        ErrorHandler.getInstance().reportError(ex);
-      }
-    }
+	  if (_articlesTable.getSelectedRow() >= 0 && getSelectedGroup().getType().equals(ArticlesGroupType.PARTS)) {
+		  try {
+			  Part part = PartsService.getInstance().getPart(_partsPagination.getCurrentPageData().get(_articlesTable.getSelectedRow()).getId());
+			  ViewManager.getInstance().showDialog(new AddEditPartDialog(true, this, part));
+		  }
+		  catch (SQLException ex) {
+			  ErrorHandler.getInstance().reportError(ex);
+		  }
+	  }
   }//GEN-LAST:event__editPartMouseClicked
 
   private void _deletePartMouseEntered(java.awt.event.MouseEvent evt)//GEN-FIRST:event__deletePartMouseEntered
   {//GEN-HEADEREND:event__deletePartMouseEntered
-    if(_articlesTable.getSelectedRow()>=0)
-      setCursor(new Cursor(Cursor.HAND_CURSOR));
+	  if (_articlesTable.getSelectedRow() >= 0) {
+		  setCursor(new Cursor(Cursor.HAND_CURSOR));
+	  }
   }//GEN-LAST:event__deletePartMouseEntered
 
   private void _deletePartMouseExited(java.awt.event.MouseEvent evt)//GEN-FIRST:event__deletePartMouseExited
   {//GEN-HEADEREND:event__deletePartMouseExited
-    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+	  setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
   }//GEN-LAST:event__deletePartMouseExited
 
   private void _deletePartMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__deletePartMouseClicked
   {//GEN-HEADEREND:event__deletePartMouseClicked
-    // TODO add your handling code here:
+	  // TODO add your handling code here:
   }//GEN-LAST:event__deletePartMouseClicked
 
   private void _addTireMouseEntered(java.awt.event.MouseEvent evt)//GEN-FIRST:event__addTireMouseEntered
   {//GEN-HEADEREND:event__addTireMouseEntered
-    setCursor(new Cursor(Cursor.HAND_CURSOR));
+	  setCursor(new Cursor(Cursor.HAND_CURSOR));
   }//GEN-LAST:event__addTireMouseEntered
 
   private void _addTireMouseExited(java.awt.event.MouseEvent evt)//GEN-FIRST:event__addTireMouseExited
   {//GEN-HEADEREND:event__addTireMouseExited
-    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+	  setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
   }//GEN-LAST:event__addTireMouseExited
 
   private void _addTireMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__addTireMouseClicked
   {//GEN-HEADEREND:event__addTireMouseClicked
-    // TODO add your handling code here:
+	  // TODO add your handling code here:
   }//GEN-LAST:event__addTireMouseClicked
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem _addGroup;
     private javax.swing.JLabel _addPart;

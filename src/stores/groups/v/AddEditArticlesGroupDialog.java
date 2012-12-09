@@ -16,26 +16,32 @@ import java.util.List;
 import java.util.Set;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
-import stores.articles.c.PartsService;
 import stores.articles.m.ArticleAttribute;
 import stores.groups.c.GroupsService;
 import stores.groups.m.ArticlesGroup;
+import stores.groups.m.ArticlesGroupType;
 
 /**
  *
  * @author tobikster
  */
-public class AddArticlesGroupDialog extends ApplicationDialog implements Reloadable {
-//	private ArticlesGroup _parentGroup;
-
+public class AddEditArticlesGroupDialog extends ApplicationDialog implements Reloadable {
 	/**
 	 * Creates new form EditArticlesGroupDialog
 	 */
-	public AddArticlesGroupDialog(boolean modal, Reloadable reloadableParent, ArticlesGroup parentGroup) {
+	public AddEditArticlesGroupDialog(boolean modal, Reloadable reloadableParent, ArticlesGroup group) {
+		super(modal, reloadableParent);
+		_articlesGroup = group;
+		_editMode = true;
+		initComponents();
+		reload();
+	}
+
+	public AddEditArticlesGroupDialog(boolean modal, Reloadable reloadableParent, ArticlesGroupType type) {
 		super(modal, reloadableParent);
 		_articlesGroup = new ArticlesGroup();
-		_articlesGroup.setType(parentGroup.getType());
-//		_parentGroup = parentGroup.getCode() < 0 ? null : parentGroup;
+		_articlesGroup.setType(type);
+		_editMode = false;
 		initComponents();
 		reload();
 	}
@@ -56,8 +62,6 @@ public class AddArticlesGroupDialog extends ApplicationDialog implements Reloada
         _nameTextField = new javax.swing.JTextField();
         _vatRateLabel = new javax.swing.JLabel();
         _vatRateComboBox = new javax.swing.JComboBox();
-        _parentGroupLabel = new javax.swing.JLabel();
-        _parentGroupTextField = new javax.swing.JTextField();
         _attributesListPanel = new javax.swing.JPanel();
         _atributesListLabel = new javax.swing.JLabel();
         _attributesListScrollPane = new javax.swing.JScrollPane();
@@ -70,7 +74,7 @@ public class AddArticlesGroupDialog extends ApplicationDialog implements Reloada
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         _titleLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        _titleLabel.setText("Nowa grupa towarowa");
+        _titleLabel.setText((_editMode) ? "Edytuj grupę towarową" : "Nowa grupa towarowa");
 
         _articlesGroupDataPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -80,11 +84,6 @@ public class AddArticlesGroupDialog extends ApplicationDialog implements Reloada
         _vatRateLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         _vatRateLabel.setText("VAT:");
 
-        _parentGroupLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        _parentGroupLabel.setText("Grupa nadrzędna:");
-
-        _parentGroupTextField.setEnabled(false);
-
         javax.swing.GroupLayout _articlesGroupDataPanelLayout = new javax.swing.GroupLayout(_articlesGroupDataPanel);
         _articlesGroupDataPanel.setLayout(_articlesGroupDataPanelLayout);
         _articlesGroupDataPanelLayout.setHorizontalGroup(
@@ -93,13 +92,11 @@ public class AddArticlesGroupDialog extends ApplicationDialog implements Reloada
                 .addContainerGap()
                 .addGroup(_articlesGroupDataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(_vatRateLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(_parentGroupLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
-                    .addComponent(_nameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(_nameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(_articlesGroupDataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(_vatRateComboBox, javax.swing.GroupLayout.Alignment.TRAILING, 0, 112, Short.MAX_VALUE)
-                    .addComponent(_nameTextField, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(_parentGroupTextField))
+                    .addComponent(_nameTextField, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
         _articlesGroupDataPanelLayout.setVerticalGroup(
@@ -113,11 +110,7 @@ public class AddArticlesGroupDialog extends ApplicationDialog implements Reloada
                 .addGroup(_articlesGroupDataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(_vatRateLabel)
                     .addComponent(_vatRateComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(_articlesGroupDataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(_parentGroupLabel)
-                    .addComponent(_parentGroupTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         _attributesListPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -219,7 +212,7 @@ public class AddArticlesGroupDialog extends ApplicationDialog implements Reloada
                 .addComponent(_attributesListPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(_controlPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(14, 14, 14))
         );
 
         pack();
@@ -233,9 +226,16 @@ public class AddArticlesGroupDialog extends ApplicationDialog implements Reloada
     private void _okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__okButtonActionPerformed
 		try {
 			save();
-			if (GroupsService.getInstance().addArticlesGroup(_articlesGroup)) {
-				setHaveToReloadParent(true);
-				super.close();
+			setHaveToReloadParent(true);
+			if (_editMode) {
+				if (GroupsService.getInstance().updateArticlesGroup(_articlesGroup)) {
+					super.close();
+				}
+			}
+			else {
+				if (GroupsService.getInstance().addArticlesGroup(_articlesGroup)) {
+					super.close();
+				}
 			}
 		}
 		catch (SQLException | DatabaseException ex) {
@@ -264,7 +264,7 @@ public class AddArticlesGroupDialog extends ApplicationDialog implements Reloada
 			}
 			_vatRateComboBox.setModel(new DefaultComboBoxModel<>(vatRates));
 			_vatRateComboBox.setSelectedIndex(selectedIndex);
-			
+
 //			_parentGroupTextField.setText(_articlesGroup.getParentGroup() != null ? _articlesGroup.getParentGroup().getName() : "");
 
 			DefaultListModel<ArticleAttribute> model = new DefaultListModel<>();
@@ -287,6 +287,7 @@ public class AddArticlesGroupDialog extends ApplicationDialog implements Reloada
 //		}
 	}
 	private ArticlesGroup _articlesGroup;
+	private final boolean _editMode;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel _articlesGroupDataPanel;
     private javax.swing.JLabel _atributesListLabel;
@@ -300,8 +301,6 @@ public class AddArticlesGroupDialog extends ApplicationDialog implements Reloada
     private javax.swing.JLabel _nameLabel;
     private javax.swing.JTextField _nameTextField;
     private javax.swing.JButton _okButton;
-    private javax.swing.JLabel _parentGroupLabel;
-    private javax.swing.JTextField _parentGroupTextField;
     private javax.swing.JLabel _titleLabel;
     private javax.swing.JComboBox _vatRateComboBox;
     private javax.swing.JLabel _vatRateLabel;

@@ -4,9 +4,13 @@
  */
 package stores.articles.v;
 
+import core.c.ErrorHandler;
 import core.c.Reloadable;
 import core.v.ApplicationDialog;
+import java.sql.SQLException;
+import javax.swing.DefaultComboBoxModel;
 import stores.articles.m.Part;
+import stores.groups.c.GroupsService;
 import stores.groups.m.ArticlesGroup;
 import stores.producers.m.Producer;
 
@@ -14,15 +18,60 @@ import stores.producers.m.Producer;
  *
  * @author tobikster
  */
-public class AddEditPartDialog extends ApplicationDialog {
+public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
+  private boolean _editMode;
+  private Part _part;
+  
 	/**
 	 * Creates new form AddArticleDialog
-	 */
-	public AddEditPartDialog(boolean modal, Reloadable reloadableParent) {
+   * 
+   * @param modal
+   * @param reloadableParent
+   * @param group  
+   */
+	public AddEditPartDialog(boolean modal, Reloadable reloadableParent, ArticlesGroup group) {
 		super(modal, reloadableParent);
-		_article = new Part();
-		initComponents();
+    _editMode=false;
+		_part = new Part();
+		if(group!=null && group.getCode()>0) {
+      _part.setGroup(group);
+    }
+    initComponents();
+    reload();
 	}
+  
+	/**
+	 * Creates new form AddArticleDialog
+   * 
+   * @param modal
+   * @param reloadableParent
+   * @param group  
+   */
+	public AddEditPartDialog(boolean modal, Reloadable reloadableParent, Part part) {
+		super(modal, reloadableParent);
+    _editMode=true;
+		_part = part;
+    initComponents();
+    reload();
+	}
+
+  private DefaultComboBoxModel getGroupsModel() {
+    try
+    {
+      Object[] groups = GroupsService.getInstance().getPartGroups().toArray();
+      return new DefaultComboBoxModel(groups);
+    }
+    catch(SQLException ex)
+    {
+      ErrorHandler.getInstance().reportError(ex);
+    }
+    return null;
+  }
+  
+  @Override
+  public final void reload() {
+    _articlesGroupComboBox.setSelectedItem(_part.getGroup());
+  }
 
 	/**
 	 * This method is called from within the constructor to
@@ -68,7 +117,7 @@ public class AddEditPartDialog extends ApplicationDialog {
 
         _producerLabel.setText("Producent:");
 
-        _articlesGroupComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item1" }));
+        _articlesGroupComboBox.setModel(getGroupsModel());
         _articlesGroupComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 _articlesGroupComboBoxActionPerformed(evt);
@@ -247,13 +296,13 @@ public class AddEditPartDialog extends ApplicationDialog {
     }// </editor-fold>//GEN-END:initComponents
 
 	private void save() {
-		_article.setName(_nameTextField.getText());
-		_article.setCatalogNumber(_catalogNumberTextField.getText());
-		_article.setGroup((ArticlesGroup) (_articlesGroupComboBox.getSelectedItem()));
-		_article.setProducer((Producer) (_producerComboBox.getSelectedItem()));
-		_article.setCount((int) (_countSpinner.getValue()));
-		_article.setMargin(Double.parseDouble(_marginTextField.getText()));
-		_article.setGrossPrice(Double.parseDouble(_priceLabel.getText()));
+		_part.setName(_nameTextField.getText());
+		_part.setCatalogNumber(_catalogNumberTextField.getText());
+		_part.setGroup((ArticlesGroup) (_articlesGroupComboBox.getSelectedItem()));
+		_part.setProducer((Producer) (_producerComboBox.getSelectedItem()));
+		_part.setCount((int) (_countSpinner.getValue()));
+		_part.setMargin(Double.parseDouble(_marginTextField.getText()));
+		_part.setGrossPrice(Double.parseDouble(_priceLabel.getText()));
 	}
 	
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -263,7 +312,7 @@ public class AddEditPartDialog extends ApplicationDialog {
     private void _articlesGroupComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__articlesGroupComboBoxActionPerformed
 		System.out.println("Siema");
     }//GEN-LAST:event__articlesGroupComboBoxActionPerformed
-	private Part _article;
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox _articlesGroupComboBox;
     private javax.swing.JLabel _articlesGroupLabel;

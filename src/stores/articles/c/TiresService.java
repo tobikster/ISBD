@@ -5,13 +5,13 @@ import core.m.ResultRow;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import stores.groups.c.GroupsService;
-import stores.producers.c.ProducersService;
 import stores.articles.m.Tire;
 import stores.articles.m.TireSize;
 import stores.articles.m.Tread;
+import stores.groups.c.GroupsService;
 import stores.groups.m.ArticlesGroup;
-import stores.groups.m.ArticlesGroupType;
+import stores.producers.c.ProducersService;
+import stores.producers.m.Producer;
 
 public class TiresService
 {
@@ -119,6 +119,42 @@ public class TiresService
     tread.setName(result.getString(3));
 
     return tread;
+  }
+
+  public List<Tread> getTreads() throws SQLException {
+    String sQuery="SELECT * FROM Biezniki;";
+
+    List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult(sQuery);
+    List<Tread> treads = new ArrayList<>();
+    Tread currentTread;
+    
+    for(ResultRow rr : results) {
+      currentTread = new Tread();
+      currentTread.setId(rr.getInt(1));
+      currentTread.setProducer(ProducersService.getInstance().getProducer(rr.getInt(2)));
+      currentTread.setName(rr.getString(3));
+      treads.add(currentTread);
+    }
+
+    return treads;
+  }
+
+  public List<Tread> getTreads(Producer producer) throws SQLException {
+    String sQuery="SELECT * FROM Biezniki WHERE IdProducenta="+producer.getId()+";";
+
+    List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult(sQuery);
+    List<Tread> treads = new ArrayList<>();
+    Tread currentTread;
+    
+    for(ResultRow rr : results) {
+      currentTread = new Tread();
+      currentTread.setId(rr.getInt(1));
+      currentTread.setProducer(producer);
+      currentTread.setName(rr.getString(3));
+      treads.add(currentTread);
+    }
+
+    return treads;
   }
   // </editor-fold>
 }

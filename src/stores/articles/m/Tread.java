@@ -57,4 +57,9 @@ public class Tread {
 	public void setProducer(Producer producer) {
 		_producer = producer;
 	}
+  
+  @Override
+  public String toString() {
+    return _name;
+  }
 }

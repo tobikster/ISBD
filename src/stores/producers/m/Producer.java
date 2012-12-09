@@ -45,5 +45,9 @@ public class Producer {
 	public void setName(String name) {
 		_name = name;
 	}
-	
+
+  @Override
+  public String toString() {
+    return _name;
+  }
 }

@@ -496,17 +496,14 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable
 
   private void _editTireMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__editTireMouseClicked
   {//GEN-HEADEREND:event__editTireMouseClicked
-//    if(_workersTable.getSelectedRow()>=0) {
-//      try
-//      {
-//        Worker worker=WorkersService.getInstance().getWorker(_pagination.getCurrentPageData().get(_workersTable.getSelectedRow()).getId());
-//        ViewManager.getInstance().showDialog(new EditWorkerView(true, this, worker));
-//      }
-//      catch(SQLException ex)
-//      {
-//        ErrorHandler.getInstance().reportError(ex);
-//      }
-//    }
+    if(_articlesTable.getSelectedRow()>=0 && getSelectedGroup().getType().equals(ArticlesGroupType.TIRES)) {
+      try {
+        Tire tire=TiresService.getInstance().getTire(_tiresPagination.getCurrentPageData().get(_articlesTable.getSelectedRow()).getId());
+        ViewManager.getInstance().showDialog(new AddEditTireDialog(true, this, tire));
+      } catch(SQLException ex) {
+        ErrorHandler.getInstance().reportError(ex);
+      }
+    }
   }//GEN-LAST:event__editTireMouseClicked
 
   private void _editTireMouseEntered(java.awt.event.MouseEvent evt)//GEN-FIRST:event__editTireMouseEntered

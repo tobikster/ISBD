@@ -7,20 +7,22 @@ import stores.groups.m.ArticlesGroup;
  * @author tobikster
  */
 public class Tire {
+  private int _id;
 	private ArticlesGroup _group;
 	private Tread _tread;
 	private TireSize _size;
 	private double _loadIndex;
 	private String _speedIndex;
-	private double _margin;
-	private double _grossPrice;
+	private Double _margin;
+	private Double _grossPrice;
 
 	public Tire() {
     
   }
 
-  public Tire(ArticlesGroup group, Tread tread, TireSize size, double loadIndex, String speedIndex, double margin, double grossPrice) {
-		_group = group;
+  public Tire(int id, ArticlesGroup group, Tread tread, TireSize size, double loadIndex, String speedIndex, double margin, double grossPrice) {
+		_id = id;
+    _group = group;
 		_tread = tread;
 		_size = size;
 		_loadIndex = loadIndex;
@@ -29,9 +31,19 @@ public class Tire {
 		_grossPrice = grossPrice;
 	}
 
-	public double getGrossPrice() {
+  public int getId() {
+    return _id;
+  }
+
+	public Double getGrossPrice() {
 		return _grossPrice;
 	}
+
+  public Double getNetPrice() {
+    if(_grossPrice!=null && _group!=null && _group.getVat()!=null)
+      return _grossPrice/(1+_group.getVat().getRate());
+    return null;
+  }
 
 	public ArticlesGroup getGroup() {
 		return _group;
@@ -41,7 +53,7 @@ public class Tire {
 		return _loadIndex;
 	}
 
-	public double getMargin() {
+	public Double getMargin() {
 		return _margin;
 	}
 
@@ -56,6 +68,10 @@ public class Tire {
 	public Tread getTread() {
 		return _tread;
 	}
+
+  public void setId(int id) {
+    _id = id;
+  }
 
 	public void setGrossPrice(double grossPrice) {
 		_grossPrice = grossPrice;

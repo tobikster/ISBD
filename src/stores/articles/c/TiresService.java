@@ -45,6 +45,7 @@ public class TiresService
 		ResultRow result = results.get(0);
 
     Tire tire = new Tire();
+    tire.setId(tireId);
     tire.setGroup(GroupsService.getInstance().getArticleGroup(result.getInt(2)));
     tire.setTread(getTread(result.getInt(3)));
     tire.setSize(getTireSize(result.getInt(4)));
@@ -69,6 +70,7 @@ public class TiresService
     List<Tire> tires = new ArrayList<>();
     for(ResultRow result : results) {
       Tire tire = new Tire();
+      tire.setId(result.getInt(1));
       tire.setGroup(GroupsService.getInstance().getArticleGroup(result.getInt(2)));
       tire.setTread(getTread(result.getInt(3)));
       tire.setSize(getTireSize(result.getInt(4)));
@@ -100,6 +102,25 @@ public class TiresService
     tireSize.setDiameter(result.getString(4));
 
     return tireSize;
+  }
+
+  public List<TireSize> getTireSizes() throws SQLException {
+    String sQuery="SELECT * FROM RozmiaryOpon ORDER BY Szerokosc ASC, Profil ASC, Srednica ASC;";
+
+    List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult(sQuery);
+		List<TireSize> tireSizes = new ArrayList<>();
+    TireSize currentSize;
+
+		for(ResultRow result : results) {
+      currentSize = new TireSize();
+      currentSize.setId(result.getInt(1));
+      currentSize.setWidth(result.getString(2));
+      currentSize.setProfile(result.getString(3));
+      currentSize.setDiameter(result.getString(4));
+      tireSizes.add(currentSize);
+    }
+
+    return tireSizes;
   }
   // </editor-fold>
 

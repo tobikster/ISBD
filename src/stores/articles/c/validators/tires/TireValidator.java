@@ -9,17 +9,6 @@ import java.util.List;
 
 public class TireValidator implements EntityValidator<Tire>
 {
-  // <editor-fold defaultstate="collapsed" desc="Object variables">
-  // </editor-fold>
-  // <editor-fold defaultstate="collapsed" desc="Creating object">
-  // </editor-fold>
-  // <editor-fold defaultstate="collapsed" desc="Object PRIVATE methods">
-  // </editor-fold>
-  // <editor-fold defaultstate="collapsed" desc="Object PUBLIC methods">
-  // <editor-fold defaultstate="collapsed" desc="Getters">
-  // </editor-fold>
-  // <editor-fold defaultstate="collapsed" desc="Setters">
-  // </editor-fold>
   @Override
   public boolean validate(Tire object) throws DatabaseException
   {
@@ -31,16 +20,10 @@ public class TireValidator implements EntityValidator<Tire>
       errors.add("Nie podano bieżnika!");
     if(object.getSize()==null)
       errors.add("Nie podano rozmiaru!");
-    if(object.getLoadIndex()==Double.NaN)
+    if(object.getLoadIndex()==null)
       errors.add("Nie podano indeksu nośności!");
-    else
-      if(!ElementaryValidator.numberRangeValidator(object.getLoadIndex(), 0.0, 200.0))
-        errors.add("Podany indeks nośności jest z poza zakresu! Dozwolone wartości: pomiędzy 0.0 a 200.0!");
-    if(!ElementaryValidator.hasValue(object.getSpeedIndex()))
+    if(object.getSpeedIndex()==null)
       errors.add("Nie podano indeksu prędkości!");
-    else
-      if(!ElementaryValidator.isSpeedFactor(object.getSpeedIndex()))
-        errors.add("Podana wartość indeksu prędkości jest niedozwolona! Dopuszczalne wartości: L, M, N, P, Q, R, S, T, U, H, V, W, Y, ZR");
     if(object.getMargin()==Double.NaN)
       errors.add("Nie podano marży!");
     else
@@ -57,5 +40,4 @@ public class TireValidator implements EntityValidator<Tire>
 
     return errors.isEmpty();
   }
-  // </editor-fold>
 }

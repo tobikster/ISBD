@@ -15,9 +15,7 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.text.NumberFormatter;
 import stores.articles.c.TiresService;
-import stores.articles.m.Tire;
-import stores.articles.m.TireSize;
-import stores.articles.m.Tread;
+import stores.articles.m.*;
 import stores.groups.m.ArticlesGroup;
 import stores.producers.c.ProducersService;
 import stores.producers.m.Producer;
@@ -64,6 +62,8 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
 
   private void initItemsLists() {
     loadTireSizesList();
+    loadLoadIndexesList();
+    loadSpeedIndexesList();
     loadProducersList();
     loadTreadsList();
   }
@@ -73,6 +73,12 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
   {
     if(_tire.getSize()!=null) {
       _tireSizeComboBox.setSelectedIndex(findIndexForItem(_tire.getSize()));
+    }
+    if(_tire.getLoadIndex()!=null) {
+      _loadIndexComboBox.setSelectedIndex(findIndexForItem(_tire.getLoadIndex()));
+    }
+    if(_tire.getSpeedIndex()!=null) {
+      _speedIndexComboBox.setSelectedIndex(findIndexForItem(_tire.getSpeedIndex()));
     }
     if(_tire.getTread()!=null) {
       _producerComboBox.setSelectedIndex(findIndexForItem(_tire.getTread().getProducer()));
@@ -103,6 +109,32 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
   private int findIndexForItem(TireSize tireSize) {
     for(int i=0;i<_tireSizeComboBox.getItemCount();i++) {
       if(((TireSize)_tireSizeComboBox.getItemAt(i)).getId()==tireSize.getId())
+        return i;
+    }
+    return 0;
+  }
+
+  private void loadSpeedIndexesList() {
+    DefaultComboBoxModel<SpeedIndex> speedIndexes = new DefaultComboBoxModel<>(SpeedIndex.values());
+    _speedIndexComboBox.setModel(speedIndexes);
+  }
+  
+  private int findIndexForItem(SpeedIndex speedIndex) {
+    for(int i=0;i<_speedIndexComboBox.getItemCount();i++) {
+      if(((SpeedIndex)_speedIndexComboBox.getItemAt(i)).equals(speedIndex))
+        return i;
+    }
+    return 0;
+  }
+
+  private void loadLoadIndexesList() {
+    DefaultComboBoxModel<LoadIndex> loadIndexes = new DefaultComboBoxModel<>(LoadIndex.values());
+    _loadIndexComboBox.setModel(loadIndexes);
+  }
+  
+  private int findIndexForItem(LoadIndex loadIndex) {
+    for(int i=0;i<_loadIndexComboBox.getItemCount();i++) {
+      if(((LoadIndex)_loadIndexComboBox.getItemAt(i)).equals(loadIndex))
         return i;
     }
     return 0;
@@ -170,6 +202,10 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
     }
   }
 
+  private void getDOTsTableModel() {
+    
+  }
+
   /**
    * This method is called from within the constructor to initialize the form.
    * WARNING: Do NOT modify this code. The content of this method is always
@@ -190,6 +226,8 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
         _producerComboBox = new javax.swing.JComboBox();
         _treadLabel = new javax.swing.JLabel();
         _treadComboBox = new javax.swing.JComboBox();
+        _loadIndexComboBox = new javax.swing.JComboBox();
+        _speedIndexComboBox = new javax.swing.JComboBox();
         jpPriceDetails = new javax.swing.JPanel();
         _grossPriceLabel = new javax.swing.JLabel();
         _netPriceLabel = new javax.swing.JLabel();
@@ -249,6 +287,18 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
         _treadLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         _treadLabel.setText("Bieżnik:");
 
+        _loadIndexComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                _loadIndexComboBoxActionPerformed(evt);
+            }
+        });
+
+        _speedIndexComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                _speedIndexComboBoxActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jpBasicDetailsLayout = new javax.swing.GroupLayout(jpBasicDetails);
         jpBasicDetails.setLayout(jpBasicDetailsLayout);
         jpBasicDetailsLayout.setHorizontalGroup(
@@ -256,15 +306,24 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
             .addGroup(jpBasicDetailsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jpBasicDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(_treadLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(_producerLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(_tireSizeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(_producerLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
+                    .addComponent(_tireSizeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jpBasicDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(_producerComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(_tireSizeComboBox, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jpBasicDetailsLayout.createSequentialGroup()
+                        .addComponent(_producerComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(_treadLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(2, 2, 2))
+                    .addComponent(_tireSizeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jpBasicDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jpBasicDetailsLayout.createSequentialGroup()
+                        .addComponent(_loadIndexComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(_speedIndexComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(_treadComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(20, 20, 20))
+                .addContainerGap())
         );
         jpBasicDetailsLayout.setVerticalGroup(
             jpBasicDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -272,15 +331,15 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
                 .addContainerGap()
                 .addGroup(jpBasicDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(_tireSizeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(_tireSizeLabel))
+                    .addComponent(_tireSizeLabel)
+                    .addComponent(_loadIndexComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(_speedIndexComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jpBasicDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(_producerComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(_producerLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jpBasicDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(_producerLabel)
+                    .addComponent(_treadLabel)
                     .addComponent(_treadComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(_treadLabel))
+                    .addComponent(_producerComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -315,6 +374,15 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
             }
             public void focusLost(java.awt.event.FocusEvent evt) {
                 _netPriceTextFieldFocusLost(evt);
+            }
+        });
+
+        _grossPriceTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                _grossPriceTextFieldFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                _grossPriceTextFieldFocusLost(evt);
             }
         });
 
@@ -371,7 +439,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
             jpPriceDetails2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpPriceDetails2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jpPriceDetails2Layout.setVerticalGroup(
@@ -389,20 +457,18 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jSeparator1)
-                            .addComponent(jpPriceDetails2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jpBasicDetails, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jpPriceDetails, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap())
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jSeparator1)
+                    .addComponent(jpPriceDetails2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jpPriceDetails, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jpBasicDetails, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 171, Short.MAX_VALUE)
+                        .addGap(0, 114, Short.MAX_VALUE)
                         .addComponent(bSubmit)
                         .addGap(20, 20, 20)
                         .addComponent(bCancel)
-                        .addContainerGap(178, Short.MAX_VALUE))))
+                        .addGap(0, 112, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {bCancel, bSubmit});
@@ -419,7 +485,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
                 .addComponent(jpPriceDetails, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jpPriceDetails2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bSubmit)
                     .addComponent(bCancel))
@@ -505,11 +571,51 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
     }
   }//GEN-LAST:event__netPriceTextFieldFocusLost
 
+  private void _grossPriceTextFieldFocusGained(java.awt.event.FocusEvent evt)//GEN-FIRST:event__grossPriceTextFieldFocusGained
+  {//GEN-HEADEREND:event__grossPriceTextFieldFocusGained
+    String currentInput=_grossPriceTextField.getText();
+    if(currentInput.indexOf(" zł")!=-1)
+      currentInput=currentInput.substring(0, currentInput.indexOf(" zł"));
+    _grossPriceTextField.setText(currentInput);
+    _grossPriceTextField.setSelectionStart(0);
+  }//GEN-LAST:event__grossPriceTextFieldFocusGained
+
+  private void _grossPriceTextFieldFocusLost(java.awt.event.FocusEvent evt)//GEN-FIRST:event__grossPriceTextFieldFocusLost
+  {//GEN-HEADEREND:event__grossPriceTextFieldFocusLost
+    String currentInput=_grossPriceTextField.getText();
+    currentInput=currentInput.replace(",", ".");
+    double value;
+    try
+    {
+      value=Double.parseDouble(currentInput);
+      _grossPriceTextField.setText(_priceFormat.format(value));
+      _grossPriceTextField.setBorder(null);
+      refreshNetPrice();
+    }
+    catch(NumberFormatException ex)
+    {
+      currentInput+=" zł";
+      _grossPriceTextField.setText(currentInput);
+      _grossPriceTextField.setBorder(BorderFactory.createLineBorder(Color.red));
+    }
+  }//GEN-LAST:event__grossPriceTextFieldFocusLost
+
+  private void _loadIndexComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event__loadIndexComboBoxActionPerformed
+  {//GEN-HEADEREND:event__loadIndexComboBoxActionPerformed
+    // TODO add your handling code here:
+  }//GEN-LAST:event__loadIndexComboBoxActionPerformed
+
+  private void _speedIndexComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event__speedIndexComboBoxActionPerformed
+  {//GEN-HEADEREND:event__speedIndexComboBoxActionPerformed
+    // TODO add your handling code here:
+  }//GEN-LAST:event__speedIndexComboBoxActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel _grossPriceLabel;
     private javax.swing.JLabel _grossPriceLabel1;
     private javax.swing.JTextField _grossPriceTextField;
     private javax.swing.JFormattedTextField _grossPriceTextField1;
+    private javax.swing.JComboBox _loadIndexComboBox;
     private javax.swing.JLabel _marginLabel;
     private javax.swing.JLabel _marginLabel1;
     private javax.swing.JTextField _marginTextField;
@@ -520,6 +626,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
     private javax.swing.JFormattedTextField _priceTextField1;
     private javax.swing.JComboBox _producerComboBox;
     private javax.swing.JLabel _producerLabel;
+    private javax.swing.JComboBox _speedIndexComboBox;
     private javax.swing.JComboBox _tireSizeComboBox;
     private javax.swing.JLabel _tireSizeLabel;
     private javax.swing.JComboBox _treadComboBox;

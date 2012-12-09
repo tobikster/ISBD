@@ -17,6 +17,7 @@ import javax.swing.GroupLayout;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import stores.articles.c.PartsService;
 import stores.articles.c.TiresService;
@@ -173,8 +174,8 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable
   
   private TreeModel getTreeModel()
   {
+    DefaultMutableTreeNode root = new DefaultMutableTreeNode(new ArticlesGroup(0, "Magazyn", null, null));
     try {
-      DefaultMutableTreeNode root = new DefaultMutableTreeNode(new ArticlesGroup(0, "Magazyn", null, null));
       DefaultMutableTreeNode articles = new DefaultMutableTreeNode(new ArticlesGroup(ARTICLES_ROOT, "Części", ArticlesGroupType.PARTS, null));
       for(ArticlesGroup group : GroupsService.getInstance().getPartGroups())
       {
@@ -187,11 +188,10 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable
       }
       root.add(articles);
       root.add(tires);
-      return new javax.swing.tree.DefaultTreeModel(root);
     } catch(SQLException ex) {
       ErrorHandler.getInstance().reportError(ex);
     }
-    return null;
+    return new DefaultTreeModel(root);
   }
   
   private ArticlesGroup getSelectedGroup()

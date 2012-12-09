@@ -11,8 +11,8 @@ public class Tire {
 	private ArticlesGroup _group;
 	private Tread _tread;
 	private TireSize _size;
-	private double _loadIndex;
-	private String _speedIndex;
+	private LoadIndex _loadIndex;
+	private SpeedIndex _speedIndex;
 	private Double _margin;
 	private Double _grossPrice;
 
@@ -20,7 +20,7 @@ public class Tire {
     
   }
 
-  public Tire(int id, ArticlesGroup group, Tread tread, TireSize size, double loadIndex, String speedIndex, double margin, double grossPrice) {
+  public Tire(int id, ArticlesGroup group, Tread tread, TireSize size, LoadIndex loadIndex, SpeedIndex speedIndex, double margin, double grossPrice) {
 		_id = id;
     _group = group;
 		_tread = tread;
@@ -49,7 +49,7 @@ public class Tire {
 		return _group;
 	}
 
-	public double getLoadIndex() {
+	public LoadIndex getLoadIndex() {
 		return _loadIndex;
 	}
 
@@ -61,7 +61,7 @@ public class Tire {
 		return _size;
 	}
 
-	public String getSpeedIndex() {
+	public SpeedIndex getSpeedIndex() {
 		return _speedIndex;
 	}
 
@@ -81,7 +81,7 @@ public class Tire {
 		_group = group;
 	}
 
-	public void setLoadIndex(double loadIndex) {
+	public void setLoadIndex(LoadIndex loadIndex) {
 		_loadIndex = loadIndex;
 	}
 
@@ -93,7 +93,7 @@ public class Tire {
 		_size = size;
 	}
 
-	public void setSpeedIndex(String speedIndex) {
+	public void setSpeedIndex(SpeedIndex speedIndex) {
 		_speedIndex = speedIndex;
 	}
 

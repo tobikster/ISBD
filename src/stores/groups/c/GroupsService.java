@@ -107,10 +107,10 @@ public class GroupsService {
 
 	public List<ArticleAttribute> getAvailableAttributes(int groupCode) throws SQLException {
 		List<ArticleAttribute> result = new LinkedList<>();
-		String query = "SELECT AtrybutyCzesci.IdAtrybutu, AtrybutyCzesci.Nazwa "
-				+ "FROM AtrybutyCzesci, AtrybutyGrupTowarowych "
-				+ "WHERE AtrybutyCzesci.IdAtrybutu = AtrybutyGrupTowarowych.IdAtrybutu AND NOT AtrybutyGrupTowarowych.KodGrupy = " + groupCode + ";";
-		query = "SELECT IdAtrybutu, Nazwa "
+//		String query = "SELECT AtrybutyCzesci.IdAtrybutu, AtrybutyCzesci.Nazwa "
+//				+ "FROM AtrybutyCzesci, AtrybutyGrupTowarowych "
+//				+ "WHERE AtrybutyCzesci.IdAtrybutu = AtrybutyGrupTowarowych.IdAtrybutu AND NOT AtrybutyGrupTowarowych.KodGrupy = " + groupCode + ";";
+		String query = "SELECT IdAtrybutu, Nazwa "
 				+ "FROM AtrybutyCzesci;";
 		List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult(query);
 		for (ResultRow row : results) {
@@ -201,6 +201,69 @@ public class GroupsService {
 			else {
 				DatabaseManager.getInstance().rollbackTransaction();
 			}
+		}
+		return result;
+	}
+
+	public boolean removeArticlesGroup(ArticlesGroup group) throws DatabaseException, SQLException {
+		boolean result = false;
+		ArticlesGroupValidator validator = new ArticlesGroupValidator();
+		if (validator.validate(group)) {
+			String query = "DELETE FROM GrupyTowarowe "
+					+ "WHERE KodGrupy=" + group.getCode() + ";";
+			DatabaseManager.getInstance().executeQuery(query);
+			result = true;
+		}
+		return result;
+	}
+
+	public int checkRemovabilityGroup(ArticlesGroup group) throws SQLException {
+		int result = 0;
+		String query;
+		List<ResultRow> resultRows;
+		switch (group.getType()) {
+			case PARTS:
+				query = "SELECT COUNT(IdCzesci) "
+						+ "FROM Czesci "
+						+ "WHERE KodGrupyTowarowej = " + group.getCode() + ";";
+				resultRows = DatabaseManager.getInstance().executeQueryResult(query);
+				if (resultRows.get(0).getInt(1) == 0) {
+					result = 1;
+				}
+				else {
+					query = "SELECT COUNT(IdCzesci) "
+							+ "FROM Czesci "
+							+ "WHERE KodGrupyTowarowej = " + group.getCode() + " AND Ilosc <> 0;";
+					resultRows = DatabaseManager.getInstance().executeQueryResult(query);
+					if (resultRows.get(0).getInt(1) == 0) {
+						result = 0;
+					}
+					else {
+						result = -1;
+					}
+				}
+				break;
+			case TIRES:
+				query = "SELECT COUNT(IdOpony) "
+						+ "FROM Opony "
+						+ "WHERE KodGrupyTowarowej = " + group.getCode() + ";";
+				resultRows = DatabaseManager.getInstance().executeQueryResult(query);
+				if (resultRows.get(0).getInt(1) == 0) {
+					result = 1;
+				}
+				else {
+					query = "SELECT Count(Opony.IdOpony) "
+							+ "FROM Opony, DOTyOpon "
+							+ "WHERE Opony.IdOpony = DOTyOpon.IdOpony AND Opony.KodGrupyTowarowej = " + group.getCode() + " AND DOTyOpon.Liczba <> 0;";
+					resultRows = DatabaseManager.getInstance().executeQueryResult(query);
+					if(resultRows.get(0).getInt(1) == 0) {
+						result = 0;
+					}
+					else {
+						result = -1;
+					}
+				}
+				break;
 		}
 		return result;
 	}

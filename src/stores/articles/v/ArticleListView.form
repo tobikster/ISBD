@@ -28,6 +28,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Usu&#x144; grup&#x119;"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="_deleteGroupActionPerformed"/>
+          </Events>
         </MenuItem>
         <Component class="javax.swing.JPopupMenu$Separator" name="_popupMenuSeparator">
         </Component>

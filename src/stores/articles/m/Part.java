@@ -15,18 +15,18 @@ public class Part {
 	private String _name;
 	private Float _margin;
 	private Float _grossPrice;
-	private Integer _count;
+	private Float _count;
 	private String _picture;
 
 	public Part() {
 		this(null, null, null, null, null, null, null, null);
 	}
 
-	public Part(ArticlesGroup group, Producer producer, String name, Float margin, Float grossPrice, Integer count) {
+	public Part(ArticlesGroup group, Producer producer, String name, Float margin, Float grossPrice, Float count) {
 		this(group, producer, null, name, margin, grossPrice, count, null);
 	}
 
-	public Part(ArticlesGroup group, Producer producer, String catalogNumber, String name, Float margin, Float grossPrice, Integer count, String picture) {
+	public Part(ArticlesGroup group, Producer producer, String catalogNumber, String name, Float margin, Float grossPrice, Float count, String picture) {
 		_group = group;
 		_producer = producer;
 		_catalogNumber = catalogNumber;
@@ -45,7 +45,7 @@ public class Part {
 		return _catalogNumber;
 	}
 
-	public Integer getCount() {
+	public Float getCount() {
 		return _count;
 	}
 
@@ -81,7 +81,7 @@ public class Part {
 		_catalogNumber = catalogNumber;
 	}
 
-	public void setCount(Integer count) {
+	public void setCount(Float count) {
 		_count = count;
 	}
 

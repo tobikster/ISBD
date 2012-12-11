@@ -42,9 +42,9 @@ public class PartsService {
 		part.setProducer(ProducersService.getInstance().getProducer(result.getInt(3)));
 		part.setCatalogNumber(result.getString(4));
 		part.setName(result.getString(5));
-		part.setMargin(result.getDouble(6));
-		part.setGrossPrice(result.getDouble(7));
-		part.setCount(result.getFloat(8));
+		part.setMargin(result.getFloat(6));
+		part.setGrossPrice(result.getFloat(7));
+		part.setCount(result.getInt(8));
 		//TODO load image for part item
 
 		return part;
@@ -68,9 +68,9 @@ public class PartsService {
       part.setProducer(ProducersService.getInstance().getProducer(result.getInt(3)));
       part.setCatalogNumber(result.getString(4));
       part.setName(result.getString(5));
-      part.setMargin(result.getDouble(6));
-      part.setGrossPrice(result.getDouble(7));
-      part.setCount(result.getFloat(8));
+      part.setMargin(result.getFloat(6));
+      part.setGrossPrice(result.getFloat(7));
+      part.setCount(result.getInt(8));
       parts.add(part);
     }
 		//TODO load image for part item

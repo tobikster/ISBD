@@ -8,25 +8,25 @@ import stores.groups.m.ArticlesGroup;
  * @author tobikster
  */
 public class Part {
-  private int _id;
+	private Integer _id;
 	private ArticlesGroup _group;
 	private Producer _producer;
 	private String _catalogNumber;
 	private String _name;
-	private double _margin;
-	private double _grossPrice;
-	private float _count;
-	private Object _picture;
-        
+	private Float _margin;
+	private Float _grossPrice;
+	private Integer _count;
+	private String _picture;
+
 	public Part() {
-		this(null, null, null, null, Double.NaN, Double.NaN, 0, null);
+		this(null, null, null, null, null, null, null, null);
 	}
 
-	public Part(ArticlesGroup group, Producer producer, String name, double margin, double grossPrice, int count) {
+	public Part(ArticlesGroup group, Producer producer, String name, Float margin, Float grossPrice, Integer count) {
 		this(group, producer, null, name, margin, grossPrice, count, null);
 	}
 
-	public Part(ArticlesGroup group, Producer producer, String catalogNumber, String name, double margin, double grossPrice, int count, Object picture) {
+	public Part(ArticlesGroup group, Producer producer, String catalogNumber, String name, Float margin, Float grossPrice, Integer count, String picture) {
 		_group = group;
 		_producer = producer;
 		_catalogNumber = catalogNumber;
@@ -37,19 +37,19 @@ public class Part {
 		_picture = picture;
 	}
 
-  public int getId() {
-    return _id;
-  }
+	public Integer getId() {
+		return _id;
+	}
 
 	public String getCatalogNumber() {
 		return _catalogNumber;
 	}
 
-	public float getCount() {
+	public Integer getCount() {
 		return _count;
 	}
 
-	public double getGrossPrice() {
+	public Float getGrossPrice() {
 		return _grossPrice;
 	}
 
@@ -57,7 +57,7 @@ public class Part {
 		return _group;
 	}
 
-	public double getMargin() {
+	public Float getMargin() {
 		return _margin;
 	}
 
@@ -65,7 +65,7 @@ public class Part {
 		return _name;
 	}
 
-	public Object getPicture() {
+	public String getPicture() {
 		return _picture;
 	}
 
@@ -73,19 +73,19 @@ public class Part {
 		return _producer;
 	}
 
-  public void setId(int id) {
-    _id = id;
-  }
+	public void setId(Integer id) {
+		_id = id;
+	}
 
 	public void setCatalogNumber(String catalogNumber) {
 		_catalogNumber = catalogNumber;
 	}
 
-	public void setCount(float count) {
+	public void setCount(Integer count) {
 		_count = count;
 	}
 
-	public void setGrossPrice(double grossPrice) {
+	public void setGrossPrice(Float grossPrice) {
 		_grossPrice = grossPrice;
 	}
 
@@ -93,7 +93,7 @@ public class Part {
 		_group = group;
 	}
 
-	public void setMargin(double margin) {
+	public void setMargin(Float margin) {
 		_margin = margin;
 	}
 
@@ -101,16 +101,16 @@ public class Part {
 		_name = name;
 	}
 
-	public void setPicture(Object picture) {
+	public void setPicture(String picture) {
 		_picture = picture;
 	}
 
 	public void setProducer(Producer producer) {
 		_producer = producer;
 	}
-  
-  @Override
-  public String toString() {
-    return _name;
-  }
+
+	@Override
+	public String toString() {
+		return _name;
+	}
 }

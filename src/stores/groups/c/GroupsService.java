@@ -8,11 +8,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import stores.articles.c.validators.parts.ArticleAttributeValidator;
+import stores.articles.m.ArticleAttribute;
 import stores.groups.c.validators.ArticlesGroupValidator;
 import stores.groups.m.ArticlesGroup;
 import stores.groups.m.ArticlesGroupType;
-import stores.articles.c.validators.parts.ArticleAttributeValidator;
-import stores.articles.m.ArticleAttribute;
 
 public class GroupsService {
 	// <editor-fold defaultstate="collapsed" desc="Creating object">
@@ -75,7 +75,7 @@ public class GroupsService {
 
 	public List<ArticlesGroup> getPartGroups() throws SQLException {
 		List articleGroups = new ArrayList<>();
-		String sqlQuery = "SELECT KodGrupy FROM GrupyTowarowe WHERE Zawartosc='c';";
+		String sqlQuery = "SELECT KodGrupy FROM GrupyTowarowe WHERE Zawartosc='c' ORDER BY Nazwa;";
 		ArrayList<ResultRow> result = (ArrayList<ResultRow>) DatabaseManager.getInstance().executeQueryResult(sqlQuery);
 		for (ResultRow rr : result) {
 			articleGroups.add(getArticleGroup(rr.getInt(1)));

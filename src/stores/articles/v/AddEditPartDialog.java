@@ -8,10 +8,12 @@ import core.c.ErrorHandler;
 import core.c.Reloadable;
 import core.v.ApplicationDialog;
 import java.sql.SQLException;
+import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import stores.articles.m.Part;
 import stores.groups.c.GroupsService;
 import stores.groups.m.ArticlesGroup;
+import stores.producers.c.ProducersService;
 import stores.producers.m.Producer;
 
 /**
@@ -19,59 +21,100 @@ import stores.producers.m.Producer;
  * @author tobikster
  */
 public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
-  private boolean _editMode;
-  private Part _part;
-  
+	private boolean _editMode;
+	private Part _part;
+
 	/**
 	 * Creates new form AddArticleDialog
-   * 
-   * @param modal
-   * @param reloadableParent
-   * @param group  
-   */
+	 *
+	 * @param modal
+	 * @param reloadableParent
+	 * @param group
+	 */
 	public AddEditPartDialog(boolean modal, Reloadable reloadableParent, ArticlesGroup group) {
 		super(modal, reloadableParent);
-    _editMode=false;
+		_editMode = false;
 		_part = new Part();
-		if(group!=null && group.getCode()>0) {
-      _part.setGroup(group);
-    }
-    initComponents();
-    reload();
-	}
-  
-	/**
-	 * Creates new form AddArticleDialog
-   * 
-   * @param modal
-   * @param reloadableParent
-   * @param group  
-   */
-	public AddEditPartDialog(boolean modal, Reloadable reloadableParent, Part part) {
-		super(modal, reloadableParent);
-    _editMode=true;
-		_part = part;
-    initComponents();
-    reload();
+		if (group != null && group.getCode() > 0) {
+			_part.setGroup(group);
+		}
+		initComponents();
+		reload();
 	}
 
-  private DefaultComboBoxModel getGroupsModel() {
-    try
-    {
-      Object[] groups = GroupsService.getInstance().getPartGroups().toArray();
-      return new DefaultComboBoxModel(groups);
-    }
-    catch(SQLException ex)
-    {
-      ErrorHandler.getInstance().reportError(ex);
-    }
-    return null;
-  }
-  
-  @Override
-  public final void reload() {
-    _articlesGroupComboBox.setSelectedItem(_part.getGroup());
-  }
+	/**
+	 * Creates new form AddArticleDialog
+	 *
+	 * @param modal
+	 * @param reloadableParent
+	 * @param group
+	 */
+	public AddEditPartDialog(boolean modal, Reloadable reloadableParent, Part part) {
+		super(modal, reloadableParent);
+		_editMode = true;
+		_part = part;
+		initComponents();
+		reload();
+	}
+
+	private DefaultComboBoxModel<ArticlesGroup> getGroupsModel() {
+		DefaultComboBoxModel<ArticlesGroup> result = null;
+		try {
+			List<ArticlesGroup> groupsList = GroupsService.getInstance().getPartGroups();
+			ArticlesGroup[] groups = new ArticlesGroup[groupsList.size()];
+			for (int i = 0; i < groups.length; ++i) {
+				groups[i] = groupsList.get(i);
+			}
+			result = new DefaultComboBoxModel<>(groups);
+		}
+		catch (SQLException ex) {
+			ErrorHandler.getInstance().reportError(ex);
+		}
+		return result;
+	}
+
+	private DefaultComboBoxModel<Producer> getProducersModel() {
+		DefaultComboBoxModel<Producer> result = null;
+		try {
+			List<Producer> groupsList = ProducersService.getInstance().getProducers();
+			Producer[] groups = new Producer[groupsList.size()];
+			for (int i = 0; i < groups.length; ++i) {
+				groups[i] = groupsList.get(i);
+			}
+			result = new DefaultComboBoxModel<>(groups);
+		}
+		catch (SQLException ex) {
+			ErrorHandler.getInstance().reportError(ex);
+		}
+		return result;
+	}
+
+	@Override
+	public final void reload() {
+		if (_part != null) {
+			_nameTextField.setText(_part.getName());
+			if (_part.getGroup() != null) {
+				int selectedArticlesGroupIndex = 0;
+				for (int i = 0; i < _articlesGroupComboBox.getItemCount(); ++i) {
+					if (_part.getGroup().getCode() == ((ArticlesGroup) (_articlesGroupComboBox.getItemAt(i))).getCode()) {
+						selectedArticlesGroupIndex = i;
+					}
+				}
+				_articlesGroupComboBox.setSelectedIndex(selectedArticlesGroupIndex);
+			}
+			if (_part.getProducer() != null) {
+				int selectedProducerIndex = 0;
+				for (int i = 0; i < _producerComboBox.getItemCount(); ++i) {
+					if (_part.getProducer().getId() == ((Producer) (_producerComboBox.getItemAt(i))).getId()) {
+						selectedProducerIndex = i;
+					}
+				}
+				_producerComboBox.setSelectedIndex(selectedProducerIndex);
+			}
+			_catalogNumberTextField.setText(_part.getCatalogNumber());
+			_countSpinner.setValue(_part.getCount());
+		}
+	}
 
 	/**
 	 * This method is called from within the constructor to
@@ -97,11 +140,11 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
         _priceLabel = new javax.swing.JLabel();
         _countLabel = new javax.swing.JLabel();
         _countSpinner = new javax.swing.JSpinner();
-        _marginTextField = new javax.swing.JFormattedTextField();
-        _priceTextField = new javax.swing.JFormattedTextField();
         _pictureLabel = new javax.swing.JLabel();
         _picturePathTextField = new javax.swing.JTextField();
         _choosePictureButton = new javax.swing.JButton();
+        _marginTextField = new javax.swing.JTextField();
+        _grossPriceTextField = new javax.swing.JTextField();
         _controlPanel = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -124,6 +167,8 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
             }
         });
 
+        _producerComboBox.setModel(getProducersModel());
+
         _catalogNumberLabel.setText("Numer katalogowy:");
 
         _nameLabel.setText("Nazwa:");
@@ -135,8 +180,6 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
         _countLabel.setText("Ilość:");
 
         _countSpinner.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
-
-        _marginTextField.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00%"))));
 
         _pictureLabel.setText("Zdjęcie:");
 
@@ -162,17 +205,17 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
                     .addComponent(_nameLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(_dataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(_marginTextField)
                     .addComponent(_catalogNumberTextField)
                     .addComponent(_countSpinner)
-                    .addComponent(_priceTextField)
                     .addComponent(_producerComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(_articlesGroupComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(_dataPanelLayout.createSequentialGroup()
                         .addComponent(_picturePathTextField)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(_choosePictureButton))
-                    .addComponent(_nameTextField))
+                    .addComponent(_nameTextField)
+                    .addComponent(_marginTextField)
+                    .addComponent(_grossPriceTextField))
                 .addContainerGap())
         );
         _dataPanelLayout.setVerticalGroup(
@@ -201,7 +244,7 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(_dataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(_priceLabel)
-                    .addComponent(_priceTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(_grossPriceTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(_dataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(_countLabel)
@@ -211,7 +254,7 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
                     .addComponent(_pictureLabel)
                     .addComponent(_picturePathTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(_choosePictureButton))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(68, Short.MAX_VALUE))
         );
 
         jButton1.setText("Anuluj");
@@ -301,18 +344,17 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
 		_part.setGroup((ArticlesGroup) (_articlesGroupComboBox.getSelectedItem()));
 		_part.setProducer((Producer) (_producerComboBox.getSelectedItem()));
 		_part.setCount((int) (_countSpinner.getValue()));
-		_part.setMargin(Double.parseDouble(_marginTextField.getText()));
-		_part.setGrossPrice(Double.parseDouble(_priceLabel.getText()));
+//		_part.setMargin(Double.parseDouble(_marginTextField.getText()));
+//		_part.setGrossPrice(Double.parseDouble(_priceLabel.getText()));
 	}
-	
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+		// TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void _articlesGroupComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__articlesGroupComboBoxActionPerformed
 		System.out.println("Siema");
     }//GEN-LAST:event__articlesGroupComboBoxActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox _articlesGroupComboBox;
     private javax.swing.JLabel _articlesGroupLabel;
@@ -325,15 +367,15 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
     private javax.swing.JLabel _countLabel;
     private javax.swing.JSpinner _countSpinner;
     private javax.swing.JPanel _dataPanel;
+    private javax.swing.JTextField _grossPriceTextField;
     private javax.swing.JLabel _marginLabel;
-    private javax.swing.JFormattedTextField _marginTextField;
+    private javax.swing.JTextField _marginTextField;
     private javax.swing.JLabel _nameLabel;
     private javax.swing.JTextField _nameTextField;
     private javax.swing.JFileChooser _pictureFileChooser;
     private javax.swing.JLabel _pictureLabel;
     private javax.swing.JTextField _picturePathTextField;
     private javax.swing.JLabel _priceLabel;
-    private javax.swing.JFormattedTextField _priceTextField;
     private javax.swing.JComboBox _producerComboBox;
     private javax.swing.JLabel _producerLabel;
     private javax.swing.JLabel _titleLabel;

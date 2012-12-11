@@ -7,28 +7,27 @@ import stores.producers.m.Producer;
  *
  * @author tobikster
  */
-public class Part implements Cloneable {
-  private int _id;
+public class Part {
+	private Integer _id;
 	private ArticlesGroup _group;
 	private Producer _producer;
 	private String _catalogNumber;
 	private String _name;
-	private Double _margin;
-	private Double _grossPrice;
-	private Integer _count;
-	private Object _picture;
-        
+	private Float _margin;
+	private Float _grossPrice;
+	private Float _count;
+	private String _picture;
+
 	public Part() {
 		
 	}
 
-	public Part(int id, ArticlesGroup group, Producer producer, String name, double margin, double grossPrice, int count) {
+	public Part(int id, ArticlesGroup group, Producer producer, String name, Float margin, Float grossPrice, Float count) {
 		this(id, group, producer, null, name, margin, grossPrice, count, null);
 	}
 
-	public Part(int id, ArticlesGroup group, Producer producer, String catalogNumber, String name, double margin, double grossPrice, int count, Object picture) {
-		_id = id;
-    _group = group;
+	public Part(int id, ArticlesGroup group, Producer producer, String catalogNumber, String name, Float margin, Float grossPrice, Float count, String picture) {
+		_group = group;
 		_producer = producer;
 		_catalogNumber = catalogNumber;
 		_name = name;
@@ -38,19 +37,19 @@ public class Part implements Cloneable {
 		_picture = picture;
 	}
 
-  public int getId() {
-    return _id;
-  }
+	public Integer getId() {
+		return _id;
+	}
 
 	public String getCatalogNumber() {
 		return _catalogNumber;
 	}
 
-	public Integer getCount() {
+	public Float getCount() {
 		return _count;
 	}
 
-	public Double getGrossPrice() {
+	public Float getGrossPrice() {
 		return _grossPrice;
 	}
 
@@ -58,7 +57,7 @@ public class Part implements Cloneable {
 		return _group;
 	}
 
-	public Double getMargin() {
+	public Float getMargin() {
 		return _margin;
 	}
 
@@ -66,7 +65,7 @@ public class Part implements Cloneable {
 		return _name;
 	}
 
-	public Object getPicture() {
+	public String getPicture() {
 		return _picture;
 	}
 
@@ -74,19 +73,19 @@ public class Part implements Cloneable {
 		return _producer;
 	}
 
-  public void setId(int id) {
-    _id = id;
-  }
+	public void setId(Integer id) {
+		_id = id;
+	}
 
 	public void setCatalogNumber(String catalogNumber) {
 		_catalogNumber = catalogNumber;
 	}
 
-	public void setCount(int count) {
+	public void setCount(float count) {
 		_count = count;
 	}
 
-	public void setGrossPrice(double grossPrice) {
+	public void setGrossPrice(float grossPrice) {
 		_grossPrice = grossPrice;
 	}
 
@@ -94,7 +93,7 @@ public class Part implements Cloneable {
 		_group = group;
 	}
 
-	public void setMargin(double margin) {
+	public void setMargin(float margin) {
 		_margin = margin;
 	}
 
@@ -102,7 +101,7 @@ public class Part implements Cloneable {
 		_name = name;
 	}
 
-	public void setPicture(Object picture) {
+	public void setPicture(String picture) {
 		_picture = picture;
 	}
 

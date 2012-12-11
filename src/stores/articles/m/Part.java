@@ -7,7 +7,7 @@ import stores.producers.m.Producer;
  *
  * @author tobikster
  */
-public class Part {
+public class Part implements Cloneable {
 	private Integer _id;
 	private ArticlesGroup _group;
 	private Producer _producer;
@@ -22,11 +22,11 @@ public class Part {
 		
 	}
 
-	public Part(int id, ArticlesGroup group, Producer producer, String name, Float margin, Float grossPrice, Float count) {
+	public Part(int id, ArticlesGroup group, Producer producer, String name, float margin, float grossPrice, float count) {
 		this(id, group, producer, null, name, margin, grossPrice, count, null);
 	}
 
-	public Part(int id, ArticlesGroup group, Producer producer, String catalogNumber, String name, Float margin, Float grossPrice, Float count, String picture) {
+	public Part(int id, ArticlesGroup group, Producer producer, String catalogNumber, String name, float margin, float grossPrice, float count, String picture) {
 		_group = group;
 		_producer = producer;
 		_catalogNumber = catalogNumber;

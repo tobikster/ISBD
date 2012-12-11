@@ -1,10 +1,13 @@
 package stores.articles.c;
 
 import core.c.DatabaseManager;
+import core.c.EntityValidator;
+import core.m.DatabaseException;
 import core.m.ResultRow;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import stores.articles.c.validators.tires.TireValidator;
 import stores.articles.m.*;
 import stores.groups.c.GroupsService;
 import stores.groups.m.ArticlesGroup;
@@ -114,6 +117,17 @@ public class TiresService
     }
 
     return tires;
+  }
+
+  public void addTire(Tire tire) throws DatabaseException, SQLException {
+    EntityValidator<Tire> validator = new TireValidator();
+    validator.validate(tire);
+
+    String sQuery = "INSERT INTO Opony (KodGrupyTowarowej, IdBieznika, IdRozmiaru, IndeksNosnosci, IndeksPredkosci, Marza, CenaBrutto) "
+      + "VALUES ("+tire.getGroup().getCode()+", "+tire.getTread().getId()+", "+tire.getSize().getId()+", '"+tire.getLoadIndex()+"', "
+      + "'"+tire.getSpeedIndex()+"', "+tire.getMargin()+", "+tire.getGrossPrice()+");";
+
+    DatabaseManager.getInstance().executeQuery(sQuery);
   }
   // </editor-fold>
 

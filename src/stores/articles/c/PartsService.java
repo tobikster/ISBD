@@ -70,7 +70,7 @@ public class PartsService {
       part.setName(result.getString(5));
       part.setMargin(result.getFloat(6));
       part.setGrossPrice(result.getFloat(7));
-      part.setCount(result.getInt(8));
+      part.setCount(result.getFloat(8));
       parts.add(part);
     }
 		//TODO load image for part item

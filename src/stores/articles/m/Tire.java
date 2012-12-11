@@ -16,8 +16,11 @@ public class Tire implements Cloneable {
 	private LoadIndex _loadIndex;
 	private SpeedIndex _speedIndex;
 	private Double _margin;
+  private String _marginText;
 	private Double _grossPrice;
+  private String _grossPriceText;
   private Map<DOT, Integer> _tireDOTs;
+  private Map<DOT, String> _tireDOTsText;
 
 	public Tire() {
     
@@ -54,6 +57,10 @@ public class Tire implements Cloneable {
 		return _grossPrice;
 	}
 
+  public String getGrossPriceText() {
+    return _grossPriceText;
+  }
+
   public Double getNetPrice() {
     if(_grossPrice!=null && _group!=null && _group.getVat()!=null)
       return _grossPrice/(1+_group.getVat().getRate());
@@ -72,6 +79,10 @@ public class Tire implements Cloneable {
 		return _margin;
 	}
 
+  public String getMarginText() {
+		return _marginText;
+	}
+
 	public TireSize getSize() {
 		return _size;
 	}
@@ -88,12 +99,20 @@ public class Tire implements Cloneable {
     return _tireDOTs;
   }
 
+  public Map<DOT, String> getTireDOTsText() {
+    return _tireDOTsText;
+  }
+
   public void setId(int id) {
     _id = id;
   }
 
 	public void setGrossPrice(double grossPrice) {
 		_grossPrice = grossPrice;
+	}
+
+  public void setGrossPrice(String grossPrice) {
+		_grossPriceText = grossPrice;
 	}
 
 	public void setGroup(ArticlesGroup group) {
@@ -106,6 +125,10 @@ public class Tire implements Cloneable {
 
 	public void setMargin(double margin) {
 		_margin = margin;
+	}
+
+	public void setMargin(String margin) {
+		_marginText = margin;
 	}
 
 	public void setSize(TireSize size) {
@@ -122,6 +145,10 @@ public class Tire implements Cloneable {
   
   public void setTireDOTs(Map<DOT, Integer> tireDOTs) {
     _tireDOTs = tireDOTs;
+  }
+  
+  public void setTireDOTsText(Map<DOT, String> tireDOTs) {
+    _tireDOTsText = tireDOTs;
   }
   
   @Override

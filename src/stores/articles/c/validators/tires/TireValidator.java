@@ -1,11 +1,11 @@
 package stores.articles.c.validators.tires;
 
-import stores.articles.m.Tire;
 import core.c.ElementaryValidator;
 import core.c.EntityValidator;
 import core.m.DatabaseException;
 import java.util.LinkedList;
 import java.util.List;
+import stores.articles.m.Tire;
 
 public class TireValidator implements EntityValidator<Tire>
 {
@@ -24,16 +24,28 @@ public class TireValidator implements EntityValidator<Tire>
       errors.add("Nie podano indeksu nośności!");
     if(object.getSpeedIndex()==null)
       errors.add("Nie podano indeksu prędkości!");
-    if(object.getMargin()==Double.NaN)
+    if(object.getMargin()==null && !ElementaryValidator.hasValue(object.getMarginText()))
       errors.add("Nie podano marży!");
-    else
-      if(!ElementaryValidator.minNumberValidator(object.getMargin(), 0.0))
+    else if(object.getMargin()==null) {
+      try {
+        object.setMargin(Double.parseDouble(object.getMarginText()));
+      } catch(NumberFormatException ex) {
+        errors.add("Marża musi być liczbą nie mniejszą od 0!");
+      }
+    }
+    if(object.getMargin()!=null && !ElementaryValidator.minNumberValidator(object.getMargin(), 0.0))
         errors.add("Marża nie może być mniejsza od 0!");
-    if(object.getGrossPrice()==Double.NaN)
-      errors.add("Nie podano ceny!");
-    else
-      if(!ElementaryValidator.minNumberValidator(object.getGrossPrice(), 0.0))
-        errors.add("Cena nie może być mniejsza od 0!");
+    if(object.getGrossPrice()==null && !ElementaryValidator.hasValue(object.getGrossPriceText()))
+      errors.add("Nie podano ceny brutto!");
+    else if(object.getGrossPrice()==null) {
+      try {
+        object.setGrossPrice(Double.parseDouble(object.getGrossPriceText()));
+      } catch(NumberFormatException ex) {
+        errors.add("Cena brutto musi być liczbą nie mniejszą od 0!");
+      }
+    }
+    if(object.getGrossPrice()!=null && !ElementaryValidator.minNumberValidator(object.getGrossPrice(), 0.0))
+        errors.add("Cena brutto nie może być mniejsza od 0!");
 
     if(!errors.isEmpty())
       throw new DatabaseException(errors);

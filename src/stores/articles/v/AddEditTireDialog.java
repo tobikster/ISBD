@@ -6,6 +6,7 @@ package stores.articles.v;
 
 import core.c.ErrorHandler;
 import core.c.Reloadable;
+import core.m.DatabaseException;
 import core.v.ApplicationDialog;
 import java.awt.Color;
 import java.awt.Component;
@@ -16,7 +17,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -40,6 +45,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
   private DecimalFormat _percentFormat = new DecimalFormat("0.00 %");
   private ListCellRenderer _DOTsTableCellRenderer;
   private ListCellEditor _DOTsTableCellEditor;
+  private Border _defaultComponentBorder;
     
   /**
    * Creates new form AddEditTireDialog
@@ -52,9 +58,11 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
     if(group!=null && group.getCode()>0) {
       _tire.setGroup(group);
     }
+    _defaultComponentBorder = new JLabel().getBorder();
     initComponents();
     initItemsLists();
     initDOTsTable();
+    loadEmptyEntity();
     reload();
   }
   
@@ -66,6 +74,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
     super(modal, reloadableParent);
     _editMode=true;
     _tire=tire;
+    _defaultComponentBorder = new JLabel().getBorder();
     initComponents();
     initItemsLists();
     initDOTsTable();
@@ -88,34 +97,34 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
     _tireDOTsTable.getColumnModel().getColumn(0).setCellEditor(_DOTsTableCellEditor);
     _tireDOTsTable.getColumnModel().getColumn(1).setCellRenderer(_DOTsTableCellRenderer);
     _tireDOTsTable.getColumnModel().getColumn(1).setCellEditor(_DOTsTableCellEditor);
-    
+
     _tireDOTsTable.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
     _tireDOTsTable.setDefaultEditor(String.class, _DOTsTableCellEditor);
     _DOTsTableCellEditor.addCellEditorListener(new CellEditorListener() {
       private boolean hasFullData() {
         for(int i=0;i<_tireDOTsTable.getRowCount();i++) {
-          if(isEmpty(_tireDOTsTable.getValueAt(i, 0)) || isEmpty(_tireDOTsTable.getValueAt(i, 1)))
+          if(isEmptyCell(_tireDOTsTable.getValueAt(i, 0)) || isEmptyCell(_tireDOTsTable.getValueAt(i, 1)))
             return false;
         }
         return true;
       }
-      
-      private boolean isEmpty(Object value) {
-        return value==null || value.equals("");
-      }
-      
+
       @Override
       public void editingStopped(ChangeEvent e)
       {
         int iRowsCount = _tireDOTsTable.getRowCount();
         int currentRow = _tireDOTsTable.getSelectedRow();
+        Object currentDOT = _tireDOTsTable.getValueAt(currentRow, 0);
+        Object currentCount = _tireDOTsTable.getValueAt(currentRow, 1);
         if(hasFullData()) {
-          ((DefaultTableModel)_tireDOTsTable.getModel()).addRow(new Object[] {});
-        } else if(currentRow!=iRowsCount-1 && (isEmpty(_tireDOTsTable.getValueAt(currentRow, 0)) || isEmpty(_tireDOTsTable.getValueAt(currentRow, 1))) 
-            && isEmpty(_tireDOTsTable.getValueAt(iRowsCount-1, 0)) && isEmpty(_tireDOTsTable.getValueAt(iRowsCount-1, 1))) {
+          if(isProperCount(_tireDOTsTable.getValueAt(currentRow, 1))) {
+            ((DefaultTableModel)_tireDOTsTable.getModel()).addRow(new Object[] {});
+          }
+        } else if(currentRow!=iRowsCount-1 && (isEmptyCell(currentDOT) || !isProperCount(currentCount)) 
+            && isEmptyCell(_tireDOTsTable.getValueAt(iRowsCount-1, 0)) && isEmptyCell(_tireDOTsTable.getValueAt(iRowsCount-1, 1))) {
           ((DefaultTableModel)_tireDOTsTable.getModel()).removeRow(iRowsCount-1);
-        } else if (currentRow!=iRowsCount-1 && isEmpty(_tireDOTsTable.getValueAt(currentRow, 0)) && isEmpty(_tireDOTsTable.getValueAt(currentRow, 1))
-            && isEmpty(_tireDOTsTable.getValueAt(iRowsCount-1, 0)) && isEmpty(_tireDOTsTable.getValueAt(iRowsCount-1, 1))) {
+        } else if (currentRow!=iRowsCount-1 && isEmptyCell(currentDOT) && isEmptyCell(currentCount)
+            && isEmptyCell(_tireDOTsTable.getValueAt(iRowsCount-1, 0)) && isEmptyCell(_tireDOTsTable.getValueAt(iRowsCount-1, 1))) {
           ((DefaultTableModel)_tireDOTsTable.getModel()).removeRow(currentRow);
         }
       }
@@ -126,6 +135,27 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
         
       }
     });
+  }
+  
+  private void loadEmptyEntity() {
+    _tire.setSize((TireSize)_tireSizeComboBox.getSelectedItem());
+    _tire.setLoadIndex((LoadIndex)_loadIndexComboBox.getSelectedItem());
+    _tire.setSpeedIndex((SpeedIndex)_speedIndexComboBox.getSelectedItem());
+    _tire.setTread((Tread)_treadComboBox.getSelectedItem());
+    _tire.setGroup((ArticlesGroup)_articlesGroupComboBox.getSelectedItem());
+    
+    String currentInput=_marginTextField.getText();
+    
+    if(currentInput.indexOf(" %")!=-1)
+      currentInput=currentInput.substring(0, currentInput.indexOf(" %"));
+    currentInput=currentInput.replace(",", ".");
+    _tire.setMargin(currentInput);
+    
+    currentInput=_grossPriceTextField.getText();
+    if(currentInput.indexOf(" zł")!=-1)
+      currentInput=currentInput.substring(0, currentInput.indexOf(" zł"));
+    currentInput=currentInput.replace(",", ".");
+    _tire.setGrossPrice(currentInput);
   }
 
   @Override
@@ -285,7 +315,35 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
     }
   }
 
-  public class ListCellRenderer extends DefaultTableCellRenderer
+  private boolean isProperCount(Object value) {
+        try {
+          Integer.parseInt((String)value);
+          return true;
+        } catch(NumberFormatException ex) {
+          return false;
+        }
+      }
+
+  private boolean isEmptyCell(Object value) {
+    return value==null || value.equals("");
+  }
+
+  private void parseDOTsToEntity() {
+    String sDOT, sCount;
+    Map<DOT, String> tireDOTs = new LinkedHashMap<>();
+    for(int i=0;i<_tireDOTsTable.getRowCount();i++) {
+      sDOT = (String)_tireDOTsTable.getValueAt(i, 0);
+      sCount = (String)_tireDOTsTable.getValueAt(i, 1);
+      if(sDOT!=null && !sDOT.equals("") && sCount!=null && !sCount.equals("")) {
+        DOT dot = new DOT();
+        dot.setDot(sDOT);
+        tireDOTs.put(dot, sCount);
+      }
+    }
+    _tire.setTireDOTsText(tireDOTs);
+  }
+
+  private class ListCellRenderer extends DefaultTableCellRenderer
   {
     private int[] m_iaColumnAligments;
 
@@ -341,8 +399,13 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
         label.setHorizontalAlignment(m_iaColumnAligments[column]);
       }
       label.setVerticalAlignment(JLabel.CENTER);
-      if(!isSelected) {
+      if(isSelected) {
         label.setFont(new Font("Tahoma", Font.PLAIN, 12));
+      }
+      if(column==1 && !isEmptyCell(_tireDOTsTable.getValueAt(row, column)) && !isProperCount(_tireDOTsTable.getValueAt(row, column))) {
+        label.setBorder(BorderFactory.createLineBorder(Color.RED));
+      } else {
+        label.setBorder(_defaultComponentBorder);
       }
       return label;
     }
@@ -360,6 +423,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
       JTextField tf = (JTextField) c;
       tf.setHorizontalAlignment(JTextField.CENTER);
 
+      System.out.println("Column: "+column);
       if(column==0) {
         tf.addKeyListener(new KeyAdapter() {        
           @Override
@@ -441,6 +505,12 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
         _tireSizeLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         _tireSizeLabel.setText("Rozmiar:");
 
+        _tireSizeComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                _tireSizeComboBoxActionPerformed(evt);
+            }
+        });
+
         _producerLabel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         _producerLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         _producerLabel.setText("Producent:");
@@ -455,9 +525,33 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
         _treadLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         _treadLabel.setText("Bieżnik:");
 
+        _treadComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                _treadComboBoxActionPerformed(evt);
+            }
+        });
+
+        _loadIndexComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                _loadIndexComboBoxActionPerformed(evt);
+            }
+        });
+
+        _speedIndexComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                _speedIndexComboBoxActionPerformed(evt);
+            }
+        });
+
         _articlesGroupLabel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         _articlesGroupLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         _articlesGroupLabel.setText("Grupa towarowa:");
+
+        _articlesGroupComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                _articlesGroupComboBoxActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jpBasicDetailsLayout = new javax.swing.GroupLayout(jpBasicDetails);
         jpBasicDetails.setLayout(jpBasicDetailsLayout);
@@ -682,7 +776,16 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
 
   private void bSubmitActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bSubmitActionPerformed
   {//GEN-HEADEREND:event_bSubmitActionPerformed
-    // TODO add your handling code here:
+    parseDOTsToEntity();
+    try {
+      if(_editMode) {
+        TiresService.getInstance();
+      } else {
+        TiresService.getInstance().addTire(_tire);
+      }
+    } catch(DatabaseException|SQLException ex) {
+      ErrorHandler.getInstance().reportError(ex);
+    }
   }//GEN-LAST:event_bSubmitActionPerformed
 
   private void _marginTextFieldFocusGained(java.awt.event.FocusEvent evt)//GEN-FIRST:event__marginTextFieldFocusGained
@@ -702,11 +805,13 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
     try {
       value = Double.parseDouble(currentInput);
       _marginTextField.setText(_percentFormat.format(value));
-      _marginTextField.setBorder(null);
+      _marginTextField.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+      _tire.setMargin(value);
     } catch (NumberFormatException ex) {
-      currentInput+=" %";
+      //currentInput+=" %";
       _marginTextField.setText(currentInput);
-      _marginTextField.setBorder(BorderFactory.createLineBorder(Color.red));
+      _marginTextField.setBorder(BorderFactory.createLineBorder(Color.RED));
+      _tire.setMargin(currentInput);
     }
   }//GEN-LAST:event__marginTextFieldFocusLost
 
@@ -733,7 +838,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
     }
     catch(NumberFormatException ex)
     {
-      currentInput+=" zł";
+      //currentInput+=" zł";
       _netPriceTextField.setText(currentInput);
       _netPriceTextField.setBorder(BorderFactory.createLineBorder(Color.red));
     }
@@ -759,14 +864,41 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
       _grossPriceTextField.setText(_priceFormat.format(value));
       _grossPriceTextField.setBorder(null);
       refreshNetPrice();
+      _tire.setGrossPrice(value);
     }
     catch(NumberFormatException ex)
     {
-      currentInput+=" zł";
+      //currentInput+=" zł";
       _grossPriceTextField.setText(currentInput);
       _grossPriceTextField.setBorder(BorderFactory.createLineBorder(Color.red));
+      _tire.setGrossPrice(currentInput);
     }
   }//GEN-LAST:event__grossPriceTextFieldFocusLost
+
+  private void _tireSizeComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event__tireSizeComboBoxActionPerformed
+  {//GEN-HEADEREND:event__tireSizeComboBoxActionPerformed
+    _tire.setSize((TireSize)_tireSizeComboBox.getSelectedItem());
+  }//GEN-LAST:event__tireSizeComboBoxActionPerformed
+
+  private void _loadIndexComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event__loadIndexComboBoxActionPerformed
+  {//GEN-HEADEREND:event__loadIndexComboBoxActionPerformed
+    _tire.setLoadIndex((LoadIndex)_loadIndexComboBox.getSelectedItem());
+  }//GEN-LAST:event__loadIndexComboBoxActionPerformed
+
+  private void _speedIndexComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event__speedIndexComboBoxActionPerformed
+  {//GEN-HEADEREND:event__speedIndexComboBoxActionPerformed
+    _tire.setSpeedIndex((SpeedIndex)_speedIndexComboBox.getSelectedItem());
+  }//GEN-LAST:event__speedIndexComboBoxActionPerformed
+
+  private void _treadComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event__treadComboBoxActionPerformed
+  {//GEN-HEADEREND:event__treadComboBoxActionPerformed
+    _tire.setTread((Tread)_treadComboBox.getSelectedItem());
+  }//GEN-LAST:event__treadComboBoxActionPerformed
+
+  private void _articlesGroupComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event__articlesGroupComboBoxActionPerformed
+  {//GEN-HEADEREND:event__articlesGroupComboBoxActionPerformed
+    _tire.setGroup((ArticlesGroup)_articlesGroupComboBox.getSelectedItem());
+  }//GEN-LAST:event__articlesGroupComboBoxActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox _articlesGroupComboBox;

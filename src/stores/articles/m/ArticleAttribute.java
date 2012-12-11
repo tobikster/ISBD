@@ -5,7 +5,7 @@ package stores.articles.m;
  *
  * @author tobikster
  */
-public class ArticleAttribute {
+public class ArticleAttribute implements Cloneable {
 	private int _id;
 	private String _name;
 
@@ -43,4 +43,9 @@ public class ArticleAttribute {
 	public boolean equals(Object obj) {
 		return (obj instanceof ArticleAttribute) ? this.getName().equals(((ArticleAttribute)(obj)).getName()) : false;
 	}
+  
+  @Override
+  public ArticleAttribute clone() {
+    return new ArticleAttribute(_id, _name);
+  }
 }

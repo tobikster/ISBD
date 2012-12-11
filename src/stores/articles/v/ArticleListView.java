@@ -268,6 +268,8 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
         _manageGroupsAttributes.setText("Zarządzaj atrybutami grup");
         _groupsPopupMenu.add(_manageGroupsAttributes);
 
+        setMinimumSize(new java.awt.Dimension(800, 550));
+
         lTitle.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         lTitle.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lTitle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/64x64/Stacked-Boxes-64.png"))); // NOI18N
@@ -423,20 +425,20 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(lTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jpArticlesToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(10, 10, 10))
+                        .addComponent(jpArticlesToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(bBack))
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
+                            .addComponent(jScrollPane4)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(_navPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 569, Short.MAX_VALUE)))))
+                                .addComponent(_navPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -604,7 +606,9 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 
   private void _addTireMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__addTireMouseClicked
   {//GEN-HEADEREND:event__addTireMouseClicked
-	  // TODO add your handling code here:
+	  if(getSelectedGroup().getType().equals(ArticlesGroupType.TIRES)) {
+      ViewManager.getInstance().showDialog(new AddEditTireDialog(true, this, getSelectedGroup()));
+    }
   }//GEN-LAST:event__addTireMouseClicked
 
     private void _deleteGroupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__deleteGroupActionPerformed

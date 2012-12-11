@@ -2,6 +2,7 @@ package stores.articles.m;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import stores.groups.m.ArticlesGroup;
 import stores.producers.m.Producer;
 
@@ -110,7 +111,7 @@ public class Part implements Cloneable {
 	
 	public void setCountText(String countText) {
 		_countText = countText;
-		setCount(null);
+		_count = null;
 	}
 
 	public void setGrossPrice(float grossPrice) {
@@ -119,7 +120,7 @@ public class Part implements Cloneable {
 	
 	public void setGrossPriceText(String grossPriceText) {
 		_grossPriceText = grossPriceText;
-		setGrossPrice(null);
+		_grossPrice = null;
 	}
 
 	public void setGroup(ArticlesGroup group) {
@@ -132,7 +133,7 @@ public class Part implements Cloneable {
 	
 	public void setMarginText(String marginText) {
 		_marginText = marginText;
-		setMargin(null);
+		_margin = null;
 	}
 
 	public void setName(String name) {
@@ -158,6 +159,10 @@ public class Part implements Cloneable {
   
   @Override
   public Part clone() {
-    return new Part(_id, _group.clone(), _producer.clone(), _catalogNumber, _name, _margin, _grossPrice, _count, _picture);
+	  Map<ArticleAttribute, String> attributes = new LinkedHashMap<>();
+	  for(Entry<ArticleAttribute, String> attribute : _attributes.entrySet()) {
+		  attributes.put(attribute.getKey().clone(), attribute.getValue());
+	  }
+    return new Part(_id, _group.clone(), _producer.clone(), _catalogNumber, _name, _margin, _grossPrice, _count, _picture, attributes);
   }
 }

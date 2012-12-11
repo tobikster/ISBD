@@ -6,10 +6,21 @@ package stores.articles.v;
 
 import core.c.ErrorHandler;
 import core.c.Reloadable;
+import core.m.DatabaseException;
 import core.v.ApplicationDialog;
+import java.awt.Color;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import stores.articles.c.PartsService;
+import stores.articles.m.ArticleAttribute;
 import stores.articles.m.Part;
 import stores.groups.c.GroupsService;
 import stores.groups.m.ArticlesGroup;
@@ -23,6 +34,12 @@ import stores.producers.m.Producer;
 public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
 	private boolean _editMode;
 	private Part _part;
+	private DecimalFormat _priceFormat;
+	private DecimalFormat _percentFormat;
+	public static final String[] COLUMN_NAMES = {
+		"Nazwa",
+		"Wartość"
+	};
 
 	/**
 	 * Creates new form AddArticleDialog
@@ -33,12 +50,15 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
 	 */
 	public AddEditPartDialog(boolean modal, Reloadable reloadableParent, ArticlesGroup group) {
 		super(modal, reloadableParent);
+		_priceFormat = new DecimalFormat("0.00 zł");
+		_percentFormat = new DecimalFormat("0.00 %");
 		_editMode = false;
 		_part = new Part();
 		if (group != null && group.getCode() > 0) {
 			_part.setGroup(group);
 		}
 		initComponents();
+		save();
 		reload();
 	}
 
@@ -51,6 +71,8 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
 	 */
 	public AddEditPartDialog(boolean modal, Reloadable reloadableParent, Part part) {
 		super(modal, reloadableParent);
+		_priceFormat = new DecimalFormat("0.00 zł");
+		_percentFormat = new DecimalFormat("0.00 %");
 		_editMode = true;
 		_part = part;
 		initComponents();
@@ -89,6 +111,27 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
 		return result;
 	}
 
+	private TableModel getAttributesModel() {
+		String[][] tableData = new String[_part.getAttributes().size()][];
+		int index = 0;
+		for (Entry<ArticleAttribute, String> attribute : _part.getAttributes().entrySet()) {
+			System.out.println(attribute.getKey().getName() + " => " + attribute.getValue());
+			tableData[index] = new String[2];
+			tableData[index][0] = attribute.getKey().getName();
+			tableData[index][1] = attribute.getValue();
+			++index;
+		}
+		TableModel result = new DefaultTableModel(tableData, COLUMN_NAMES) {
+			boolean[] canEdit = {false, true};
+
+			@Override
+			public boolean isCellEditable(int row, int col) {
+				return canEdit[col];
+			}
+		};
+		return result;
+	}
+
 	@Override
 	public final void reload() {
 		if (_part != null) {
@@ -101,6 +144,7 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
 					}
 				}
 				_articlesGroupComboBox.setSelectedIndex(selectedArticlesGroupIndex);
+				_attributesTable.setModel(getAttributesModel());
 			}
 			if (_part.getProducer() != null) {
 				int selectedProducerIndex = 0;
@@ -111,8 +155,22 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
 				}
 				_producerComboBox.setSelectedIndex(selectedProducerIndex);
 			}
-			_catalogNumberTextField.setText(_part.getCatalogNumber());
-			_countSpinner.setValue(_part.getCount());
+			if (_part.getCatalogNumber() != null) {
+				_catalogNumberTextField.setText(_part.getCatalogNumber());
+			}
+
+			if (_part.getMargin() != null) {
+				_marginTextField.setText(_percentFormat.format(_part.getMargin()));
+			}
+
+			if (_part.getGrossPrice() != null) {
+				_grossPriceTextField.setText(_priceFormat.format(_part.getGrossPrice()));
+				_netPriceTextField.setText(_priceFormat.format(_part.getGrossPrice() / (1.0 + _part.getGroup().getVat().getRate())));
+			}
+
+			if (_part.getCount() != null) {
+				_countSpinner.setValue(_part.getCount());
+			}
 		}
 	}
 
@@ -136,25 +194,27 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
         _catalogNumberTextField = new javax.swing.JTextField();
         _nameLabel = new javax.swing.JLabel();
         _nameTextField = new javax.swing.JTextField();
-        _marginLabel = new javax.swing.JLabel();
-        _priceLabel = new javax.swing.JLabel();
         _countLabel = new javax.swing.JLabel();
         _countSpinner = new javax.swing.JSpinner();
         _pictureLabel = new javax.swing.JLabel();
         _picturePathTextField = new javax.swing.JTextField();
         _choosePictureButton = new javax.swing.JButton();
+        _marginLabel = new javax.swing.JLabel();
         _marginTextField = new javax.swing.JTextField();
+        _netPriceLabel = new javax.swing.JLabel();
+        _netPriceTextField = new javax.swing.JTextField();
+        _grossPriceLabel = new javax.swing.JLabel();
         _grossPriceTextField = new javax.swing.JTextField();
         _controlPanel = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        _cancelButton = new javax.swing.JButton();
+        _okButton = new javax.swing.JButton();
         _attributesTableScrollPane = new javax.swing.JScrollPane();
         _attributesTable = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         _titleLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        _titleLabel.setText("Nowa część");
+        _titleLabel.setText((_editMode) ? "Edycja części" : "Nowa część");
 
         _articlesGroupLabel.setText("Grupa towarowa:");
 
@@ -173,13 +233,9 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
 
         _nameLabel.setText("Nazwa:");
 
-        _marginLabel.setText("Marża:");
-
-        _priceLabel.setText("Cena:");
-
         _countLabel.setText("Ilość:");
 
-        _countSpinner.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+        _countSpinner.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(0.0f), null, Float.valueOf(1.0f)));
 
         _pictureLabel.setText("Zdjęcie:");
 
@@ -188,34 +244,84 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
 
         _choosePictureButton.setText("Wybierz");
 
+        _marginLabel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        _marginLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        _marginLabel.setText("Marża:");
+
+        _marginTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                _marginTextFieldFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                _marginTextFieldFocusLost(evt);
+            }
+        });
+
+        _netPriceLabel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        _netPriceLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        _netPriceLabel.setText("Cena netto:");
+
+        _netPriceTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                _netPriceTextFieldFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                _netPriceTextFieldFocusLost(evt);
+            }
+        });
+
+        _grossPriceLabel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        _grossPriceLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        _grossPriceLabel.setText("Cena brutto:");
+
+        _grossPriceTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                _grossPriceTextFieldFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                _grossPriceTextFieldFocusLost(evt);
+            }
+        });
+
         javax.swing.GroupLayout _dataPanelLayout = new javax.swing.GroupLayout(_dataPanel);
         _dataPanel.setLayout(_dataPanelLayout);
         _dataPanelLayout.setHorizontalGroup(
             _dataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(_dataPanelLayout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(_dataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(_pictureLabel)
-                    .addComponent(_countLabel)
-                    .addComponent(_priceLabel)
-                    .addComponent(_marginLabel)
-                    .addComponent(_catalogNumberLabel)
-                    .addComponent(_producerLabel)
-                    .addComponent(_articlesGroupLabel)
-                    .addComponent(_nameLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(_dataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(_catalogNumberTextField)
-                    .addComponent(_countSpinner)
-                    .addComponent(_producerComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(_articlesGroupComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, _dataPanelLayout.createSequentialGroup()
+                        .addGap(16, 16, 16)
+                        .addGroup(_dataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(_catalogNumberLabel)
+                            .addComponent(_nameLabel)
+                            .addComponent(_articlesGroupLabel)
+                            .addComponent(_producerLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(_dataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(_producerComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(_articlesGroupComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(_nameTextField)
+                            .addComponent(_catalogNumberTextField, javax.swing.GroupLayout.Alignment.TRAILING)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, _dataPanelLayout.createSequentialGroup()
+                        .addGap(28, 28, 28)
+                        .addGroup(_dataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(_marginLabel)
+                            .addComponent(_netPriceLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(_grossPriceLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(_countLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(_dataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(_countSpinner, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(_grossPriceTextField, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(_netPriceTextField, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(_marginTextField)))
                     .addGroup(_dataPanelLayout.createSequentialGroup()
+                        .addGap(71, 71, 71)
+                        .addComponent(_pictureLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(_picturePathTextField)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(_choosePictureButton))
-                    .addComponent(_nameTextField)
-                    .addComponent(_marginTextField)
-                    .addComponent(_grossPriceTextField))
+                        .addComponent(_choosePictureButton)))
                 .addContainerGap())
         );
         _dataPanelLayout.setVerticalGroup(
@@ -243,7 +349,11 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
                     .addComponent(_marginTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(_dataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(_priceLabel)
+                    .addComponent(_netPriceLabel)
+                    .addComponent(_netPriceTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(_dataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(_grossPriceLabel)
                     .addComponent(_grossPriceTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(_dataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -254,17 +364,22 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
                     .addComponent(_pictureLabel)
                     .addComponent(_picturePathTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(_choosePictureButton))
-                .addContainerGap(68, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jButton1.setText("Anuluj");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        _cancelButton.setText("Anuluj");
+        _cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                _cancelButtonActionPerformed(evt);
             }
         });
 
-        jButton2.setText("OK");
+        _okButton.setText("OK");
+        _okButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                _okButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout _controlPanelLayout = new javax.swing.GroupLayout(_controlPanel);
         _controlPanel.setLayout(_controlPanelLayout);
@@ -272,9 +387,9 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
             _controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, _controlPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton2)
+                .addComponent(_okButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addComponent(_cancelButton)
                 .addContainerGap())
         );
         _controlPanelLayout.setVerticalGroup(
@@ -282,30 +397,12 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
             .addGroup(_controlPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(_controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(jButton1))
+                    .addComponent(_okButton)
+                    .addComponent(_cancelButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        _attributesTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, true
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
+        _attributesTable.setModel(getAttributesModel());
         _attributesTableScrollPane.setViewportView(_attributesTable);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -343,23 +440,162 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
 		_part.setCatalogNumber(_catalogNumberTextField.getText());
 		_part.setGroup((ArticlesGroup) (_articlesGroupComboBox.getSelectedItem()));
 		_part.setProducer((Producer) (_producerComboBox.getSelectedItem()));
-		_part.setCount((int) (_countSpinner.getValue()));
-//		_part.setMargin(Double.parseDouble(_marginTextField.getText()));
-//		_part.setGrossPrice(Double.parseDouble(_priceLabel.getText()));
+		_part.setCount((Float) (_countSpinner.getValue()));
+
+		String marginInput = _marginTextField.getText();
+		if (marginInput.indexOf(" %") != -1) {
+			marginInput = marginInput.substring(0, marginInput.indexOf(" %"));
+		}
+		_part.setMarginText(marginInput);
+
+		String grossPriceInput = _marginTextField.getText();
+		if (grossPriceInput.indexOf(" %") != -1) {
+			grossPriceInput = grossPriceInput.substring(0, grossPriceInput.indexOf(" %"));
+		}
+		_part.setMarginText(grossPriceInput);
 	}
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-		// TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+	private void refreshGrossPrice() {
+		if (_part.getGroup() != null && _part.getGroup().getVat() != null) {
+			String currentInput = _netPriceTextField.getText();
+			currentInput = currentInput.substring(0, currentInput.indexOf(" zł"));
+			currentInput = currentInput.replace(",", ".");
+			double value = Double.parseDouble(currentInput);
+			value *= 1 + _part.getGroup().getVat().getRate();
+			_grossPriceTextField.setText(_priceFormat.format(value));
+		}
+	}
+
+	private void refreshNetPrice() {
+		if (_part.getGroup() != null && _part.getGroup().getVat() != null) {
+			String currentInput = _grossPriceTextField.getText();
+			currentInput = currentInput.substring(0, currentInput.indexOf(" zł"));
+			currentInput = currentInput.replace(",", ".");
+			double value = Double.parseDouble(currentInput);
+			value /= 1 + _part.getGroup().getVat().getRate();
+			_netPriceTextField.setText(_priceFormat.format(value));
+		}
+	}
+
+    private void _cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__cancelButtonActionPerformed
+		setHaveToReloadParent(false);
+		super.close();
+    }//GEN-LAST:event__cancelButtonActionPerformed
 
     private void _articlesGroupComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__articlesGroupComboBoxActionPerformed
-		System.out.println("Siema");
+		try {
+			PartsService.getInstance().changeGroup(_part, (ArticlesGroup) (_articlesGroupComboBox.getSelectedItem()));
+			System.out.println(_part.getGroup().getName());
+			reload();
+		}
+		catch (SQLException ex) {
+			ErrorHandler.getInstance().reportError(ex);
+		}
     }//GEN-LAST:event__articlesGroupComboBoxActionPerformed
+
+    private void _marginTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event__marginTextFieldFocusGained
+		String currentInput = _marginTextField.getText();
+		if (currentInput.indexOf(" %") != -1) {
+			currentInput = currentInput.substring(0, currentInput.indexOf(" %"));
+		}
+		_marginTextField.setText(currentInput);
+		_marginTextField.setSelectionStart(0);
+    }//GEN-LAST:event__marginTextFieldFocusGained
+
+    private void _marginTextFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event__marginTextFieldFocusLost
+		String currentInput = _marginTextField.getText();
+		currentInput = currentInput.replace(",", ".");
+		double value;
+		try {
+			value = Double.parseDouble(currentInput);
+			_marginTextField.setText(_percentFormat.format(value));
+			_marginTextField.setBorder(null);
+		}
+		catch (NumberFormatException ex) {
+			currentInput += " %";
+			_marginTextField.setText(currentInput);
+			_marginTextField.setBorder(BorderFactory.createLineBorder(Color.red));
+		}
+    }//GEN-LAST:event__marginTextFieldFocusLost
+
+    private void _netPriceTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event__netPriceTextFieldFocusGained
+		String currentInput = _netPriceTextField.getText();
+		if (currentInput.indexOf(" zł") != -1) {
+			currentInput = currentInput.substring(0, currentInput.indexOf(" zł"));
+		}
+		_netPriceTextField.setText(currentInput);
+		_netPriceTextField.setSelectionStart(0);
+    }//GEN-LAST:event__netPriceTextFieldFocusGained
+
+    private void _netPriceTextFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event__netPriceTextFieldFocusLost
+		String currentInput = _netPriceTextField.getText();
+		currentInput = currentInput.replace(",", ".");
+		double value;
+		try {
+			value = Double.parseDouble(currentInput);
+			_netPriceTextField.setText(_priceFormat.format(value));
+			_netPriceTextField.setBorder(null);
+			refreshGrossPrice();
+		}
+		catch (NumberFormatException ex) {
+			currentInput += " zł";
+			_netPriceTextField.setText(currentInput);
+			_netPriceTextField.setBorder(BorderFactory.createLineBorder(Color.red));
+		}
+    }//GEN-LAST:event__netPriceTextFieldFocusLost
+
+    private void _grossPriceTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event__grossPriceTextFieldFocusGained
+		String currentInput = _grossPriceTextField.getText();
+		if (currentInput.indexOf(" zł") != -1) {
+			currentInput = currentInput.substring(0, currentInput.indexOf(" zł"));
+		}
+		_grossPriceTextField.setText(currentInput);
+		_grossPriceTextField.setSelectionStart(0);
+    }//GEN-LAST:event__grossPriceTextFieldFocusGained
+
+    private void _grossPriceTextFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event__grossPriceTextFieldFocusLost
+		String currentInput = _grossPriceTextField.getText();
+		currentInput = currentInput.replace(",", ".");
+		double value;
+		try {
+			value = Double.parseDouble(currentInput);
+			_grossPriceTextField.setText(_priceFormat.format(value));
+			_grossPriceTextField.setBorder(null);
+			refreshNetPrice();
+		}
+		catch (NumberFormatException ex) {
+			currentInput += " zł";
+			_grossPriceTextField.setText(currentInput);
+			_grossPriceTextField.setBorder(BorderFactory.createLineBorder(Color.red));
+		}
+    }//GEN-LAST:event__grossPriceTextFieldFocusLost
+
+    private void _okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__okButtonActionPerformed
+		save();
+		boolean ok = false;
+		try {
+			if (_editMode) {
+				ok = true;
+			}
+			else {
+				ok = PartsService.getInstance().addPart(_part);
+			}
+
+			if (ok) {
+				setHaveToReloadParent(true);
+				super.close();
+			}
+		}
+		catch (DatabaseException | SQLException ex) {
+			ErrorHandler.getInstance().reportError(ex);
+		}
+    }//GEN-LAST:event__okButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox _articlesGroupComboBox;
     private javax.swing.JLabel _articlesGroupLabel;
     private javax.swing.JTable _attributesTable;
     private javax.swing.JScrollPane _attributesTableScrollPane;
+    private javax.swing.JButton _cancelButton;
     private javax.swing.JLabel _catalogNumberLabel;
     private javax.swing.JTextField _catalogNumberTextField;
     private javax.swing.JButton _choosePictureButton;
@@ -367,19 +603,20 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
     private javax.swing.JLabel _countLabel;
     private javax.swing.JSpinner _countSpinner;
     private javax.swing.JPanel _dataPanel;
+    private javax.swing.JLabel _grossPriceLabel;
     private javax.swing.JTextField _grossPriceTextField;
     private javax.swing.JLabel _marginLabel;
     private javax.swing.JTextField _marginTextField;
     private javax.swing.JLabel _nameLabel;
     private javax.swing.JTextField _nameTextField;
+    private javax.swing.JLabel _netPriceLabel;
+    private javax.swing.JTextField _netPriceTextField;
+    private javax.swing.JButton _okButton;
     private javax.swing.JFileChooser _pictureFileChooser;
     private javax.swing.JLabel _pictureLabel;
     private javax.swing.JTextField _picturePathTextField;
-    private javax.swing.JLabel _priceLabel;
     private javax.swing.JComboBox _producerComboBox;
     private javax.swing.JLabel _producerLabel;
     private javax.swing.JLabel _titleLabel;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     // End of variables declaration//GEN-END:variables
 }

@@ -32,358 +32,358 @@ import stores.producers.m.Producer;
  *
  * @author MRKACZOR
  */
-public class AddEditTireDialog extends ApplicationDialog implements Reloadable
-{
-  private boolean _editMode;
-  private Tire _tire;
-  private DecimalFormat _priceFormat = new DecimalFormat("0.00 zł");
-  private DecimalFormat _percentFormat = new DecimalFormat("0.00 %");
-  private ListCellRenderer _DOTsTableCellRenderer;
-  private ListCellEditor _DOTsTableCellEditor;
-    
-  /**
-   * Creates new form AddEditTireDialog
-   */
-  public AddEditTireDialog(boolean modal, Reloadable reloadableParent, ArticlesGroup group)
-  {
-    super(modal, reloadableParent);
-    _editMode=false;
-    _tire=new Tire();
-    if(group!=null && group.getCode()>0) {
-      _tire.setGroup(group);
-    }
-    initComponents();
-    initItemsLists();
-    initDOTsTable();
-    reload();
-  }
-  
-  /**
-   * Creates new form AddEditTireDialog
-   */
-  public AddEditTireDialog(boolean modal, Reloadable reloadableParent, Tire tire)
-  {
-    super(modal, reloadableParent);
-    _editMode=true;
-    _tire=tire;
-    initComponents();
-    initItemsLists();
-    initDOTsTable();
-    reload();
-  }
+public class AddEditTireDialog extends ApplicationDialog implements Reloadable {
+	private boolean _editMode;
+	private Tire _tire;
+	private DecimalFormat _priceFormat;
+	private DecimalFormat _percentFormat;
+	private ListCellRenderer _DOTsTableCellRenderer;
+	private ListCellEditor _DOTsTableCellEditor;
 
-  private void initItemsLists() {
-    loadTireSizesList();
-    loadLoadIndexesList();
-    loadSpeedIndexesList();
-    loadProducersList();
-    loadTreadsList();
-    loadArticlesGroupsList();
-  }
+	/**
+	 * Creates new form AddEditTireDialog
+	 */
+	public AddEditTireDialog(boolean modal, Reloadable reloadableParent, ArticlesGroup group) {
+		super(modal, reloadableParent);
+		_priceFormat = new DecimalFormat("0.00 zł");
+		_percentFormat = new DecimalFormat("0.00 %");
+		_editMode = false;
+		_tire = new Tire();
+		if (group != null && group.getCode() > 0) {
+			_tire.setGroup(group);
+		}
+		initComponents();
+		initItemsLists();
+		initDOTsTable();
+		reload();
+	}
 
-  private void initDOTsTable() {
-    _DOTsTableCellRenderer=new ListCellRenderer(new int[] {JLabel.CENTER, JLabel.CENTER});
-    _DOTsTableCellEditor=new ListCellEditor();
-    _tireDOTsTable.getColumnModel().getColumn(0).setCellRenderer(_DOTsTableCellRenderer);
-    _tireDOTsTable.getColumnModel().getColumn(0).setCellEditor(_DOTsTableCellEditor);
-    _tireDOTsTable.getColumnModel().getColumn(1).setCellRenderer(_DOTsTableCellRenderer);
-    _tireDOTsTable.getColumnModel().getColumn(1).setCellEditor(_DOTsTableCellEditor);
-    
-    _tireDOTsTable.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
-    _tireDOTsTable.setDefaultEditor(String.class, _DOTsTableCellEditor);
-    _DOTsTableCellEditor.addCellEditorListener(new CellEditorListener() {
-      private boolean hasFullData() {
-        for(int i=0;i<_tireDOTsTable.getRowCount();i++) {
-          if(isEmpty(_tireDOTsTable.getValueAt(i, 0)) || isEmpty(_tireDOTsTable.getValueAt(i, 1)))
-            return false;
-        }
-        return true;
-      }
-      
-      private boolean isEmpty(Object value) {
-        return value==null || value.equals("");
-      }
-      
-      @Override
-      public void editingStopped(ChangeEvent e)
-      {
-        int iRowsCount = _tireDOTsTable.getRowCount();
-        int currentRow = _tireDOTsTable.getSelectedRow();
-        if(hasFullData()) {
-          ((DefaultTableModel)_tireDOTsTable.getModel()).addRow(new Object[] {});
-        } else if(currentRow!=iRowsCount-1 && (isEmpty(_tireDOTsTable.getValueAt(currentRow, 0)) || isEmpty(_tireDOTsTable.getValueAt(currentRow, 1))) 
-            && isEmpty(_tireDOTsTable.getValueAt(iRowsCount-1, 0)) && isEmpty(_tireDOTsTable.getValueAt(iRowsCount-1, 1))) {
-          ((DefaultTableModel)_tireDOTsTable.getModel()).removeRow(iRowsCount-1);
-        } else if (currentRow!=iRowsCount-1 && isEmpty(_tireDOTsTable.getValueAt(currentRow, 0)) && isEmpty(_tireDOTsTable.getValueAt(currentRow, 1))
-            && isEmpty(_tireDOTsTable.getValueAt(iRowsCount-1, 0)) && isEmpty(_tireDOTsTable.getValueAt(iRowsCount-1, 1))) {
-          ((DefaultTableModel)_tireDOTsTable.getModel()).removeRow(currentRow);
-        }
-      }
+	/**
+	 * Creates new form AddEditTireDialog
+	 */
+	public AddEditTireDialog(boolean modal, Reloadable reloadableParent, Tire tire) {
+		super(modal, reloadableParent);
+		_priceFormat = new DecimalFormat("0.00 zł");
+		_percentFormat = new DecimalFormat("0.00 %");
+		_editMode = true;
+		_tire = tire;
+		initComponents();
+		initItemsLists();
+		initDOTsTable();
+		reload();
+	}
 
-      @Override
-      public void editingCanceled(ChangeEvent e)
-      {
-        
-      }
-    });
-  }
+	private void initItemsLists() {
+		loadTireSizesList();
+		loadLoadIndexesList();
+		loadSpeedIndexesList();
+		loadProducersList();
+		loadTreadsList();
+		loadArticlesGroupsList();
+	}
 
-  @Override
-  public final void reload()
-  {
-    if(_tire.getSize()!=null) {
-      _tireSizeComboBox.setSelectedIndex(findIndexForItem(_tire.getSize()));
-    }
-    if(_tire.getLoadIndex()!=null) {
-      _loadIndexComboBox.setSelectedIndex(findIndexForItem(_tire.getLoadIndex()));
-    }
-    if(_tire.getSpeedIndex()!=null) {
-      _speedIndexComboBox.setSelectedIndex(findIndexForItem(_tire.getSpeedIndex()));
-    }
-    if(_tire.getTread()!=null) {
-      _producerComboBox.setSelectedIndex(findIndexForItem(_tire.getTread().getProducer()));
-      _treadComboBox.setSelectedIndex(findIndexForItem(_tire.getTread()));
-    }
-    if(_tire.getGroup()!=null) {
-      _articlesGroupComboBox.setSelectedIndex(findIndexForItem(_tire.getGroup()));
-    }
-    if(_tire.getMargin()!=null) {
-      _marginTextField.setText(_percentFormat.format(_tire.getMargin()));
-    }
-    if(_tire.getGrossPrice()!=null) {
-      _grossPriceTextField.setText(_priceFormat.format(_tire.getGrossPrice()));
-      if(_tire.getGroup()!=null)
-        _netPriceTextField.setText(_priceFormat.format(_tire.getNetPrice()));
-    }
-  }
+	private void initDOTsTable() {
+		_DOTsTableCellRenderer = new ListCellRenderer(new int[]{JLabel.CENTER, JLabel.CENTER});
+		_DOTsTableCellEditor = new ListCellEditor();
+		_tireDOTsTable.getColumnModel().getColumn(0).setCellRenderer(_DOTsTableCellRenderer);
+		_tireDOTsTable.getColumnModel().getColumn(0).setCellEditor(_DOTsTableCellEditor);
+		_tireDOTsTable.getColumnModel().getColumn(1).setCellRenderer(_DOTsTableCellRenderer);
+		_tireDOTsTable.getColumnModel().getColumn(1).setCellEditor(_DOTsTableCellEditor);
 
-  private void loadTireSizesList() {
-    DefaultComboBoxModel<TireSize> tireSizes = new DefaultComboBoxModel<>();
-    try {
-      for(TireSize tireSize:  TiresService.getInstance().getTireSizes()) {
-        tireSizes.addElement(tireSize);
-      }
-    } catch(SQLException ex) {
-      ErrorHandler.getInstance().reportError(ex);
-    }
-    _tireSizeComboBox.setModel(tireSizes);
-  }
-  
-  private int findIndexForItem(TireSize tireSize) {
-    for(int i=0;i<_tireSizeComboBox.getItemCount();i++) {
-      if(((TireSize)_tireSizeComboBox.getItemAt(i)).getId()==tireSize.getId())
-        return i;
-    }
-    return 0;
-  }
+		_tireDOTsTable.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
+		_tireDOTsTable.setDefaultEditor(String.class, _DOTsTableCellEditor);
+		_DOTsTableCellEditor.addCellEditorListener(new CellEditorListener() {
+			private boolean hasFullData() {
+				for (int i = 0; i < _tireDOTsTable.getRowCount(); i++) {
+					if (isEmpty(_tireDOTsTable.getValueAt(i, 0)) || isEmpty(_tireDOTsTable.getValueAt(i, 1))) {
+						return false;
+					}
+				}
+				return true;
+			}
 
-  private void loadSpeedIndexesList() {
-    DefaultComboBoxModel<SpeedIndex> speedIndexes = new DefaultComboBoxModel<>(SpeedIndex.values());
-    _speedIndexComboBox.setModel(speedIndexes);
-  }
-  
-  private int findIndexForItem(SpeedIndex speedIndex) {
-    for(int i=0;i<_speedIndexComboBox.getItemCount();i++) {
-      if(((SpeedIndex)_speedIndexComboBox.getItemAt(i)).equals(speedIndex))
-        return i;
-    }
-    return 0;
-  }
+			private boolean isEmpty(Object value) {
+				return value == null || value.equals("");
+			}
 
-  private void loadLoadIndexesList() {
-    DefaultComboBoxModel<LoadIndex> loadIndexes = new DefaultComboBoxModel<>(LoadIndex.values());
-    _loadIndexComboBox.setModel(loadIndexes);
-  }
-  
-  private int findIndexForItem(LoadIndex loadIndex) {
-    for(int i=0;i<_loadIndexComboBox.getItemCount();i++) {
-      if(((LoadIndex)_loadIndexComboBox.getItemAt(i)).equals(loadIndex))
-        return i;
-    }
-    return 0;
-  }
+			@Override
+			public void editingStopped(ChangeEvent e) {
+				int iRowsCount = _tireDOTsTable.getRowCount();
+				int currentRow = _tireDOTsTable.getSelectedRow();
+				if (hasFullData()) {
+					((DefaultTableModel) _tireDOTsTable.getModel()).addRow(new Object[]{});
+				}
+				else if (currentRow != iRowsCount - 1 && (isEmpty(_tireDOTsTable.getValueAt(currentRow, 0)) || isEmpty(_tireDOTsTable.getValueAt(currentRow, 1)))
+						&& isEmpty(_tireDOTsTable.getValueAt(iRowsCount - 1, 0)) && isEmpty(_tireDOTsTable.getValueAt(iRowsCount - 1, 1))) {
+					((DefaultTableModel) _tireDOTsTable.getModel()).removeRow(iRowsCount - 1);
+				}
+				else if (currentRow != iRowsCount - 1 && isEmpty(_tireDOTsTable.getValueAt(currentRow, 0)) && isEmpty(_tireDOTsTable.getValueAt(currentRow, 1))
+						&& isEmpty(_tireDOTsTable.getValueAt(iRowsCount - 1, 0)) && isEmpty(_tireDOTsTable.getValueAt(iRowsCount - 1, 1))) {
+					((DefaultTableModel) _tireDOTsTable.getModel()).removeRow(currentRow);
+				}
+			}
 
-  private void loadProducersList() {
-    DefaultComboBoxModel<Producer> producers = new DefaultComboBoxModel<>();
-    try {
-      for(Producer producer : ProducersService.getInstance().getProducers()) {
-        producers.addElement(producer);
-      }
-    } catch(SQLException ex) {
-      ErrorHandler.getInstance().reportError(ex);
-    }
-    _producerComboBox.setModel(producers);
-  }
-  
-  private int findIndexForItem(Producer producer) {
-    for(int i=0;i<_producerComboBox.getItemCount();i++) {
-      if(((Producer)_producerComboBox.getItemAt(i)).getId()==producer.getId())
-        return i;
-    }
-    return 0;
-  }
+			@Override
+			public void editingCanceled(ChangeEvent e) {
+			}
+		});
+	}
 
-  private void loadTreadsList() {
-    DefaultComboBoxModel<Tread> treads = new DefaultComboBoxModel<>();
-    try {
-      for(Tread tread : TiresService.getInstance().getTreads((Producer)_producerComboBox.getSelectedItem())) {
-        treads.addElement(tread);
-      }
-    } catch(SQLException ex) {
-      ErrorHandler.getInstance().reportError(ex);
-    }
-    _treadComboBox.setModel(treads);
-  }
-  
-  private int findIndexForItem(Tread tread) {
-    for(int i=0;i<_treadComboBox.getItemCount();i++) {
-      if(((Tread)_treadComboBox.getItemAt(i)).getId()==tread.getId())
-        return i;
-    }
-    return 0;
-  }
-  
-  private void loadArticlesGroupsList() {
-    DefaultComboBoxModel<ArticlesGroup> articlesGroups = new DefaultComboBoxModel<>();
-    try {
-      for(ArticlesGroup articlesGroup:  GroupsService.getInstance().getTireGroups()) {
-        articlesGroups.addElement(articlesGroup);
-      }
-    } catch(SQLException ex) {
-      ErrorHandler.getInstance().reportError(ex);
-    }
-    _articlesGroupComboBox.setModel(articlesGroups);
-  }
-  
-  private int findIndexForItem(ArticlesGroup articlesGroup) {
-    for(int i=0;i<_articlesGroupComboBox.getItemCount();i++) {
-      if(((ArticlesGroup)_articlesGroupComboBox.getItemAt(i)).getCode()==articlesGroup.getCode())
-        return i;
-    }
-    return 0;
-  }
+	@Override
+	public final void reload() {
+		if (_tire.getSize() != null) {
+			_tireSizeComboBox.setSelectedIndex(findIndexForItem(_tire.getSize()));
+		}
+		if (_tire.getLoadIndex() != null) {
+			_loadIndexComboBox.setSelectedIndex(findIndexForItem(_tire.getLoadIndex()));
+		}
+		if (_tire.getSpeedIndex() != null) {
+			_speedIndexComboBox.setSelectedIndex(findIndexForItem(_tire.getSpeedIndex()));
+		}
+		if (_tire.getTread() != null) {
+			_producerComboBox.setSelectedIndex(findIndexForItem(_tire.getTread().getProducer()));
+			_treadComboBox.setSelectedIndex(findIndexForItem(_tire.getTread()));
+		}
+		if (_tire.getGroup() != null) {
+			_articlesGroupComboBox.setSelectedIndex(findIndexForItem(_tire.getGroup()));
+		}
+		if (_tire.getMargin() != null) {
+			_marginTextField.setText(_percentFormat.format(_tire.getMargin()));
+		}
+		if (_tire.getGrossPrice() != null) {
+			_grossPriceTextField.setText(_priceFormat.format(_tire.getGrossPrice()));
+			if (_tire.getGroup() != null) {
+				_netPriceTextField.setText(_priceFormat.format(_tire.getNetPrice()));
+			}
+		}
+	}
 
-  private void refreshGrossPrice() {
-    if(_tire.getGroup() != null && _tire.getGroup().getVat()!=null) {
-      String currentInput=_netPriceTextField.getText();
-      currentInput=currentInput.substring(0, currentInput.indexOf(" zł"));
-      currentInput=currentInput.replace(",", ".");
-      double value = Double.parseDouble(currentInput);
-      value*=1+_tire.getGroup().getVat().getRate();
-      _grossPriceTextField.setText(_priceFormat.format(value));
-    }
-  }
-  
-  private void refreshNetPrice() {
-    if(_tire.getGroup() != null && _tire.getGroup().getVat()!=null) {
-      String currentInput=_grossPriceTextField.getText();
-      currentInput=currentInput.substring(0, currentInput.indexOf(" zł"));
-      currentInput=currentInput.replace(",", ".");
-      double value = Double.parseDouble(currentInput);
-      value/=1+_tire.getGroup().getVat().getRate();
-      _netPriceTextField.setText(_priceFormat.format(value));
-    }
-  }
+	private void loadTireSizesList() {
+		DefaultComboBoxModel<TireSize> tireSizes = new DefaultComboBoxModel<>();
+		try {
+			for (TireSize tireSize : TiresService.getInstance().getTireSizes()) {
+				tireSizes.addElement(tireSize);
+			}
+		}
+		catch (SQLException ex) {
+			ErrorHandler.getInstance().reportError(ex);
+		}
+		_tireSizeComboBox.setModel(tireSizes);
+	}
 
-  public class ListCellRenderer extends DefaultTableCellRenderer
-  {
-    private int[] m_iaColumnAligments;
+	private int findIndexForItem(TireSize tireSize) {
+		for (int i = 0; i < _tireSizeComboBox.getItemCount(); i++) {
+			if (((TireSize) _tireSizeComboBox.getItemAt(i)).getId() == tireSize.getId()) {
+				return i;
+			}
+		}
+		return 0;
+	}
 
-    public ListCellRenderer(int[] iaColumnsAligment)
-    {
-      m_iaColumnAligments=iaColumnsAligment;
-    }
+	private void loadSpeedIndexesList() {
+		DefaultComboBoxModel<SpeedIndex> speedIndexes = new DefaultComboBoxModel<>(SpeedIndex.values());
+		_speedIndexComboBox.setModel(speedIndexes);
+	}
 
-    @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
-    {
-      Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-      JLabel label = ((JLabel)c);
-      final JSpinner spinner = new JSpinner();
-      spinner.addMouseListener(new MouseListener() {
+	private int findIndexForItem(SpeedIndex speedIndex) {
+		for (int i = 0; i < _speedIndexComboBox.getItemCount(); i++) {
+			if (((SpeedIndex) _speedIndexComboBox.getItemAt(i)).equals(speedIndex)) {
+				return i;
+			}
+		}
+		return 0;
+	}
 
-        @Override
-        public void mouseClicked(MouseEvent e)
-        {
-          if(e.getClickCount()>1) {
-            spinner.setFocusable(true);
-            ((JTextField)spinner.getEditor()).setSelectionStart(0);
-            
-          }
-        }
+	private void loadLoadIndexesList() {
+		DefaultComboBoxModel<LoadIndex> loadIndexes = new DefaultComboBoxModel<>(LoadIndex.values());
+		_loadIndexComboBox.setModel(loadIndexes);
+	}
 
-        @Override
-        public void mousePressed(MouseEvent e)
-        {
-        }
+	private int findIndexForItem(LoadIndex loadIndex) {
+		for (int i = 0; i < _loadIndexComboBox.getItemCount(); i++) {
+			if (((LoadIndex) _loadIndexComboBox.getItemAt(i)).equals(loadIndex)) {
+				return i;
+			}
+		}
+		return 0;
+	}
 
-        @Override
-        public void mouseReleased(MouseEvent e)
-        {
-        }
+	private void loadProducersList() {
+		DefaultComboBoxModel<Producer> producers = new DefaultComboBoxModel<>();
+		try {
+			for (Producer producer : ProducersService.getInstance().getProducers()) {
+				producers.addElement(producer);
+			}
+		}
+		catch (SQLException ex) {
+			ErrorHandler.getInstance().reportError(ex);
+		}
+		_producerComboBox.setModel(producers);
+	}
 
-        @Override
-        public void mouseEntered(MouseEvent e)
-        {
-          
-        }
+	private int findIndexForItem(Producer producer) {
+		for (int i = 0; i < _producerComboBox.getItemCount(); i++) {
+			if (((Producer) _producerComboBox.getItemAt(i)).getId() == producer.getId()) {
+				return i;
+			}
+		}
+		return 0;
+	}
 
-        @Override
-        public void mouseExited(MouseEvent e)
-        {
-          
-        }
-      });
-      label.setFont(new Font("Tahoma", Font.PLAIN, 11));
-      if(column>m_iaColumnAligments.length) {
-        label.setHorizontalAlignment(JLabel.CENTER);
-      } else {
-        label.setHorizontalAlignment(m_iaColumnAligments[column]);
-      }
-      label.setVerticalAlignment(JLabel.CENTER);
-      if(!isSelected) {
-        label.setFont(new Font("Tahoma", Font.PLAIN, 12));
-      }
-      return label;
-    }
-  }
-  
-  private class ListCellEditor extends DefaultCellEditor {
-   
-    public ListCellEditor() {
-      super(new JTextField());
-    }
-    
-    @Override
-    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-      Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
-      JTextField tf = (JTextField) c;
-      tf.setHorizontalAlignment(JTextField.CENTER);
+	private void loadTreadsList() {
+		DefaultComboBoxModel<Tread> treads = new DefaultComboBoxModel<>();
+		try {
+			for (Tread tread : TiresService.getInstance().getTreads((Producer) _producerComboBox.getSelectedItem())) {
+				treads.addElement(tread);
+			}
+		}
+		catch (SQLException ex) {
+			ErrorHandler.getInstance().reportError(ex);
+		}
+		_treadComboBox.setModel(treads);
+	}
 
-      if(column==0) {
-        tf.addKeyListener(new KeyAdapter() {        
-          @Override
-          public void keyReleased(KeyEvent e) {
-            JTextField textField = (JTextField) e.getSource();
-            String text = textField.getText();
-            if(text.length()>4) {
-                text=text.substring(0, 4);
-                textField.setText(text);
-            }
-          }
-        });
-      }
+	private int findIndexForItem(Tread tread) {
+		for (int i = 0; i < _treadComboBox.getItemCount(); i++) {
+			if (((Tread) _treadComboBox.getItemAt(i)).getId() == tread.getId()) {
+				return i;
+			}
+		}
+		return 0;
+	}
 
-      return tf;
-    }
-  }
-  
-  /**
-   * This method is called from within the constructor to initialize the form.
-   * WARNING: Do NOT modify this code. The content of this method is always
-   * regenerated by the Form Editor.
-   */
-  @SuppressWarnings("unchecked")
+	private void loadArticlesGroupsList() {
+		DefaultComboBoxModel<ArticlesGroup> articlesGroups = new DefaultComboBoxModel<>();
+		try {
+			for (ArticlesGroup articlesGroup : GroupsService.getInstance().getTireGroups()) {
+				articlesGroups.addElement(articlesGroup);
+			}
+		}
+		catch (SQLException ex) {
+			ErrorHandler.getInstance().reportError(ex);
+		}
+		_articlesGroupComboBox.setModel(articlesGroups);
+	}
+
+	private int findIndexForItem(ArticlesGroup articlesGroup) {
+		for (int i = 0; i < _articlesGroupComboBox.getItemCount(); i++) {
+			if (((ArticlesGroup) _articlesGroupComboBox.getItemAt(i)).getCode() == articlesGroup.getCode()) {
+				return i;
+			}
+		}
+		return 0;
+	}
+
+	private void refreshGrossPrice() {
+		if (_tire.getGroup() != null && _tire.getGroup().getVat() != null) {
+			String currentInput = _netPriceTextField.getText();
+			currentInput = currentInput.substring(0, currentInput.indexOf(" zł"));
+			currentInput = currentInput.replace(",", ".");
+			double value = Double.parseDouble(currentInput);
+			value *= 1 + _tire.getGroup().getVat().getRate();
+			_grossPriceTextField.setText(_priceFormat.format(value));
+		}
+	}
+
+	private void refreshNetPrice() {
+		if (_tire.getGroup() != null && _tire.getGroup().getVat() != null) {
+			String currentInput = _grossPriceTextField.getText();
+			currentInput = currentInput.substring(0, currentInput.indexOf(" zł"));
+			currentInput = currentInput.replace(",", ".");
+			double value = Double.parseDouble(currentInput);
+			value /= 1 + _tire.getGroup().getVat().getRate();
+			_netPriceTextField.setText(_priceFormat.format(value));
+		}
+	}
+
+	public class ListCellRenderer extends DefaultTableCellRenderer {
+		private int[] m_iaColumnAligments;
+
+		public ListCellRenderer(int[] iaColumnsAligment) {
+			m_iaColumnAligments = iaColumnsAligment;
+		}
+
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+			Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+			JLabel label = ((JLabel) c);
+			final JSpinner spinner = new JSpinner();
+			spinner.addMouseListener(new MouseListener() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					if (e.getClickCount() > 1) {
+						spinner.setFocusable(true);
+						((JTextField) spinner.getEditor()).setSelectionStart(0);
+
+					}
+				}
+
+				@Override
+				public void mousePressed(MouseEvent e) {
+				}
+
+				@Override
+				public void mouseReleased(MouseEvent e) {
+				}
+
+				@Override
+				public void mouseEntered(MouseEvent e) {
+				}
+
+				@Override
+				public void mouseExited(MouseEvent e) {
+				}
+			});
+			label.setFont(new Font("Tahoma", Font.PLAIN, 11));
+			if (column > m_iaColumnAligments.length) {
+				label.setHorizontalAlignment(JLabel.CENTER);
+			}
+			else {
+				label.setHorizontalAlignment(m_iaColumnAligments[column]);
+			}
+			label.setVerticalAlignment(JLabel.CENTER);
+			if (!isSelected) {
+				label.setFont(new Font("Tahoma", Font.PLAIN, 12));
+			}
+			return label;
+		}
+	}
+
+	private class ListCellEditor extends DefaultCellEditor {
+		public ListCellEditor() {
+			super(new JTextField());
+		}
+
+		@Override
+		public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+			Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+			JTextField tf = (JTextField) c;
+			tf.setHorizontalAlignment(JTextField.CENTER);
+
+			if (column == 0) {
+				tf.addKeyListener(new KeyAdapter() {
+					@Override
+					public void keyReleased(KeyEvent e) {
+						JTextField textField = (JTextField) e.getSource();
+						String text = textField.getText();
+						if (text.length() > 4) {
+							text = text.substring(0, 4);
+							textField.setText(text);
+						}
+					}
+				});
+			}
+
+			return tf;
+		}
+	}
+
+	/**
+	 * This method is called from within the constructor to initialize the form.
+	 * WARNING: Do NOT modify this code. The content of this method is always
+	 * regenerated by the Form Editor.
+	 */
+	@SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -672,102 +672,101 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
 
   private void _producerComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event__producerComboBoxActionPerformed
   {//GEN-HEADEREND:event__producerComboBoxActionPerformed
-    loadTreadsList();
+	  loadTreadsList();
   }//GEN-LAST:event__producerComboBoxActionPerformed
 
   private void bCancelActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bCancelActionPerformed
   {//GEN-HEADEREND:event_bCancelActionPerformed
-    close();
+	  close();
   }//GEN-LAST:event_bCancelActionPerformed
 
   private void bSubmitActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bSubmitActionPerformed
   {//GEN-HEADEREND:event_bSubmitActionPerformed
-    // TODO add your handling code here:
+	  // TODO add your handling code here:
   }//GEN-LAST:event_bSubmitActionPerformed
 
   private void _marginTextFieldFocusGained(java.awt.event.FocusEvent evt)//GEN-FIRST:event__marginTextFieldFocusGained
   {//GEN-HEADEREND:event__marginTextFieldFocusGained
-    String currentInput=_marginTextField.getText();
-    if(currentInput.indexOf(" %")!=-1)
-      currentInput=currentInput.substring(0, currentInput.indexOf(" %"));
-    _marginTextField.setText(currentInput);
-    _marginTextField.setSelectionStart(0);
+	  String currentInput = _marginTextField.getText();
+	  if (currentInput.indexOf(" %") != -1) {
+		  currentInput = currentInput.substring(0, currentInput.indexOf(" %"));
+	  }
+	  _marginTextField.setText(currentInput);
+	  _marginTextField.setSelectionStart(0);
   }//GEN-LAST:event__marginTextFieldFocusGained
 
   private void _marginTextFieldFocusLost(java.awt.event.FocusEvent evt)//GEN-FIRST:event__marginTextFieldFocusLost
   {//GEN-HEADEREND:event__marginTextFieldFocusLost
-    String currentInput=_marginTextField.getText();
-    currentInput=currentInput.replace(",", ".");
-    double value;
-    try {
-      value = Double.parseDouble(currentInput);
-      _marginTextField.setText(_percentFormat.format(value));
-      _marginTextField.setBorder(null);
-    } catch (NumberFormatException ex) {
-      currentInput+=" %";
-      _marginTextField.setText(currentInput);
-      _marginTextField.setBorder(BorderFactory.createLineBorder(Color.red));
-    }
+	  String currentInput = _marginTextField.getText();
+	  currentInput = currentInput.replace(",", ".");
+	  double value;
+	  try {
+		  value = Double.parseDouble(currentInput);
+		  _marginTextField.setText(_percentFormat.format(value));
+		  _marginTextField.setBorder(null);
+	  }
+	  catch (NumberFormatException ex) {
+		  currentInput += " %";
+		  _marginTextField.setText(currentInput);
+		  _marginTextField.setBorder(BorderFactory.createLineBorder(Color.red));
+	  }
   }//GEN-LAST:event__marginTextFieldFocusLost
 
   private void _netPriceTextFieldFocusGained(java.awt.event.FocusEvent evt)//GEN-FIRST:event__netPriceTextFieldFocusGained
   {//GEN-HEADEREND:event__netPriceTextFieldFocusGained
-    String currentInput=_netPriceTextField.getText();
-    if(currentInput.indexOf(" zł")!=-1)
-      currentInput=currentInput.substring(0, currentInput.indexOf(" zł"));
-    _netPriceTextField.setText(currentInput);
-    _netPriceTextField.setSelectionStart(0);
+	  String currentInput = _netPriceTextField.getText();
+	  if (currentInput.indexOf(" zł") != -1) {
+		  currentInput = currentInput.substring(0, currentInput.indexOf(" zł"));
+	  }
+	  _netPriceTextField.setText(currentInput);
+	  _netPriceTextField.setSelectionStart(0);
   }//GEN-LAST:event__netPriceTextFieldFocusGained
 
   private void _netPriceTextFieldFocusLost(java.awt.event.FocusEvent evt)//GEN-FIRST:event__netPriceTextFieldFocusLost
   {//GEN-HEADEREND:event__netPriceTextFieldFocusLost
-    String currentInput=_netPriceTextField.getText();
-    currentInput=currentInput.replace(",", ".");
-    double value;
-    try
-    {
-      value=Double.parseDouble(currentInput);
-      _netPriceTextField.setText(_priceFormat.format(value));
-      _netPriceTextField.setBorder(null);
-      refreshGrossPrice();
-    }
-    catch(NumberFormatException ex)
-    {
-      currentInput+=" zł";
-      _netPriceTextField.setText(currentInput);
-      _netPriceTextField.setBorder(BorderFactory.createLineBorder(Color.red));
-    }
+	  String currentInput = _netPriceTextField.getText();
+	  currentInput = currentInput.replace(",", ".");
+	  double value;
+	  try {
+		  value = Double.parseDouble(currentInput);
+		  _netPriceTextField.setText(_priceFormat.format(value));
+		  _netPriceTextField.setBorder(null);
+		  refreshGrossPrice();
+	  }
+	  catch (NumberFormatException ex) {
+		  currentInput += " zł";
+		  _netPriceTextField.setText(currentInput);
+		  _netPriceTextField.setBorder(BorderFactory.createLineBorder(Color.red));
+	  }
   }//GEN-LAST:event__netPriceTextFieldFocusLost
 
   private void _grossPriceTextFieldFocusGained(java.awt.event.FocusEvent evt)//GEN-FIRST:event__grossPriceTextFieldFocusGained
   {//GEN-HEADEREND:event__grossPriceTextFieldFocusGained
-    String currentInput=_grossPriceTextField.getText();
-    if(currentInput.indexOf(" zł")!=-1)
-      currentInput=currentInput.substring(0, currentInput.indexOf(" zł"));
-    _grossPriceTextField.setText(currentInput);
-    _grossPriceTextField.setSelectionStart(0);
+	  String currentInput = _grossPriceTextField.getText();
+	  if (currentInput.indexOf(" zł") != -1) {
+		  currentInput = currentInput.substring(0, currentInput.indexOf(" zł"));
+	  }
+	  _grossPriceTextField.setText(currentInput);
+	  _grossPriceTextField.setSelectionStart(0);
   }//GEN-LAST:event__grossPriceTextFieldFocusGained
 
   private void _grossPriceTextFieldFocusLost(java.awt.event.FocusEvent evt)//GEN-FIRST:event__grossPriceTextFieldFocusLost
   {//GEN-HEADEREND:event__grossPriceTextFieldFocusLost
-    String currentInput=_grossPriceTextField.getText();
-    currentInput=currentInput.replace(",", ".");
-    double value;
-    try
-    {
-      value=Double.parseDouble(currentInput);
-      _grossPriceTextField.setText(_priceFormat.format(value));
-      _grossPriceTextField.setBorder(null);
-      refreshNetPrice();
-    }
-    catch(NumberFormatException ex)
-    {
-      currentInput+=" zł";
-      _grossPriceTextField.setText(currentInput);
-      _grossPriceTextField.setBorder(BorderFactory.createLineBorder(Color.red));
-    }
+	  String currentInput = _grossPriceTextField.getText();
+	  currentInput = currentInput.replace(",", ".");
+	  double value;
+	  try {
+		  value = Double.parseDouble(currentInput);
+		  _grossPriceTextField.setText(_priceFormat.format(value));
+		  _grossPriceTextField.setBorder(null);
+		  refreshNetPrice();
+	  }
+	  catch (NumberFormatException ex) {
+		  currentInput += " zł";
+		  _grossPriceTextField.setText(currentInput);
+		  _grossPriceTextField.setBorder(BorderFactory.createLineBorder(Color.red));
+	  }
   }//GEN-LAST:event__grossPriceTextFieldFocusLost
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox _articlesGroupComboBox;
     private javax.swing.JLabel _articlesGroupLabel;

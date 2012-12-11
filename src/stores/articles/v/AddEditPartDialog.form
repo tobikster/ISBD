@@ -60,7 +60,9 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tahoma" size="14" style="1"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Nowa cz&#x119;&#x15b;&#x107;"/>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="(_editMode) ? &quot;Edycja cz&#x119;&#x15b;ci&quot; : &quot;Nowa cz&#x119;&#x15b;&#x107;&quot;" type="code"/>
+        </Property>
       </Properties>
     </Component>
     <Container class="javax.swing.JPanel" name="_dataPanel">
@@ -69,31 +71,47 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="_pictureLabel" min="-2" max="-2" attributes="0"/>
-                      <Component id="_countLabel" min="-2" max="-2" attributes="0"/>
-                      <Component id="_priceLabel" min="-2" max="-2" attributes="0"/>
-                      <Component id="_marginLabel" min="-2" max="-2" attributes="0"/>
-                      <Component id="_catalogNumberLabel" min="-2" max="-2" attributes="0"/>
-                      <Component id="_producerLabel" min="-2" max="-2" attributes="0"/>
-                      <Component id="_articlesGroupLabel" min="-2" max="-2" attributes="0"/>
-                      <Component id="_nameLabel" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="_catalogNumberTextField" alignment="0" max="32767" attributes="0"/>
-                      <Component id="_countSpinner" alignment="0" max="32767" attributes="0"/>
-                      <Component id="_producerComboBox" alignment="0" max="32767" attributes="0"/>
-                      <Component id="_articlesGroupComboBox" alignment="0" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="_catalogNumberLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="_nameLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="_articlesGroupLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="_producerLabel" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="_producerComboBox" alignment="0" max="32767" attributes="0"/>
+                              <Component id="_articlesGroupComboBox" alignment="0" max="32767" attributes="0"/>
+                              <Component id="_nameTextField" alignment="0" max="32767" attributes="0"/>
+                              <Component id="_catalogNumberTextField" alignment="1" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="_marginLabel" min="-2" max="-2" attributes="0"/>
+                              <Component id="_netPriceLabel" min="-2" pref="81" max="-2" attributes="0"/>
+                              <Component id="_grossPriceLabel" min="-2" pref="81" max="-2" attributes="0"/>
+                              <Component id="_countLabel" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="_countSpinner" alignment="1" max="32767" attributes="0"/>
+                              <Component id="_grossPriceTextField" alignment="1" max="32767" attributes="0"/>
+                              <Component id="_netPriceTextField" alignment="1" max="32767" attributes="0"/>
+                              <Component id="_marginTextField" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace min="-2" pref="71" max="-2" attributes="0"/>
+                          <Component id="_pictureLabel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="_picturePathTextField" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="_choosePictureButton" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="_nameTextField" alignment="0" max="32767" attributes="0"/>
-                      <Component id="_marginTextField" max="32767" attributes="0"/>
-                      <Component id="_grossPriceTextField" alignment="0" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -129,7 +147,12 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="_priceLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="_netPriceLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="_netPriceTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="_grossPriceLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="_grossPriceTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -143,7 +166,7 @@
                       <Component id="_picturePathTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="_choosePictureButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="68" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -190,16 +213,6 @@
         </Component>
         <Component class="javax.swing.JTextField" name="_nameTextField">
         </Component>
-        <Component class="javax.swing.JLabel" name="_marginLabel">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Mar&#x17c;a:"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JLabel" name="_priceLabel">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Cena:"/>
-          </Properties>
-        </Component>
         <Component class="javax.swing.JLabel" name="_countLabel">
           <Properties>
             <Property name="text" type="java.lang.String" value="Ilo&#x15b;&#x107;:"/>
@@ -208,7 +221,7 @@
         <Component class="javax.swing.JSpinner" name="_countSpinner">
           <Properties>
             <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-              <SpinnerModel initial="0" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+              <SpinnerModel initial="0.0" minimum="0.0" numberType="java.lang.Float" stepSize="1.0" type="number"/>
             </Property>
           </Properties>
         </Component>
@@ -228,9 +241,50 @@
             <Property name="text" type="java.lang.String" value="Wybierz"/>
           </Properties>
         </Component>
+        <Component class="javax.swing.JLabel" name="_marginLabel">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Tahoma" size="12" style="0"/>
+            </Property>
+            <Property name="horizontalAlignment" type="int" value="4"/>
+            <Property name="text" type="java.lang.String" value="Mar&#x17c;a:"/>
+          </Properties>
+        </Component>
         <Component class="javax.swing.JTextField" name="_marginTextField">
+          <Events>
+            <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="_marginTextFieldFocusGained"/>
+            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="_marginTextFieldFocusLost"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="_netPriceLabel">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Tahoma" size="12" style="0"/>
+            </Property>
+            <Property name="horizontalAlignment" type="int" value="4"/>
+            <Property name="text" type="java.lang.String" value="Cena netto:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="_netPriceTextField">
+          <Events>
+            <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="_netPriceTextFieldFocusGained"/>
+            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="_netPriceTextFieldFocusLost"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="_grossPriceLabel">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Tahoma" size="12" style="0"/>
+            </Property>
+            <Property name="horizontalAlignment" type="int" value="4"/>
+            <Property name="text" type="java.lang.String" value="Cena brutto:"/>
+          </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="_grossPriceTextField">
+          <Events>
+            <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="_grossPriceTextFieldFocusGained"/>
+            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="_grossPriceTextFieldFocusLost"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -241,9 +295,9 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="32767" attributes="0"/>
-                  <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+                  <Component id="_okButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+                  <Component id="_cancelButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -253,8 +307,8 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jButton2" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="_okButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="_cancelButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -262,18 +316,21 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JButton" name="jButton1">
+        <Component class="javax.swing.JButton" name="_cancelButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="Anuluj"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="_cancelButtonActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton2">
+        <Component class="javax.swing.JButton" name="_okButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="OK"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="_okButtonActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -286,11 +343,8 @@
       <SubComponents>
         <Component class="javax.swing.JTable" name="_attributesTable">
           <Properties>
-            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="2" rowCount="4">
-                <Column editable="false" title="Title 1" type="java.lang.Object"/>
-                <Column editable="true" title="Title 2" type="java.lang.Object"/>
-              </Table>
+            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="getAttributesModel()" type="code"/>
             </Property>
           </Properties>
         </Component>

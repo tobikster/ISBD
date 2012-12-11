@@ -8,14 +8,22 @@ import core.c.ErrorHandler;
 import core.c.Reloadable;
 import core.v.ApplicationDialog;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.text.NumberFormatter;
+import javax.swing.*;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import stores.articles.c.TiresService;
 import stores.articles.m.*;
+import stores.groups.c.GroupsService;
 import stores.groups.m.ArticlesGroup;
 import stores.producers.c.ProducersService;
 import stores.producers.m.Producer;
@@ -30,6 +38,8 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
   private Tire _tire;
   private DecimalFormat _priceFormat = new DecimalFormat("0.00 zł");
   private DecimalFormat _percentFormat = new DecimalFormat("0.00 %");
+  private ListCellRenderer _DOTsTableCellRenderer;
+  private ListCellEditor _DOTsTableCellEditor;
     
   /**
    * Creates new form AddEditTireDialog
@@ -44,6 +54,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
     }
     initComponents();
     initItemsLists();
+    initDOTsTable();
     reload();
   }
   
@@ -57,6 +68,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
     _tire=tire;
     initComponents();
     initItemsLists();
+    initDOTsTable();
     reload();
   }
 
@@ -66,6 +78,54 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
     loadSpeedIndexesList();
     loadProducersList();
     loadTreadsList();
+    loadArticlesGroupsList();
+  }
+
+  private void initDOTsTable() {
+    _DOTsTableCellRenderer=new ListCellRenderer(new int[] {JLabel.CENTER, JLabel.CENTER});
+    _DOTsTableCellEditor=new ListCellEditor();
+    _tireDOTsTable.getColumnModel().getColumn(0).setCellRenderer(_DOTsTableCellRenderer);
+    _tireDOTsTable.getColumnModel().getColumn(0).setCellEditor(_DOTsTableCellEditor);
+    _tireDOTsTable.getColumnModel().getColumn(1).setCellRenderer(_DOTsTableCellRenderer);
+    _tireDOTsTable.getColumnModel().getColumn(1).setCellEditor(_DOTsTableCellEditor);
+    
+    _tireDOTsTable.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
+    _tireDOTsTable.setDefaultEditor(String.class, _DOTsTableCellEditor);
+    _DOTsTableCellEditor.addCellEditorListener(new CellEditorListener() {
+      private boolean hasFullData() {
+        for(int i=0;i<_tireDOTsTable.getRowCount();i++) {
+          if(isEmpty(_tireDOTsTable.getValueAt(i, 0)) || isEmpty(_tireDOTsTable.getValueAt(i, 1)))
+            return false;
+        }
+        return true;
+      }
+      
+      private boolean isEmpty(Object value) {
+        return value==null || value.equals("");
+      }
+      
+      @Override
+      public void editingStopped(ChangeEvent e)
+      {
+        int iRowsCount = _tireDOTsTable.getRowCount();
+        int currentRow = _tireDOTsTable.getSelectedRow();
+        if(hasFullData()) {
+          ((DefaultTableModel)_tireDOTsTable.getModel()).addRow(new Object[] {});
+        } else if(currentRow!=iRowsCount-1 && (isEmpty(_tireDOTsTable.getValueAt(currentRow, 0)) || isEmpty(_tireDOTsTable.getValueAt(currentRow, 1))) 
+            && isEmpty(_tireDOTsTable.getValueAt(iRowsCount-1, 0)) && isEmpty(_tireDOTsTable.getValueAt(iRowsCount-1, 1))) {
+          ((DefaultTableModel)_tireDOTsTable.getModel()).removeRow(iRowsCount-1);
+        } else if (currentRow!=iRowsCount-1 && isEmpty(_tireDOTsTable.getValueAt(currentRow, 0)) && isEmpty(_tireDOTsTable.getValueAt(currentRow, 1))
+            && isEmpty(_tireDOTsTable.getValueAt(iRowsCount-1, 0)) && isEmpty(_tireDOTsTable.getValueAt(iRowsCount-1, 1))) {
+          ((DefaultTableModel)_tireDOTsTable.getModel()).removeRow(currentRow);
+        }
+      }
+
+      @Override
+      public void editingCanceled(ChangeEvent e)
+      {
+        
+      }
+    });
   }
 
   @Override
@@ -83,6 +143,9 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
     if(_tire.getTread()!=null) {
       _producerComboBox.setSelectedIndex(findIndexForItem(_tire.getTread().getProducer()));
       _treadComboBox.setSelectedIndex(findIndexForItem(_tire.getTread()));
+    }
+    if(_tire.getGroup()!=null) {
+      _articlesGroupComboBox.setSelectedIndex(findIndexForItem(_tire.getGroup()));
     }
     if(_tire.getMargin()!=null) {
       _marginTextField.setText(_percentFormat.format(_tire.getMargin()));
@@ -180,6 +243,26 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
     return 0;
   }
   
+  private void loadArticlesGroupsList() {
+    DefaultComboBoxModel<ArticlesGroup> articlesGroups = new DefaultComboBoxModel<>();
+    try {
+      for(ArticlesGroup articlesGroup:  GroupsService.getInstance().getTireGroups()) {
+        articlesGroups.addElement(articlesGroup);
+      }
+    } catch(SQLException ex) {
+      ErrorHandler.getInstance().reportError(ex);
+    }
+    _articlesGroupComboBox.setModel(articlesGroups);
+  }
+  
+  private int findIndexForItem(ArticlesGroup articlesGroup) {
+    for(int i=0;i<_articlesGroupComboBox.getItemCount();i++) {
+      if(((ArticlesGroup)_articlesGroupComboBox.getItemAt(i)).getCode()==articlesGroup.getCode())
+        return i;
+    }
+    return 0;
+  }
+
   private void refreshGrossPrice() {
     if(_tire.getGroup() != null && _tire.getGroup().getVat()!=null) {
       String currentInput=_netPriceTextField.getText();
@@ -202,10 +285,99 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
     }
   }
 
-  private void getDOTsTableModel() {
-    
-  }
+  public class ListCellRenderer extends DefaultTableCellRenderer
+  {
+    private int[] m_iaColumnAligments;
 
+    public ListCellRenderer(int[] iaColumnsAligment)
+    {
+      m_iaColumnAligments=iaColumnsAligment;
+    }
+
+    @Override
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
+    {
+      Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+      JLabel label = ((JLabel)c);
+      final JSpinner spinner = new JSpinner();
+      spinner.addMouseListener(new MouseListener() {
+
+        @Override
+        public void mouseClicked(MouseEvent e)
+        {
+          if(e.getClickCount()>1) {
+            spinner.setFocusable(true);
+            ((JTextField)spinner.getEditor()).setSelectionStart(0);
+            
+          }
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e)
+        {
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e)
+        {
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e)
+        {
+          
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e)
+        {
+          
+        }
+      });
+      label.setFont(new Font("Tahoma", Font.PLAIN, 11));
+      if(column>m_iaColumnAligments.length) {
+        label.setHorizontalAlignment(JLabel.CENTER);
+      } else {
+        label.setHorizontalAlignment(m_iaColumnAligments[column]);
+      }
+      label.setVerticalAlignment(JLabel.CENTER);
+      if(!isSelected) {
+        label.setFont(new Font("Tahoma", Font.PLAIN, 12));
+      }
+      return label;
+    }
+  }
+  
+  private class ListCellEditor extends DefaultCellEditor {
+   
+    public ListCellEditor() {
+      super(new JTextField());
+    }
+    
+    @Override
+    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+      Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+      JTextField tf = (JTextField) c;
+      tf.setHorizontalAlignment(JTextField.CENTER);
+
+      if(column==0) {
+        tf.addKeyListener(new KeyAdapter() {        
+          @Override
+          public void keyReleased(KeyEvent e) {
+            JTextField textField = (JTextField) e.getSource();
+            String text = textField.getText();
+            if(text.length()>4) {
+                text=text.substring(0, 4);
+                textField.setText(text);
+            }
+          }
+        });
+      }
+
+      return tf;
+    }
+  }
+  
   /**
    * This method is called from within the constructor to initialize the form.
    * WARNING: Do NOT modify this code. The content of this method is always
@@ -228,6 +400,8 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
         _treadComboBox = new javax.swing.JComboBox();
         _loadIndexComboBox = new javax.swing.JComboBox();
         _speedIndexComboBox = new javax.swing.JComboBox();
+        _articlesGroupLabel = new javax.swing.JLabel();
+        _articlesGroupComboBox = new javax.swing.JComboBox();
         jpPriceDetails = new javax.swing.JPanel();
         _grossPriceLabel = new javax.swing.JLabel();
         _netPriceLabel = new javax.swing.JLabel();
@@ -237,7 +411,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
         _grossPriceTextField = new javax.swing.JTextField();
         jpPriceDetails2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jtTireDOTs = new javax.swing.JTable();
+        _tireDOTsTable = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -267,12 +441,6 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
         _tireSizeLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         _tireSizeLabel.setText("Rozmiar:");
 
-        _tireSizeComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                _tireSizeComboBoxActionPerformed(evt);
-            }
-        });
-
         _producerLabel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         _producerLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         _producerLabel.setText("Producent:");
@@ -287,42 +455,41 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
         _treadLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         _treadLabel.setText("Bieżnik:");
 
-        _loadIndexComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                _loadIndexComboBoxActionPerformed(evt);
-            }
-        });
-
-        _speedIndexComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                _speedIndexComboBoxActionPerformed(evt);
-            }
-        });
+        _articlesGroupLabel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        _articlesGroupLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        _articlesGroupLabel.setText("Grupa towarowa:");
 
         javax.swing.GroupLayout jpBasicDetailsLayout = new javax.swing.GroupLayout(jpBasicDetails);
         jpBasicDetails.setLayout(jpBasicDetailsLayout);
         jpBasicDetailsLayout.setHorizontalGroup(
             jpBasicDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpBasicDetailsLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jpBasicDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(_producerLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
-                    .addComponent(_tireSizeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jpBasicDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jpBasicDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(_articlesGroupLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(_producerLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(_tireSizeLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jpBasicDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jpBasicDetailsLayout.createSequentialGroup()
-                        .addComponent(_producerComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(_treadLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(2, 2, 2))
-                    .addComponent(_tireSizeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jpBasicDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jpBasicDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jpBasicDetailsLayout.createSequentialGroup()
+                                .addComponent(_producerComboBox, 0, 78, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(_treadLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(2, 2, 2))
+                            .addGroup(jpBasicDetailsLayout.createSequentialGroup()
+                                .addComponent(_tireSizeComboBox, 0, 121, Short.MAX_VALUE)
+                                .addGap(16, 16, 16)))
+                        .addGroup(jpBasicDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jpBasicDetailsLayout.createSequentialGroup()
+                                .addComponent(_loadIndexComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(_speedIndexComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(_treadComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jpBasicDetailsLayout.createSequentialGroup()
-                        .addComponent(_loadIndexComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(_speedIndexComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(_treadComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(_articlesGroupComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jpBasicDetailsLayout.setVerticalGroup(
@@ -340,6 +507,10 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
                     .addComponent(_treadLabel)
                     .addComponent(_treadComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(_producerComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jpBasicDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(_articlesGroupLabel)
+                    .addComponent(_articlesGroupComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -423,7 +594,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
 
         jpPriceDetails2.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true), "Informacje ilościowe", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, new java.awt.Color(153, 153, 153)));
 
-        jtTireDOTs.setModel(new javax.swing.table.DefaultTableModel(
+        _tireDOTsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null}
             },
@@ -431,7 +602,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
                 "DOT", "Ilość"
             }
         ));
-        jScrollPane1.setViewportView(jtTireDOTs);
+        jScrollPane1.setViewportView(_tireDOTsTable);
 
         javax.swing.GroupLayout jpPriceDetails2Layout = new javax.swing.GroupLayout(jpPriceDetails2);
         jpPriceDetails2.setLayout(jpPriceDetails2Layout);
@@ -457,18 +628,20 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jSeparator1)
-                    .addComponent(jpPriceDetails2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jpPriceDetails, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jpBasicDetails, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jSeparator1)
+                            .addComponent(jpPriceDetails2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jpPriceDetails, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jpBasicDetails, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 114, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(bSubmit)
                         .addGap(20, 20, 20)
                         .addComponent(bCancel)
-                        .addGap(0, 112, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addGap(116, 116, 116))))
         );
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {bCancel, bSubmit});
@@ -485,7 +658,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
                 .addComponent(jpPriceDetails, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jpPriceDetails2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bSubmit)
                     .addComponent(bCancel))
@@ -496,11 +669,6 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-  private void _tireSizeComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event__tireSizeComboBoxActionPerformed
-  {//GEN-HEADEREND:event__tireSizeComboBoxActionPerformed
-    // TODO add your handling code here:
-  }//GEN-LAST:event__tireSizeComboBoxActionPerformed
 
   private void _producerComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event__producerComboBoxActionPerformed
   {//GEN-HEADEREND:event__producerComboBoxActionPerformed
@@ -600,33 +768,20 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
     }
   }//GEN-LAST:event__grossPriceTextFieldFocusLost
 
-  private void _loadIndexComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event__loadIndexComboBoxActionPerformed
-  {//GEN-HEADEREND:event__loadIndexComboBoxActionPerformed
-    // TODO add your handling code here:
-  }//GEN-LAST:event__loadIndexComboBoxActionPerformed
-
-  private void _speedIndexComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event__speedIndexComboBoxActionPerformed
-  {//GEN-HEADEREND:event__speedIndexComboBoxActionPerformed
-    // TODO add your handling code here:
-  }//GEN-LAST:event__speedIndexComboBoxActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox _articlesGroupComboBox;
+    private javax.swing.JLabel _articlesGroupLabel;
     private javax.swing.JLabel _grossPriceLabel;
-    private javax.swing.JLabel _grossPriceLabel1;
     private javax.swing.JTextField _grossPriceTextField;
-    private javax.swing.JFormattedTextField _grossPriceTextField1;
     private javax.swing.JComboBox _loadIndexComboBox;
     private javax.swing.JLabel _marginLabel;
-    private javax.swing.JLabel _marginLabel1;
     private javax.swing.JTextField _marginTextField;
-    private javax.swing.JFormattedTextField _marginTextField1;
     private javax.swing.JLabel _netPriceLabel;
     private javax.swing.JTextField _netPriceTextField;
-    private javax.swing.JLabel _priceLabel1;
-    private javax.swing.JFormattedTextField _priceTextField1;
     private javax.swing.JComboBox _producerComboBox;
     private javax.swing.JLabel _producerLabel;
     private javax.swing.JComboBox _speedIndexComboBox;
+    private javax.swing.JTable _tireDOTsTable;
     private javax.swing.JComboBox _tireSizeComboBox;
     private javax.swing.JLabel _tireSizeLabel;
     private javax.swing.JComboBox _treadComboBox;
@@ -638,8 +793,6 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JPanel jpBasicDetails;
     private javax.swing.JPanel jpPriceDetails;
-    private javax.swing.JPanel jpPriceDetails1;
     private javax.swing.JPanel jpPriceDetails2;
-    private javax.swing.JTable jtTireDOTs;
     // End of variables declaration//GEN-END:variables
 }

@@ -7,6 +7,7 @@ import core.m.ResultRow;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import stores.articles.c.validators.tires.DOTValidator;
 import stores.articles.c.validators.tires.TireValidator;
 import stores.articles.m.*;
 import stores.groups.c.GroupsService;
@@ -37,7 +38,7 @@ public class TiresService
 
   // <editor-fold defaultstate="collapsed" desc="DOT methods">
   public DOT getDOT(int DOTId) throws SQLException {
-    String sQuery="SELECT * FROM DOTyOpon WHERE IdDOTu="+DOTId+";";
+    String sQuery="SELECT * FROM DOTy WHERE IdDOTu="+DOTId+";";
 
     List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult(sQuery);
 		if (results.isEmpty()) {
@@ -48,6 +49,22 @@ public class TiresService
     DOT dot = new DOT();
     dot.setId(DOTId);
     dot.setDot(result.getString(2));
+
+    return dot;
+  }
+
+  public DOT getDOT(String DOTValue) throws SQLException {
+    String sQuery="SELECT * FROM DOTy WHERE DOT='"+DOTValue+"';";
+
+    List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult(sQuery);
+		if (results.isEmpty()) {
+			throw new SQLException("DOT with given value does not exist!");
+		}
+		ResultRow result = results.get(0);
+
+    DOT dot = new DOT();
+    dot.setId(result.getInt(1));
+    dot.setDot(DOTValue);
 
     return dot;
   }
@@ -66,6 +83,14 @@ public class TiresService
     }
 
     return dots;
+  }
+
+  public void addDOT(DOT dot) throws SQLException, DatabaseException {
+    EntityValidator<DOT> validator = new DOTValidator();
+    validator.validate(dot);
+    
+    String sQuery="INSERT INTO DOTy(DOT) VALUES ('"+dot.getDot()+"');";
+    DatabaseManager.getInstance().executeQuery(sQuery);
   }
   // </editor-fold>
 
@@ -123,11 +148,76 @@ public class TiresService
     EntityValidator<Tire> validator = new TireValidator();
     validator.validate(tire);
 
-    String sQuery = "INSERT INTO Opony (KodGrupyTowarowej, IdBieznika, IdRozmiaru, IndeksNosnosci, IndeksPredkosci, Marza, CenaBrutto) "
-      + "VALUES ("+tire.getGroup().getCode()+", "+tire.getTread().getId()+", "+tire.getSize().getId()+", '"+tire.getLoadIndex()+"', "
-      + "'"+tire.getSpeedIndex()+"', "+tire.getMargin()+", "+tire.getGrossPrice()+");";
+    DatabaseManager.getInstance().startTransaction();
 
-    DatabaseManager.getInstance().executeQuery(sQuery);
+    try {
+      String sQuery = "INSERT INTO Opony (KodGrupyTowarowej, IdBieznika, IdRozmiaru, IndeksNosnosci, IndeksPredkosci, Marza, CenaBrutto) "
+        + "VALUES ("+tire.getGroup().getCode()+", "+tire.getTread().getId()+", "+tire.getSize().getId()+", '"+tire.getLoadIndex()+"', "
+        + "'"+tire.getSpeedIndex()+"', "+tire.getMargin()+", "+tire.getGrossPrice()+");";
+      DatabaseManager.getInstance().executeQuery(sQuery);
+
+      //Retrieve new tire ID
+      sQuery = "SELECT TOP 1 IdOpony FROM Opony ORDER BY IdOpony DESC;";
+      tire.setId(DatabaseManager.getInstance().executeQueryResult(sQuery).get(0).getInt(1));
+
+      for(DOT dot : tire.getTireDOTs().keySet()) {
+        try {
+          dot = getDOT(dot.getDot());
+        } catch(SQLException ex) {
+          addDOT(dot);
+          dot = getDOT(dot.getDot());
+        }
+        sQuery = "INSERT INTO DOTyOpon(IdOpony, IdDOTu, Liczba) VALUES ("+tire.getId()+", "+dot.getId()+", "+tire.getTireDOTs().get(dot)+");";
+        System.out.println(sQuery);
+        DatabaseManager.getInstance().executeQuery(sQuery);
+      }
+    } catch(DatabaseException|SQLException ex) {
+      DatabaseManager.getInstance().rollbackTransaction();
+      throw ex;
+    }
+
+    DatabaseManager.getInstance().commitTransaction();
+  }
+
+  public void updateTire(Tire tire) throws DatabaseException, SQLException {
+    EntityValidator<Tire> validator = new TireValidator();
+    validator.validate(tire);
+
+    DatabaseManager.getInstance().startTransaction();
+
+    try {
+      Tire oldTire = getTire(tire.getId());
+      String sQuery = "UPDATE Opony SET ";
+      
+      if(tire.getGroup().getCode()!=oldTire.getGroup().getCode())
+        sQuery += "KodGrupyTowarowej="+tire.getGroup().getCode()+", ";
+      if(tire.getTread().getId()!=oldTire.getTread().getId())
+        sQuery += "IdBieznika="+tire.getTread().getId()+", ";
+      if(tire.getSize().getId()!=oldTire.getSize().getId())
+        sQuery += "IdRozmiaru="+tire.getSize().getId()+", ";
+      if(!tire.getLoadIndex().equals(oldTire.getLoadIndex()))
+        sQuery += "IndeksNosnosci="+tire.getLoadIndex()+", ";
+      if(!tire.getSpeedIndex().equals(oldTire.getSpeedIndex()))
+        sQuery += "IndeksPredkosci="+tire.getSpeedIndex()+", ";
+      if(tire.getMargin()!=oldTire.getMargin())
+        sQuery += "Marza="+tire.getMargin()+", ";
+      if(tire.getGrossPrice()!=oldTire.getGrossPrice())
+        sQuery += "CenaBrutto="+tire.getGrossPrice();
+
+      if(sQuery.lastIndexOf(", ")==sQuery.length()-2)
+        sQuery = sQuery.substring(0, sQuery.lastIndexOf(", "));
+
+      sQuery += " WHERE IdOpony="+tire.getId()+";";
+      System.out.println(sQuery);
+      DatabaseManager.getInstance().executeQuery(sQuery);
+
+      
+    } catch(SQLException ex) {
+      DatabaseManager.getInstance().rollbackTransaction();
+      throw ex;
+    }
+
+    DatabaseManager.getInstance().commitTransaction();
   }
   // </editor-fold>
 

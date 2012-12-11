@@ -1,25 +1,14 @@
 package stores.articles.c.validators.tires;
 
-import stores.articles.m.DOT;
 import core.c.ElementaryValidator;
 import core.c.EntityValidator;
 import core.m.DatabaseException;
 import java.util.LinkedList;
 import java.util.List;
+import stores.articles.m.DOT;
 
 public class DOTValidator implements EntityValidator<DOT>
 {
-  // <editor-fold defaultstate="collapsed" desc="Object variables">
-  // </editor-fold>
-  // <editor-fold defaultstate="collapsed" desc="Creating object">
-  // </editor-fold>
-  // <editor-fold defaultstate="collapsed" desc="Object PRIVATE methods">
-  // </editor-fold>
-  // <editor-fold defaultstate="collapsed" desc="Object PUBLIC methods">
-  // <editor-fold defaultstate="collapsed" desc="Getters">
-  // </editor-fold>
-  // <editor-fold defaultstate="collapsed" desc="Setters">
-  // </editor-fold>
   @Override
   public boolean validate(DOT object) throws DatabaseException
   {
@@ -36,5 +25,4 @@ public class DOTValidator implements EntityValidator<DOT>
 
     return errors.isEmpty();
   }
-  // </editor-fold>
 }

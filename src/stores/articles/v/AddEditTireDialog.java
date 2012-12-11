@@ -21,7 +21,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -767,6 +766,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
   private void _producerComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event__producerComboBoxActionPerformed
   {//GEN-HEADEREND:event__producerComboBoxActionPerformed
     loadTreadsList();
+    _tire.setTread((Tread)_treadComboBox.getSelectedItem());
   }//GEN-LAST:event__producerComboBoxActionPerformed
 
   private void bCancelActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bCancelActionPerformed

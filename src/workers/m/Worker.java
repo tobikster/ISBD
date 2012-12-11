@@ -4,7 +4,7 @@ package workers.m;
  *
  * @author tobikster
  */
-public class Worker {
+public class Worker implements Cloneable {
 	private int _id;
 	private String _name;
 	private String _surname;
@@ -81,4 +81,9 @@ public class Worker {
 	public String getFullName() {
 		return getName() + " " + getSurname();
 	}
+  
+  @Override
+  public Worker clone() {
+    return new Worker(_id, _name, _surname, _job, _login, _password);
+  }
 }

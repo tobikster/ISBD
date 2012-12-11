@@ -6,7 +6,7 @@ import stores.groups.m.ArticlesGroupAttribute;
  *
  * @author tobikster
  */
-public class ArticleAttributeValue {
+public class ArticleAttributeValue implements Cloneable {
 	private Part _article;
 	private ArticlesGroupAttribute _attribute;
 	private String _value;
@@ -40,4 +40,9 @@ public class ArticleAttributeValue {
 	public void setValue(String value) {
 		_value = value;
 	}
+  
+  @Override
+  public ArticleAttributeValue clone() {
+    return new ArticleAttributeValue(_article.clone(), _attribute.clone(), _value);
+  }
 }

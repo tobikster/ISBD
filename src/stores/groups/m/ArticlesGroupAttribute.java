@@ -6,7 +6,7 @@ import stores.articles.m.ArticleAttribute;
  *
  * @author tobikster
  */
-public class ArticlesGroupAttribute {
+public class ArticlesGroupAttribute implements Cloneable {
 	private int _id;
 	private ArticlesGroup _group;
 	private ArticleAttribute _attribute;
@@ -21,6 +21,10 @@ public class ArticlesGroupAttribute {
 		_attribute = attribute;
 	}
 
+  public int getId() {
+    return _id;
+  }
+
 	public ArticleAttribute getAttribute() {
 		return _attribute;
 	}
@@ -29,6 +33,10 @@ public class ArticlesGroupAttribute {
 		return _group;
 	}
 
+  public void setId(int id) {
+    _id=id;
+  }
+
 	public void setAttribute(ArticleAttribute attribute) {
 		_attribute = attribute;
 	}
@@ -36,4 +44,9 @@ public class ArticlesGroupAttribute {
 	public void setGroup(ArticlesGroup group) {
 		_group = group;
 	}
+  
+  @Override
+  public ArticlesGroupAttribute clone() {
+    return new ArticlesGroupAttribute(_id, _group.clone(), _attribute.clone());
+  }
 }

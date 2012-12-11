@@ -9,7 +9,7 @@ import stores.producers.m.Producer;
  *
  * @author tobikster
  */
-public class Part {
+public class Part implements Cloneable {
 	private Integer _id;
 	private ArticlesGroup _group;
 	private Producer _producer;
@@ -25,14 +25,14 @@ public class Part {
 	private Map<ArticleAttribute, String> _attributes;
 
 	public Part() {
-		this(null, null, null, null, null, null);
 	}
 
-	public Part(ArticlesGroup group, Producer producer, String name, Float margin, Float grossPrice, Float count) {
-		this(group, producer, null, name, margin, grossPrice, count, null, new LinkedHashMap<ArticleAttribute, String>());
+	public Part(int id, ArticlesGroup group, Producer producer, String name, Float margin, Float grossPrice, Float count) {
+		this(id, group, producer, null, name, margin, grossPrice, count, null, new LinkedHashMap<ArticleAttribute, String>());
 	}
 
-	public Part(ArticlesGroup group, Producer producer, String catalogNumber, String name, Float margin, Float grossPrice, Float count, String picture, Map<ArticleAttribute, String> attributes) {
+	public Part(int id, ArticlesGroup group, Producer producer, String catalogNumber, String name, Float margin, Float grossPrice, Float count, String picture, Map<ArticleAttribute, String> attributes) {
+		_id = id;
 		_group = group;
 		_producer = producer;
 		_catalogNumber = catalogNumber;
@@ -104,7 +104,7 @@ public class Part {
 		_catalogNumber = catalogNumber;
 	}
 
-	public void setCount(Float count) {
+	public void setCount(float count) {
 		_count = count;
 	}
 	
@@ -113,7 +113,7 @@ public class Part {
 		setCount(null);
 	}
 
-	public void setGrossPrice(Float grossPrice) {
+	public void setGrossPrice(float grossPrice) {
 		_grossPrice = grossPrice;
 	}
 	
@@ -126,7 +126,7 @@ public class Part {
 		_group = group;
 	}
 
-	public void setMargin(Float margin) {
+	public void setMargin(float margin) {
 		_margin = margin;
 	}
 	
@@ -150,9 +150,14 @@ public class Part {
 	public void setAttributes(Map<ArticleAttribute, String> attributes) {
 		_attributes = attributes;
 	}
-
-	@Override
-	public String toString() {
-		return _name;
-	}
+  
+  @Override
+  public String toString() {
+    return _name;
+  }
+  
+  @Override
+  public Part clone() {
+    return new Part(_id, _group.clone(), _producer.clone(), _catalogNumber, _name, _margin, _grossPrice, _count, _picture);
+  }
 }

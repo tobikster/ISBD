@@ -9,7 +9,7 @@ import stores.articles.m.ArticleAttribute;
  *
  * @author tobikster
  */
-public class ArticlesGroup {
+public class ArticlesGroup implements Cloneable {
 	private int _code;
 	private String _name;
 	private ArticlesGroupType _type;
@@ -22,15 +22,14 @@ public class ArticlesGroup {
 	}
 
 	public ArticlesGroup(int code, String name, ArticlesGroupType type, VATRate vat) {
-		this(code, name, type, vat, null, new HashSet<ArticleAttribute>());
+		this(code, name, type, vat, null);
 	}
 
-	public ArticlesGroup(int code, String name, ArticlesGroupType type, VATRate vat, ArticlesGroup parentGroup, Set<ArticleAttribute> attributes) {
+	public ArticlesGroup(int code, String name, ArticlesGroupType type, VATRate vat, Set<ArticleAttribute> attributes) {
 		_code = code;
 		_name = name;
 		_type = type;
 		_vat = vat;
-//		_parentGroup = parentGroup;
 		_attributes = attributes;
 	}
 
@@ -49,10 +48,6 @@ public class ArticlesGroup {
 	public VATRate getVat() {
 		return _vat;
 	}
-
-//	public ArticlesGroup getParentGroup() {
-//		return _parentGroup;
-//	}
 
 	public Set<ArticleAttribute> getAttributes() {
 		return _attributes;
@@ -73,10 +68,6 @@ public class ArticlesGroup {
 	public void setVat(VATRate vat) {
 		_vat = vat;
 	}
-
-//	public void setParentGroup(ArticlesGroup parentGroup) {
-//		_parentGroup = parentGroup;
-//	}
 
 	public void setAttributes(Set<ArticleAttribute> attributes) {
 		_attributes = attributes;
@@ -108,4 +99,16 @@ public class ArticlesGroup {
 	public String toString() {
 		return _name;
 	}
+  
+  @Override
+  public ArticlesGroup clone() {
+    if(_attributes!=null) {
+      Set<ArticleAttribute> newAttributes = new HashSet<>();
+      for(ArticleAttribute attribute : _attributes) {
+        newAttributes.add(attribute.clone());
+      }
+      return new ArticlesGroup(_code, _name, _type, _vat.clone(), newAttributes);
+    }
+    return new ArticlesGroup(_code, _name, _type, _vat.clone());
+  }
 }

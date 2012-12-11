@@ -6,7 +6,7 @@ import finance.m.VATRate;
  *
  * @author tobikster
  */
-public class ServicesGroup {
+public class ServicesGroup implements Cloneable {
 	private String _name;
 	private VATRate _vat;
 
@@ -30,4 +30,9 @@ public class ServicesGroup {
 	public void setVat(VATRate vat) {
 		_vat = vat;
 	}
+  
+  @Override
+  public ServicesGroup clone() {
+    return new ServicesGroup(_name, _vat.clone());
+  }
 }

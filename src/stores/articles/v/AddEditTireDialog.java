@@ -771,7 +771,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
 
   private void bCancelActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bCancelActionPerformed
   {//GEN-HEADEREND:event_bCancelActionPerformed
-    close();
+	  close();
   }//GEN-LAST:event_bCancelActionPerformed
 
   private void bSubmitActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bSubmitActionPerformed
@@ -790,11 +790,12 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
 
   private void _marginTextFieldFocusGained(java.awt.event.FocusEvent evt)//GEN-FIRST:event__marginTextFieldFocusGained
   {//GEN-HEADEREND:event__marginTextFieldFocusGained
-    String currentInput=_marginTextField.getText();
-    if(currentInput.indexOf(" %")!=-1)
-      currentInput=currentInput.substring(0, currentInput.indexOf(" %"));
-    _marginTextField.setText(currentInput);
-    _marginTextField.setSelectionStart(0);
+	  String currentInput = _marginTextField.getText();
+	  if (currentInput.indexOf(" %") != -1) {
+		  currentInput = currentInput.substring(0, currentInput.indexOf(" %"));
+	  }
+	  _marginTextField.setText(currentInput);
+	  _marginTextField.setSelectionStart(0);
   }//GEN-LAST:event__marginTextFieldFocusGained
 
   private void _marginTextFieldFocusLost(java.awt.event.FocusEvent evt)//GEN-FIRST:event__marginTextFieldFocusLost
@@ -817,11 +818,12 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
 
   private void _netPriceTextFieldFocusGained(java.awt.event.FocusEvent evt)//GEN-FIRST:event__netPriceTextFieldFocusGained
   {//GEN-HEADEREND:event__netPriceTextFieldFocusGained
-    String currentInput=_netPriceTextField.getText();
-    if(currentInput.indexOf(" zł")!=-1)
-      currentInput=currentInput.substring(0, currentInput.indexOf(" zł"));
-    _netPriceTextField.setText(currentInput);
-    _netPriceTextField.setSelectionStart(0);
+	  String currentInput = _netPriceTextField.getText();
+	  if (currentInput.indexOf(" zł") != -1) {
+		  currentInput = currentInput.substring(0, currentInput.indexOf(" zł"));
+	  }
+	  _netPriceTextField.setText(currentInput);
+	  _netPriceTextField.setSelectionStart(0);
   }//GEN-LAST:event__netPriceTextFieldFocusGained
 
   private void _netPriceTextFieldFocusLost(java.awt.event.FocusEvent evt)//GEN-FIRST:event__netPriceTextFieldFocusLost
@@ -846,11 +848,12 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
 
   private void _grossPriceTextFieldFocusGained(java.awt.event.FocusEvent evt)//GEN-FIRST:event__grossPriceTextFieldFocusGained
   {//GEN-HEADEREND:event__grossPriceTextFieldFocusGained
-    String currentInput=_grossPriceTextField.getText();
-    if(currentInput.indexOf(" zł")!=-1)
-      currentInput=currentInput.substring(0, currentInput.indexOf(" zł"));
-    _grossPriceTextField.setText(currentInput);
-    _grossPriceTextField.setSelectionStart(0);
+	  String currentInput = _grossPriceTextField.getText();
+	  if (currentInput.indexOf(" zł") != -1) {
+		  currentInput = currentInput.substring(0, currentInput.indexOf(" zł"));
+	  }
+	  _grossPriceTextField.setText(currentInput);
+	  _grossPriceTextField.setSelectionStart(0);
   }//GEN-LAST:event__grossPriceTextFieldFocusGained
 
   private void _grossPriceTextFieldFocusLost(java.awt.event.FocusEvent evt)//GEN-FIRST:event__grossPriceTextFieldFocusLost

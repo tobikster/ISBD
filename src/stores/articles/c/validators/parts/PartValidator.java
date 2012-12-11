@@ -29,13 +29,13 @@ public class PartValidator implements EntityValidator<Part>
       if(!ElementaryValidator.maxLengthValidator(object.getName(), 30))
         errors.add("Podana nazwa jest za długa! Maksymalna dopuszczalna długość to 30 znaków!");
 
-    if(object.getMargin()==Double.NaN)
+    if(object.getMargin()==null)
       errors.add("Nie podano marży!");
     else
       if(!ElementaryValidator.minNumberValidator(object.getMargin(), 0.0))
         errors.add("Marża nie może być liczbą ujemną!");
 
-    if(object.getGrossPrice()==Double.NaN)
+    if(object.getGrossPrice()==null)
       errors.add("Nie podano ceny!");
     else
       if(!ElementaryValidator.minNumberValidator(object.getGrossPrice(), 0.0))

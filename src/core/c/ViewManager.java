@@ -1,12 +1,14 @@
 package core.c;
 
 import core.v.ApplicationDialog;
+import core.v.LoginWindow;
 import core.v.MainWindow;
 import javax.swing.JPanel;
 
 public class ViewManager {
 	// <editor-fold defaultstate="collapsed" desc="Object variables">
 	private MainWindow _mainWindow;
+  private LoginWindow _loginWindow;
 	// </editor-fold>
 
 	// <editor-fold defaultstate="collapsed" desc="Creating object">
@@ -22,11 +24,13 @@ public class ViewManager {
 
 	private ViewManager() {
 		_mainWindow = new MainWindow();
+		_loginWindow = new LoginWindow();
 	}
 	// </editor-fold>
 
 	// <editor-fold defaultstate="collapsed" desc="Object PRIVATE methods">
 	// </editor-fold>
+
 	// <editor-fold defaultstate="collapsed" desc="Object PUBLIC methods">
 	// <editor-fold defaultstate="collapsed" desc="Getters">
 	public MainWindow getMainWindow() {
@@ -36,8 +40,15 @@ public class ViewManager {
 	// <editor-fold defaultstate="collapsed" desc="Setters">
 	// </editor-fold>
 
-	public void hideMainWindow() {
+	public void closeMainWindow() {
 		_mainWindow.setVisible(false);
+    _mainWindow.dispose();
+    _mainWindow = null;
+	}
+
+	public void closeLoginWindow() {
+		_loginWindow.setVisible(false);
+    _loginWindow.dispose();
 	}
 
 	public void openView(JPanel view) {
@@ -47,8 +58,15 @@ public class ViewManager {
 	}
 
 	public void showMainWindow() {
+    _mainWindow = new MainWindow();
 		_mainWindow.setLocationRelativeTo(null);
+    //_mainWindow.setTitle("Mechaniker v1.0 ["+AuthenticationService.getInstance().getLoggedInUser().getFullName()+"]");
 		_mainWindow.setVisible(true);
+	}
+  
+  public void showLoginWindow() {
+		_loginWindow.setLocationRelativeTo(null);
+		_loginWindow.setVisible(true);
 	}
 
 	public void showDialog(ApplicationDialog dialog) {

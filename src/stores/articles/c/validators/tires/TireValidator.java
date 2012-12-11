@@ -3,12 +3,12 @@ package stores.articles.c.validators.tires;
 import core.c.ElementaryValidator;
 import core.c.EntityValidator;
 import core.m.DatabaseException;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import stores.articles.m.DOT;
 import stores.articles.m.Tire;
+import utils.m.WorkingMap;
 
 public class TireValidator implements EntityValidator<Tire>
 {
@@ -51,7 +51,7 @@ public class TireValidator implements EntityValidator<Tire>
         errors.add("Cena brutto nie może być mniejsza od 0!");
 
     if(object.getTireDOTs()==null && object.getTireDOTsText()!=null) {
-      Map<DOT, Integer> tireDOTs = new LinkedHashMap<>();
+      Map<DOT, Integer> tireDOTs = new WorkingMap<>();
       DOT DOTs[] = new DOT[object.getTireDOTsText().keySet().size()];
       DOTs = object.getTireDOTsText().keySet().toArray(DOTs);
       for(int i=0;i<object.getTireDOTsText().size();i++) {

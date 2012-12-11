@@ -103,6 +103,16 @@ public class Tire implements Cloneable {
     return _tireDOTsText;
   }
 
+  public int getCount() {
+    int iCount = 0;
+    if(_tireDOTs!=null) {
+      for(DOT dot : _tireDOTs.keySet()) {
+        iCount += _tireDOTs.get(dot);
+      }
+    }
+    return iCount;
+  }
+
   public void setId(int id) {
     _id = id;
   }
@@ -112,7 +122,8 @@ public class Tire implements Cloneable {
 	}
 
   public void setGrossPrice(String grossPrice) {
-		_grossPriceText = grossPrice;
+		_grossPrice = null;
+    _grossPriceText = grossPrice;
 	}
 
 	public void setGroup(ArticlesGroup group) {
@@ -128,7 +139,8 @@ public class Tire implements Cloneable {
 	}
 
 	public void setMargin(String margin) {
-		_marginText = margin;
+		_margin = null;
+    _marginText = margin;
 	}
 
 	public void setSize(TireSize size) {
@@ -148,6 +160,7 @@ public class Tire implements Cloneable {
   }
   
   public void setTireDOTsText(Map<DOT, String> tireDOTs) {
+    _tireDOTs = null;
     _tireDOTsText = tireDOTs;
   }
   

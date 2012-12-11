@@ -4,7 +4,7 @@ package stores.articles.m;
  *
  * @author tobikster
  */
-public class TireSize {
+public class TireSize implements Cloneable {
   private int _id;
 	private String _width;
 	private String _profile;
@@ -56,5 +56,10 @@ public class TireSize {
   @Override
   public String toString() {
     return _width+"/"+_profile+"/"+_diameter;
+  }
+
+  @Override
+  public TireSize clone() {
+    return new TireSize(_id, _width, _profile, _diameter);
   }
 }

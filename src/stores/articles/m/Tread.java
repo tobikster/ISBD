@@ -6,22 +6,23 @@ import stores.producers.m.Producer;
  *
  * @author tobikster
  */
-public class Tread {
+public class Tread implements Cloneable {
   private int _id;
 	private Producer _producer;
 	private String _name;
-	private Object _picture; // w bazie jest jako tekst
+	private String _picture; // w bazie jest jako tekst
 
   public Tread() {
     
   }
 
-	public Tread(Producer producer, String name) {
-		this(producer, name, null);
+	public Tread(int id, Producer producer, String name) {
+		this(id, producer, name, null);
 	}
 
-	public Tread(Producer producer, String name, Object picture) {
-		_producer = producer;
+	public Tread(int id, Producer producer, String name, String picture) {
+		_id = id;
+    _producer = producer;
 		_name = name;
 		_picture = picture;
 	}
@@ -34,7 +35,7 @@ public class Tread {
 		return _name;
 	}
 
-	public Object getPicture() {
+	public String getPicture() {
 		return _picture;
 	}
 
@@ -50,7 +51,7 @@ public class Tread {
 		_name = name;
 	}
 
-	public void setPicture(Object picture) {
+	public void setPicture(String picture) {
 		_picture = picture;
 	}
 
@@ -61,5 +62,10 @@ public class Tread {
   @Override
   public String toString() {
     return _name;
+  }
+  
+  @Override
+  public Tread clone() {
+    return new Tread(_id, _producer.clone(), _name, _picture);
   }
 }

@@ -1,12 +1,14 @@
 package stores.articles.m;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import stores.groups.m.ArticlesGroup;
 
 /**
  *
  * @author tobikster
  */
-public class Tire {
+public class Tire implements Cloneable {
   private int _id;
 	private ArticlesGroup _group;
 	private Tread _tread;
@@ -15,6 +17,7 @@ public class Tire {
 	private SpeedIndex _speedIndex;
 	private Double _margin;
 	private Double _grossPrice;
+  private Map<DOT, Integer> _tireDOTs;
 
 	public Tire() {
     
@@ -29,6 +32,18 @@ public class Tire {
 		_speedIndex = speedIndex;
 		_margin = margin;
 		_grossPrice = grossPrice;
+	}
+
+  public Tire(int id, ArticlesGroup group, Tread tread, TireSize size, LoadIndex loadIndex, SpeedIndex speedIndex, double margin, double grossPrice, Map<DOT, Integer> tireDOTs) {
+		_id = id;
+    _group = group;
+		_tread = tread;
+		_size = size;
+		_loadIndex = loadIndex;
+		_speedIndex = speedIndex;
+		_margin = margin;
+		_grossPrice = grossPrice;
+    _tireDOTs = tireDOTs;
 	}
 
   public int getId() {
@@ -68,6 +83,10 @@ public class Tire {
 	public Tread getTread() {
 		return _tread;
 	}
+  
+  public Map<DOT, Integer> getTireDOTs() {
+    return _tireDOTs;
+  }
 
   public void setId(int id) {
     _id = id;
@@ -100,4 +119,20 @@ public class Tire {
 	public void setTread(Tread tread) {
 		_tread = tread;
 	}
+  
+  public void setTireDOTs(Map<DOT, Integer> tireDOTs) {
+    _tireDOTs = tireDOTs;
+  }
+  
+  @Override
+  public Tire clone() {
+    if(_tireDOTs != null) {
+      Map<DOT, Integer> newTireDOTs = new LinkedHashMap<>();
+      for(int i=0;i<_tireDOTs.size();i++) {
+        newTireDOTs.put(((DOT)(_tireDOTs.keySet().toArray()[i])).clone(), _tireDOTs.get((DOT)(_tireDOTs.keySet().toArray()[i])));
+      }
+      return new Tire(_id, _group.clone(), _tread.clone(), _size.clone(), _loadIndex, _speedIndex, _margin, _grossPrice, newTireDOTs);
+    }
+    return new Tire(_id, _group.clone(), _tread.clone(), _size.clone(), _loadIndex, _speedIndex, _margin, _grossPrice);
+  }
 }

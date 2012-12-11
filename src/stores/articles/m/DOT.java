@@ -4,7 +4,7 @@ package stores.articles.m;
  *
  * @author tobikster
  */
-public class DOT {
+public class DOT implements Cloneable {
   private int _id;
 	private String _dot;
 
@@ -32,4 +32,9 @@ public class DOT {
 	public void setDot(String dot) {
 		_dot = dot;
 	}
+
+  @Override
+  public DOT clone() {
+    return new DOT(_id, _dot);
+  }
 }

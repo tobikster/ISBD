@@ -4,7 +4,7 @@ package stores.producers.m;
  *
  * @author tobikster
  */
-public class Producer {
+public class Producer implements Cloneable {
   private int _id;
 	private String _name;
 	private Object _logo;
@@ -13,12 +13,13 @@ public class Producer {
     
   }
 
-	public Producer(String name) {
-		this(name, null);
+	public Producer(int id, String name) {
+		this(id, name, null);
 	}
 
-	public Producer(String name, Object logo) {
-		_name = name;
+	public Producer(int id, String name, Object logo) {
+		_id = id;
+    _name = name;
 		_logo = logo;
 	}
 
@@ -49,5 +50,10 @@ public class Producer {
   @Override
   public String toString() {
     return _name;
+  }
+  
+  @Override
+  public Producer clone() {
+    return new Producer(_id, _name, _logo);
   }
 }

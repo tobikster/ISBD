@@ -1,33 +1,34 @@
 package stores.articles.m;
 
-import stores.producers.m.Producer;
 import stores.groups.m.ArticlesGroup;
+import stores.producers.m.Producer;
 
 /**
  *
  * @author tobikster
  */
-public class Part {
+public class Part implements Cloneable {
   private int _id;
 	private ArticlesGroup _group;
 	private Producer _producer;
 	private String _catalogNumber;
 	private String _name;
-	private double _margin;
-	private double _grossPrice;
-	private float _count;
+	private Double _margin;
+	private Double _grossPrice;
+	private Integer _count;
 	private Object _picture;
         
 	public Part() {
-		this(null, null, null, null, Double.NaN, Double.NaN, 0, null);
+		
 	}
 
-	public Part(ArticlesGroup group, Producer producer, String name, double margin, double grossPrice, int count) {
-		this(group, producer, null, name, margin, grossPrice, count, null);
+	public Part(int id, ArticlesGroup group, Producer producer, String name, double margin, double grossPrice, int count) {
+		this(id, group, producer, null, name, margin, grossPrice, count, null);
 	}
 
-	public Part(ArticlesGroup group, Producer producer, String catalogNumber, String name, double margin, double grossPrice, int count, Object picture) {
-		_group = group;
+	public Part(int id, ArticlesGroup group, Producer producer, String catalogNumber, String name, double margin, double grossPrice, int count, Object picture) {
+		_id = id;
+    _group = group;
 		_producer = producer;
 		_catalogNumber = catalogNumber;
 		_name = name;
@@ -45,11 +46,11 @@ public class Part {
 		return _catalogNumber;
 	}
 
-	public float getCount() {
+	public Integer getCount() {
 		return _count;
 	}
 
-	public double getGrossPrice() {
+	public Double getGrossPrice() {
 		return _grossPrice;
 	}
 
@@ -57,7 +58,7 @@ public class Part {
 		return _group;
 	}
 
-	public double getMargin() {
+	public Double getMargin() {
 		return _margin;
 	}
 
@@ -81,7 +82,7 @@ public class Part {
 		_catalogNumber = catalogNumber;
 	}
 
-	public void setCount(float count) {
+	public void setCount(int count) {
 		_count = count;
 	}
 
@@ -112,5 +113,10 @@ public class Part {
   @Override
   public String toString() {
     return _name;
+  }
+  
+  @Override
+  public Part clone() {
+    return new Part(_id, _group.clone(), _producer.clone(), _catalogNumber, _name, _margin, _grossPrice, _count, _picture);
   }
 }

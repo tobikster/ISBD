@@ -7,18 +7,28 @@ import services.m.Service;
  *
  * @author tobikster
  */
-public class ProvidedService {
+public class ProvidedService implements Cloneable {
+  private int _id;
 	private Service _service;
 	private Worker _worker;
 	private Date _date;
 	private double _value;
 
-	public ProvidedService(Service service, Worker worker, Date date, double value) {
-		_service = service;
+  public ProvidedService() {
+    
+  }
+
+	public ProvidedService(int id, Service service, Worker worker, Date date, double value) {
+		_id = id;
+    _service = service;
 		_worker = worker;
 		_date = date;
 		_value = value;
 	}
+
+  public int getId() {
+    return _id;
+  }
 
 	public Date getDate() {
 		return _date;
@@ -36,6 +46,10 @@ public class ProvidedService {
 		return _worker;
 	}
 
+  public void setId(int id) {
+    _id = id;
+  }
+
 	public void setDate(Date date) {
 		_date = date;
 	}
@@ -51,4 +65,9 @@ public class ProvidedService {
 	public void setWorker(Worker worker) {
 		_worker = worker;
 	}
+  
+  @Override
+  public ProvidedService clone() {
+    return new ProvidedService(_id, _service.clone(), _worker.clone(), (Date)_date.clone(), _value);
+  }
 }

@@ -1,4 +1,4 @@
-package stores.groups.c.validators;
+package stores.producers.c.validators;
 
 import stores.producers.m.Producer;
 import core.c.ElementaryValidator;

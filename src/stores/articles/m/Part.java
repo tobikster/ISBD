@@ -1,10 +1,10 @@
 package stores.articles.m;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import stores.groups.m.ArticlesGroup;
 import stores.producers.m.Producer;
+import utils.m.WorkingMap;
 
 /**
  *
@@ -29,7 +29,7 @@ public class Part implements Cloneable {
 	}
 
 	public Part(int id, ArticlesGroup group, Producer producer, String name, Float margin, Float grossPrice, Float count) {
-		this(id, group, producer, null, name, margin, grossPrice, count, null, new LinkedHashMap<ArticleAttribute, String>());
+		this(id, group, producer, null, name, margin, grossPrice, count, null, null);
 	}
 
 	public Part(int id, ArticlesGroup group, Producer producer, String catalogNumber, String name, Float margin, Float grossPrice, Float count, String picture, Map<ArticleAttribute, String> attributes) {
@@ -65,7 +65,7 @@ public class Part implements Cloneable {
 		return _grossPrice;
 	}
 	
-	public String getGrossPricetext() {
+	public String getGrossPriceText() {
 		return _grossPriceText;
 	}
 
@@ -159,7 +159,7 @@ public class Part implements Cloneable {
   
   @Override
   public Part clone() {
-	  Map<ArticleAttribute, String> attributes = new LinkedHashMap<>();
+	  Map<ArticleAttribute, String> attributes = new WorkingMap<>();
 	  for(Entry<ArticleAttribute, String> attribute : _attributes.entrySet()) {
 		  attributes.put(attribute.getKey().clone(), attribute.getValue());
 	  }

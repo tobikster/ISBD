@@ -12,6 +12,7 @@ import core.v.ApplicationDialog;
 import finance.c.FinanceService;
 import finance.m.VATRate;
 import java.sql.SQLException;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import javax.swing.DefaultComboBoxModel;
@@ -41,6 +42,7 @@ public class AddEditArticlesGroupDialog extends ApplicationDialog implements Rel
 		super(modal, reloadableParent);
 		_articlesGroup = new ArticlesGroup();
 		_articlesGroup.setType(type);
+		_articlesGroup.setAttributes(new LinkedHashSet<ArticleAttribute>());
 		_editMode = false;
 		initComponents();
 		reload();
@@ -63,6 +65,7 @@ public class AddEditArticlesGroupDialog extends ApplicationDialog implements Rel
         _vatRateLabel = new javax.swing.JLabel();
         _vatRateComboBox = new javax.swing.JComboBox();
         _attributesListPanel = new javax.swing.JPanel();
+        _attributesListPanel.setVisible(_articlesGroup.getType() == ArticlesGroupType.PARTS);
         _atributesListLabel = new javax.swing.JLabel();
         _attributesListScrollPane = new javax.swing.JScrollPane();
         _attributesList = new javax.swing.JList();
@@ -148,7 +151,7 @@ public class AddEditArticlesGroupDialog extends ApplicationDialog implements Rel
                 .addContainerGap()
                 .addComponent(_atributesListLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(_attributesListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
+                .addComponent(_attributesListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(_manageAtributesButton)
                 .addContainerGap())

@@ -637,7 +637,18 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 
   private void _deletePartMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__deletePartMouseClicked
   {//GEN-HEADEREND:event__deletePartMouseClicked
-	  // TODO add your handling code here:
+		try {
+			Part part = PartsService.getInstance().getPart(_partsPagination.getCurrentPageData().get(_articlesTable.getSelectedRow()).getId());
+			switch(JOptionPane.showOptionDialog(this, "Czy na pewno chcesz usunąć część " + part.getName(), "Usunięcie części", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[] {"Tak", "Nie"}, "Nie")) {
+				case 0:
+					PartsService.getInstance().deletePart(part);
+					reload();
+					break;
+			}
+		}
+		catch (SQLException ex) {
+			ErrorHandler.getInstance().reportError(ex);
+		}
   }//GEN-LAST:event__deletePartMouseClicked
 
   private void _addTireMouseEntered(java.awt.event.MouseEvent evt)//GEN-FIRST:event__addTireMouseEntered

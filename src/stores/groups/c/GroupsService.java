@@ -6,8 +6,10 @@ import core.m.ResultRow;
 import finance.m.VATRate;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import stores.articles.c.validators.parts.ArticleAttributeValidator;
 import stores.articles.m.ArticleAttribute;
 import stores.groups.c.validators.ArticlesGroupValidator;
@@ -59,7 +61,20 @@ public class GroupsService {
 			default:
 				throw new SQLException("Article group with given CODE has unknown type!");
 		}
-
+		
+		Set<ArticleAttribute> attributes = new LinkedHashSet<>();
+		sQuery = "SELECT AtrybutyCzesci.IdAtrybutu, AtrybutyCzesci.Nazwa "
+				+ "FROM AtrybutyGrup LEFT JOIN AtrybutyCzesci ON AtrybutyGrup.IdAtrybutu = AtrybutyCzesci.IdAtrybutu "
+				+ "WHERE AtrybutyGrup.KodGrupy = " + iGroupCode + ";";
+		System.out.println(sQuery);
+		List<ResultRow> resultRows = DatabaseManager.getInstance().executeQueryResult(sQuery);
+		System.out.println("Znaleziono " + resultRows + " atrybutów");
+		for(ResultRow row : resultRows) {
+			ArticleAttribute attribute = new ArticleAttribute(row.getInt(1), row.getString(2));
+			System.out.println(new ArticleAttribute(row.getInt(1), row.getString(2)));
+			attributes.add(attribute);
+		}
+		group.setAttributes(attributes);
 		return group;
 	}
 
@@ -96,8 +111,8 @@ public class GroupsService {
 	public List<ArticleAttribute> getArticlesGroupAttributes(int groupCode) throws SQLException {
 		List<ArticleAttribute> result = new LinkedList<>();
 		String query = "SELECT AtrybutyCzesci.IdAtrybutu, AtrybutyCzesci.Nazwa "
-				+ "FROM AtrybutyCzesci, AtrybutyGrupTowarowych "
-				+ "WHERE AtrybutyCzesci.IdAtrybutu = AtrybutyGrupTowarowych.IdAtrybutu AND AtrybutyGrupTowarowych.KodGrupy = " + groupCode + ";";
+				+ "FROM AtrybutyCzesci, AtrybutyGrup "
+				+ "WHERE AtrybutyCzesci.IdAtrybutu = AtrybutyGrup.IdAtrybutu AND AtrybutyGrup.KodGrupy = " + groupCode + ";";
 		List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult(query);
 		for (ResultRow queryResult : results) {
 			result.add(new ArticleAttribute(queryResult.getInt(1), queryResult.getString(2)));
@@ -108,8 +123,8 @@ public class GroupsService {
 	public List<ArticleAttribute> getAvailableAttributes(int groupCode) throws SQLException {
 		List<ArticleAttribute> result = new LinkedList<>();
 //		String query = "SELECT AtrybutyCzesci.IdAtrybutu, AtrybutyCzesci.Nazwa "
-//				+ "FROM AtrybutyCzesci, AtrybutyGrupTowarowych "
-//				+ "WHERE AtrybutyCzesci.IdAtrybutu = AtrybutyGrupTowarowych.IdAtrybutu AND NOT AtrybutyGrupTowarowych.KodGrupy = " + groupCode + ";";
+//				+ "FROM AtrybutyCzesci, AtrybutyGrup "
+//				+ "WHERE AtrybutyCzesci.IdAtrybutu = AtrybutyGrup.IdAtrybutu AND NOT AtrybutyGrup.KodGrupy = " + groupCode + ";";
 		String query = "SELECT IdAtrybutu, Nazwa "
 				+ "FROM AtrybutyCzesci;";
 		List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult(query);
@@ -124,7 +139,7 @@ public class GroupsService {
 		ArticlesGroupValidator validator = new ArticlesGroupValidator();
 		if (validator.validate(group)) {
 			DatabaseManager.getInstance().startTransaction();
-			String query = "INSERT INTO GrupyTowarowe (Nazwa, VAT, Zawartosc) "
+			String query = "INSERT INTO GrupyTowarowe (Nazwa, VAT, Typ) "
 					+ "VALUES('" + group.getName() + "', " + group.getVat().getId() + ", '" + group.getType().toString() + "');";
 			DatabaseManager.getInstance().executeQuery(query);
 
@@ -135,7 +150,7 @@ public class GroupsService {
 			else {
 				group.setCode(results.get(0).getInt(1));
 				for (ArticleAttribute attribute : group.getAttributes()) {
-					query = "INSERT INTO AtrybutyGrupTowarowych (KodGrupy, IdAtrybutu) "
+					query = "INSERT INTO AtrybutyGrup (KodGrupy, IdAtrybutu) "
 							+ "VALUES (" + group.getCode() + ", " + attribute.getId() + ");";
 					DatabaseManager.getInstance().executeQuery(query);
 				}
@@ -169,27 +184,26 @@ public class GroupsService {
 				groupAttributesIds.setLength(groupAttributesIds.length() - 2);
 			}
 			query = "SELECT IdAtrybutuGrupy "
-					+ "FROM AtrybutyGrupTowarowych "
+					+ "FROM AtrybutyGrup "
 					+ "WHERE KodGrupy=" + group.getCode();
 			if (!"".equals(groupAttributesIds.toString())) {
 				query += " AND IdAtrybutu NOT IN (" + groupAttributesIds.toString() + ")";
 			}
 			query += ";";
-			System.out.println(query);
 			List<ResultRow> resultRows = DatabaseManager.getInstance().executeQueryResult(query);
 			for (ResultRow row : resultRows) {
-				query = "DELETE FROM AtrybutyGrupTowarowych "
+				query = "DELETE FROM AtrybutyGrup "
 						+ "WHERE IdAtrybutuGrupy=" + row.getInt(1);
 				DatabaseManager.getInstance().executeQuery(query);
 			}
 			if (!"".equals(groupAttributesIds.toString())) {
 				query = "SELECT IdAtrybutu "
 						+ "FROM AtrybutyCzesci "
-						+ "WHERE IdAtrybutu NOT IN(SELECT IdAtrybutu FROM AtrybutyGrupTowarowych WHERE KodGrupy=" + group.getCode() + ")"
+						+ "WHERE IdAtrybutu NOT IN(SELECT IdAtrybutu FROM AtrybutyGrup WHERE KodGrupy=" + group.getCode() + ")"
 						+ "AND IdAtrybutu IN (" + groupAttributesIds + ");";
 				resultRows = DatabaseManager.getInstance().executeQueryResult(query);
 				for (ResultRow row : resultRows) {
-					query = "INSERT INTO AtrybutyGrupTowarowych (KodGrupy, IdAtrybutu) "
+					query = "INSERT INTO AtrybutyGrup (KodGrupy, IdAtrybutu) "
 							+ "VALUES(" + group.getCode() + ", " + row.getInt(1) + ");";
 					DatabaseManager.getInstance().executeQuery(query);
 				}
@@ -256,7 +270,7 @@ public class GroupsService {
 							+ "FROM Opony, DOTyOpon "
 							+ "WHERE Opony.IdOpony = DOTyOpon.IdOpony AND Opony.KodGrupyTowarowej = " + group.getCode() + " AND DOTyOpon.Liczba <> 0;";
 					resultRows = DatabaseManager.getInstance().executeQueryResult(query);
-					if(resultRows.get(0).getInt(1) == 0) {
+					if (resultRows.get(0).getInt(1) == 0) {
 						result = 0;
 					}
 					else {

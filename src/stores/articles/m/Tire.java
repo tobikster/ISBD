@@ -1,8 +1,8 @@
 package stores.articles.m;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 import stores.groups.m.ArticlesGroup;
+import utils.m.WorkingMap;
 
 /**
  *
@@ -171,7 +171,7 @@ public class Tire implements Cloneable {
   @Override
   public Tire clone() {
     if(_tireDOTs != null) {
-      Map<DOT, Integer> newTireDOTs = new LinkedHashMap<>();
+      Map<DOT, Integer> newTireDOTs = new WorkingMap<>();
       for(int i=0;i<_tireDOTs.size();i++) {
         newTireDOTs.put(((DOT)(_tireDOTs.keySet().toArray()[i])).clone(), _tireDOTs.get((DOT)(_tireDOTs.keySet().toArray()[i])));
       }

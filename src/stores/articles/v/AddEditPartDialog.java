@@ -13,8 +13,6 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.DefaultTableModel;
@@ -26,6 +24,7 @@ import stores.groups.c.GroupsService;
 import stores.groups.m.ArticlesGroup;
 import stores.producers.c.ProducersService;
 import stores.producers.m.Producer;
+import utils.m.WorkingMap;
 
 /**
  *
@@ -54,6 +53,7 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
 		_percentFormat = new DecimalFormat("0.00 %");
 		_editMode = false;
 		_part = new Part();
+		_part.setAttributes(new WorkingMap<ArticleAttribute, String>());
 		if (group != null && group.getCode() > 0) {
 			_part.setGroup(group);
 		}
@@ -112,23 +112,25 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
 	}
 
 	private TableModel getAttributesModel() {
-		String[][] tableData = new String[_part.getAttributes().size()][];
-		int index = 0;
-		for (Entry<ArticleAttribute, String> attribute : _part.getAttributes().entrySet()) {
-			System.out.println(attribute.getKey().getName() + " => " + attribute.getValue());
-			tableData[index] = new String[2];
-			tableData[index][0] = attribute.getKey().getName();
-			tableData[index][1] = attribute.getValue();
-			++index;
-		}
-		TableModel result = new DefaultTableModel(tableData, COLUMN_NAMES) {
-			boolean[] canEdit = {false, true};
-
-			@Override
-			public boolean isCellEditable(int row, int col) {
-				return canEdit[col];
+		TableModel result = new DefaultTableModel();
+		if (_part.getAttributes() != null) {
+			Object[][] tableData = new Object[_part.getAttributes().size()][];
+			int index = 0;
+			for (Entry<ArticleAttribute, String> attribute : _part.getAttributes().entrySet()) {
+				tableData[index] = new Object[2];
+				tableData[index][0] = attribute.getKey();
+				tableData[index][1] = attribute.getValue();
+				++index;
 			}
-		};
+			result = new DefaultTableModel(tableData, COLUMN_NAMES) {
+				boolean[] canEdit = {false, true};
+
+				@Override
+				public boolean isCellEditable(int row, int col) {
+					return canEdit[col];
+				}
+			};
+		}
 		return result;
 	}
 
@@ -446,13 +448,21 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
 		if (marginInput.indexOf(" %") != -1) {
 			marginInput = marginInput.substring(0, marginInput.indexOf(" %"));
 		}
-		_part.setMarginText(marginInput);
+		_part.setMarginText(marginInput.replace(',', '.'));
 
-		String grossPriceInput = _marginTextField.getText();
-		if (grossPriceInput.indexOf(" %") != -1) {
-			grossPriceInput = grossPriceInput.substring(0, grossPriceInput.indexOf(" %"));
+		String grossPriceInput = _grossPriceTextField.getText();
+		if (grossPriceInput.indexOf(" zł") != -1) {
+			grossPriceInput = grossPriceInput.substring(0, grossPriceInput.indexOf(" zł"));
 		}
-		_part.setMarginText(grossPriceInput);
+		_part.setGrossPriceText(grossPriceInput.replace(',', '.'));
+
+		_part.getAttributes().clear();
+		for (int row = 0; row < _attributesTable.getRowCount(); ++row) {
+			System.out.println(_attributesTable.getValueAt(row, 1));
+			if (!"".equals((String) (_attributesTable.getValueAt(row, 1)))) {
+				_part.getAttributes().put((ArticleAttribute) (_attributesTable.getValueAt(row, 0)), (String) (_attributesTable.getValueAt(row, 1)));
+			}
+		}
 	}
 
 	private void refreshGrossPrice() {
@@ -485,7 +495,6 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
     private void _articlesGroupComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__articlesGroupComboBoxActionPerformed
 		try {
 			PartsService.getInstance().changeGroup(_part, (ArticlesGroup) (_articlesGroupComboBox.getSelectedItem()));
-			System.out.println(_part.getGroup().getName());
 			reload();
 		}
 		catch (SQLException ex) {
@@ -572,16 +581,16 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
 
     private void _okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__okButtonActionPerformed
 		save();
-		boolean ok = false;
+		boolean result;
 		try {
 			if (_editMode) {
-				ok = true;
+				result = PartsService.getInstance().updatePart(_part);
 			}
 			else {
-				ok = PartsService.getInstance().addPart(_part);
+				result = PartsService.getInstance().addPart(_part);
 			}
 
-			if (ok) {
+			if (result) {
 				setHaveToReloadParent(true);
 				super.close();
 			}

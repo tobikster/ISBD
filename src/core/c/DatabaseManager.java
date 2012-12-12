@@ -4,10 +4,10 @@ import core.m.Result;
 import core.m.ResultRow;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import sun.jdbc.odbc.JdbcOdbcDriver;
+import utils.m.WorkingMap;
 
 /**
  * 
@@ -89,7 +89,7 @@ public class DatabaseManager
     List results = new ArrayList<>();
     while (rs.next())
     {
-      Map<Integer, Result> resultsRow=new LinkedHashMap<>();
+      Map<Integer, Result> resultsRow=new WorkingMap<>();
       for(int i=1;i<=rs.getMetaData().getColumnCount();i++)
       {
         Result result = new Result(i, rs.getMetaData().getColumnName(i), rs.getString(i));

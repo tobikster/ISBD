@@ -41,9 +41,7 @@ public class ArticleAttribute implements Cloneable {
 
 	@Override
 	public boolean equals(Object obj) {
-		boolean result = (obj instanceof ArticleAttribute) ? this.getName().equals(((ArticleAttribute)(obj)).getName()) : false;
-		System.out.println(result);
-		return result;
+		return (obj instanceof ArticleAttribute) ? this.getName().equals(((ArticleAttribute)(obj)).getName()) : false;
 	}
   
   @Override

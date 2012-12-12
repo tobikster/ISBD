@@ -17,11 +17,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -32,6 +30,7 @@ import stores.groups.c.GroupsService;
 import stores.groups.m.ArticlesGroup;
 import stores.producers.c.ProducersService;
 import stores.producers.m.Producer;
+import utils.m.WorkingMap;
 
 /**
  *
@@ -330,7 +329,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
 
   private void parseDOTsToEntity() {
     String sDOT, sCount;
-    Map<DOT, String> tireDOTs = new LinkedHashMap<>();
+    Map<DOT, String> tireDOTs = new WorkingMap<>();
     for(int i=0;i<_tireDOTsTable.getRowCount();i++) {
       sDOT = (String)_tireDOTsTable.getValueAt(i, 0);
       sCount = (String)_tireDOTsTable.getValueAt(i, 1);

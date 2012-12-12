@@ -73,7 +73,6 @@ public class WorkersService {
 			String query = "UPDATE Pracownicy "
 					+ "SET Imie = '" + worker.getName() + "', Nazwisko = '" + worker.getSurname() + "', Stanowisko = '" + worker.getJob() + "', Login = '" + worker.getLogin() + "', Haslo = '" + worker.getPassword() + "' "
 					+ "WHERE IdPracownika = " + worker.getId() + ";";
-			System.out.println(query);
 			result = DatabaseManager.getInstance().executeQuery(query);
 		}
 		return result;

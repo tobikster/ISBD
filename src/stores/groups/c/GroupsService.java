@@ -96,8 +96,8 @@ public class GroupsService {
 	public List<ArticleAttribute> getArticlesGroupAttributes(int groupCode) throws SQLException {
 		List<ArticleAttribute> result = new LinkedList<>();
 		String query = "SELECT AtrybutyCzesci.IdAtrybutu, AtrybutyCzesci.Nazwa "
-				+ "FROM AtrybutyCzesci, AtrybutyGrupTowarowych "
-				+ "WHERE AtrybutyCzesci.IdAtrybutu = AtrybutyGrupTowarowych.IdAtrybutu AND AtrybutyGrupTowarowych.KodGrupy = " + groupCode + ";";
+				+ "FROM AtrybutyCzesci, AtrybutyGrup "
+				+ "WHERE AtrybutyCzesci.IdAtrybutu = AtrybutyGrup.IdAtrybutu AND AtrybutyGrup.KodGrupy = " + groupCode + ";";
 		List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult(query);
 		for (ResultRow queryResult : results) {
 			result.add(new ArticleAttribute(queryResult.getInt(1), queryResult.getString(2)));
@@ -108,8 +108,8 @@ public class GroupsService {
 	public List<ArticleAttribute> getAvailableAttributes(int groupCode) throws SQLException {
 		List<ArticleAttribute> result = new LinkedList<>();
 //		String query = "SELECT AtrybutyCzesci.IdAtrybutu, AtrybutyCzesci.Nazwa "
-//				+ "FROM AtrybutyCzesci, AtrybutyGrupTowarowych "
-//				+ "WHERE AtrybutyCzesci.IdAtrybutu = AtrybutyGrupTowarowych.IdAtrybutu AND NOT AtrybutyGrupTowarowych.KodGrupy = " + groupCode + ";";
+//				+ "FROM AtrybutyCzesci, AtrybutyGrup "
+//				+ "WHERE AtrybutyCzesci.IdAtrybutu = AtrybutyGrup.IdAtrybutu AND NOT AtrybutyGrup.KodGrupy = " + groupCode + ";";
 		String query = "SELECT IdAtrybutu, Nazwa "
 				+ "FROM AtrybutyCzesci;";
 		List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult(query);
@@ -135,7 +135,7 @@ public class GroupsService {
 			else {
 				group.setCode(results.get(0).getInt(1));
 				for (ArticleAttribute attribute : group.getAttributes()) {
-					query = "INSERT INTO AtrybutyGrupTowarowych (KodGrupy, IdAtrybutu) "
+					query = "INSERT INTO AtrybutyGrup (KodGrupy, IdAtrybutu) "
 							+ "VALUES (" + group.getCode() + ", " + attribute.getId() + ");";
 					DatabaseManager.getInstance().executeQuery(query);
 				}
@@ -169,27 +169,26 @@ public class GroupsService {
 				groupAttributesIds.setLength(groupAttributesIds.length() - 2);
 			}
 			query = "SELECT IdAtrybutuGrupy "
-					+ "FROM AtrybutyGrupTowarowych "
+					+ "FROM AtrybutyGrup "
 					+ "WHERE KodGrupy=" + group.getCode();
 			if (!"".equals(groupAttributesIds.toString())) {
 				query += " AND IdAtrybutu NOT IN (" + groupAttributesIds.toString() + ")";
 			}
 			query += ";";
-			System.out.println(query);
 			List<ResultRow> resultRows = DatabaseManager.getInstance().executeQueryResult(query);
 			for (ResultRow row : resultRows) {
-				query = "DELETE FROM AtrybutyGrupTowarowych "
+				query = "DELETE FROM AtrybutyGrup "
 						+ "WHERE IdAtrybutuGrupy=" + row.getInt(1);
 				DatabaseManager.getInstance().executeQuery(query);
 			}
 			if (!"".equals(groupAttributesIds.toString())) {
 				query = "SELECT IdAtrybutu "
 						+ "FROM AtrybutyCzesci "
-						+ "WHERE IdAtrybutu NOT IN(SELECT IdAtrybutu FROM AtrybutyGrupTowarowych WHERE KodGrupy=" + group.getCode() + ")"
+						+ "WHERE IdAtrybutu NOT IN(SELECT IdAtrybutu FROM AtrybutyGrup WHERE KodGrupy=" + group.getCode() + ")"
 						+ "AND IdAtrybutu IN (" + groupAttributesIds + ");";
 				resultRows = DatabaseManager.getInstance().executeQueryResult(query);
 				for (ResultRow row : resultRows) {
-					query = "INSERT INTO AtrybutyGrupTowarowych (KodGrupy, IdAtrybutu) "
+					query = "INSERT INTO AtrybutyGrup (KodGrupy, IdAtrybutu) "
 							+ "VALUES(" + group.getCode() + ", " + row.getInt(1) + ");";
 					DatabaseManager.getInstance().executeQuery(query);
 				}

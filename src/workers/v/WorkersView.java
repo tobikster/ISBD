@@ -8,12 +8,16 @@ import core.c.ErrorHandler;
 import core.c.Reloadable;
 import core.c.TablePagination;
 import core.c.ViewManager;
+import core.m.ApplicationException;
 import core.v.MainMenuView;
 import core.v.PaginationPanel;
 import java.awt.Cursor;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -255,16 +259,36 @@ public class WorkersView extends JPanel implements Reloadable
 
   private void _deleteWorkerMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__deleteWorkerMouseClicked
   {//GEN-HEADEREND:event__deleteWorkerMouseClicked
-    if(_workersTable.getSelectedRow()>=0)
-      try
-      {
-        Worker worker=WorkersService.getInstance().getWorker(_pagination.getCurrentPageData().get(_workersTable.getSelectedRow()).getId());
-        ViewManager.getInstance().showDialog(new RemoveWorkerConfirmDialog(true, this, worker));
-      }
-      catch(SQLException ex)
-      {
-        ErrorHandler.getInstance().reportError(ex);
-      }
+	  if(_workersTable.getSelectedRow() >= 0) {
+		  try {
+			  Worker worker=WorkersService.getInstance().getWorker(_pagination.getCurrentPageData().get(_workersTable.getSelectedRow()).getId());
+			  switch(JOptionPane.showOptionDialog(this, "Czy na pewno chcesz usunąć pracownika " + worker.getFullName() + "?", "Usunięcie pracownika", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[] {"Tak", "Nie"}, "Nie")){
+				  case 0:
+					  if(WorkersService.getInstance().removeWorker(worker)){
+						  JOptionPane.showMessageDialog(this, "Pracownik " + worker.getFullName() + " usunięty", "", JOptionPane.INFORMATION_MESSAGE);
+						  reload();
+					  }
+					  else {
+						  ErrorHandler.getInstance().reportError(new ApplicationException("Pracownik " + worker.getFullName() + " nie został usunięty!"));
+					  }
+			  }
+		  }
+		  catch (SQLException ex) {
+			  ErrorHandler.getInstance().reportError(ex);
+		  }
+		
+	  }
+	  
+//	  if(_workersTable.getSelectedRow()>=0)
+//      try
+//      {
+//        Worker worker=WorkersService.getInstance().getWorker(_pagination.getCurrentPageData().get(_workersTable.getSelectedRow()).getId());
+//        ViewManager.getInstance().showDialog(new RemoveWorkerConfirmDialog(true, this, worker));
+//      }
+//      catch(SQLException ex)
+//      {
+//        ErrorHandler.getInstance().reportError(ex);
+//      }
   }//GEN-LAST:event__deleteWorkerMouseClicked
 
   private void _editWorkerMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__editWorkerMouseClicked

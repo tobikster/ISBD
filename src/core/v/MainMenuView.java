@@ -4,9 +4,10 @@
  */
 package core.v;
 
-import stores.articles.v.ArticleListView;
 import core.c.ViewManager;
 import javax.swing.JOptionPane;
+import reports.v.ReportsArticlesCountWindow;
+import stores.articles.v.ArticleListView;
 import workers.v.WorkersView;
 
 /**
@@ -155,7 +156,8 @@ public class MainMenuView extends javax.swing.JPanel
 
   private void bDocumentsActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bDocumentsActionPerformed
   {//GEN-HEADEREND:event_bDocumentsActionPerformed
-    JOptionPane.showMessageDialog(this, "Wybrana funkcjonalność nie jest dostępna w tej wersji aplikacji.");
+    //JOptionPane.showMessageDialog(this, "Wybrana funkcjonalność nie jest dostępna w tej wersji aplikacji.");
+    ViewManager.getInstance().showDialog(new ReportsArticlesCountWindow());
   }//GEN-LAST:event_bDocumentsActionPerformed
 
   private void bSettingsActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bSettingsActionPerformed

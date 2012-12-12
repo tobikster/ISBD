@@ -1,8 +1,11 @@
 package core.c;
 
+import core.m.ApplicationException;
 import core.v.ApplicationDialog;
 import core.v.LoginWindow;
 import core.v.MainWindow;
+import java.io.File;
+import java.io.IOException;
 import javax.swing.JPanel;
 
 public class ViewManager {
@@ -81,5 +84,14 @@ public class ViewManager {
 			dialog.getReloadableParent().reload();
 		}
 	}
+  
+  public void openPDF(String file) throws IOException, InterruptedException, ApplicationException {
+    if((new File(file)).exists()) {
+      Process p=Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler "+file);
+      p.waitFor();
+    } else {
+      throw new ApplicationException("Can not open PDF documet.");
+    }
+  }
 	// </editor-fold>
 }

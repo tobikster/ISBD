@@ -138,7 +138,7 @@ public class TiresService
       sGroupsCondition+=" AND KodGrupyTowarowej="+group.getCode();
     }
     String sQuery = "SELECT * FROM Opony LEFT JOIN GrupyTowarowe ON Opony.KodGrupyTowarowej=GrupyTowarowe.KodGrupy "
-      + "WHERE Zawartosc='o'"+sGroupsCondition+";";
+      + "WHERE Typ='o'"+sGroupsCondition+";";
 
     List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult(sQuery);
 

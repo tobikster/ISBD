@@ -87,6 +87,10 @@ public class Tire implements Cloneable {
 		return _size;
 	}
 
+  public String getFullSize() {
+		return _size.toString()+" "+_loadIndex+_speedIndex;
+	}
+
 	public SpeedIndex getSpeedIndex() {
 		return _speedIndex;
 	}

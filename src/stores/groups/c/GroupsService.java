@@ -31,7 +31,7 @@ public class GroupsService {
 	// </editor-fold>
 
 	public ArticlesGroup getArticleGroup(int iGroupCode) throws SQLException {
-		String sQuery = "SELECT KodGrupy, Nazwa, VAT, Stawka, Zawartosc FROM GrupyTowarowe "
+		String sQuery = "SELECT KodGrupy, Nazwa, VAT, Stawka, Typ FROM GrupyTowarowe "
 				+ "INNER JOIN StawkiVAT ON GrupyTowarowe.VAT=StawkiVAT.IdStawki WHERE KodGrupy=" + iGroupCode + ";";
 
 		List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult(sQuery);
@@ -75,7 +75,7 @@ public class GroupsService {
 
 	public List<ArticlesGroup> getPartGroups() throws SQLException {
 		List articleGroups = new ArrayList<>();
-		String sqlQuery = "SELECT KodGrupy FROM GrupyTowarowe WHERE Zawartosc='c' ORDER BY Nazwa;";
+		String sqlQuery = "SELECT KodGrupy FROM GrupyTowarowe WHERE Typ='c' ORDER BY Nazwa;";
 		ArrayList<ResultRow> result = (ArrayList<ResultRow>) DatabaseManager.getInstance().executeQueryResult(sqlQuery);
 		for (ResultRow rr : result) {
 			articleGroups.add(getArticleGroup(rr.getInt(1)));
@@ -85,7 +85,7 @@ public class GroupsService {
 
 	public List<ArticlesGroup> getTireGroups() throws SQLException {
 		List articleGroups = new ArrayList<>();
-		String sqlQuery = "SELECT KodGrupy FROM GrupyTowarowe WHERE Zawartosc='o';";
+		String sqlQuery = "SELECT KodGrupy FROM GrupyTowarowe WHERE Typ='o';";
 		ArrayList<ResultRow> result = (ArrayList<ResultRow>) DatabaseManager.getInstance().executeQueryResult(sqlQuery);
 		for (ResultRow rr : result) {
 			articleGroups.add(getArticleGroup(rr.getInt(1)));

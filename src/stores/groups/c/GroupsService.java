@@ -5,11 +5,7 @@ import core.m.DatabaseException;
 import core.m.ResultRow;
 import finance.m.VATRate;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import stores.articles.c.validators.parts.ArticleAttributeValidator;
 import stores.articles.m.ArticleAttribute;
 import stores.groups.c.validators.ArticlesGroupValidator;
@@ -49,13 +45,11 @@ public class GroupsService {
 		vat.setId(result.getInt(3));
 		vat.setRate(result.getDouble(4));
 		group.setVat(vat);
-		switch (result.getString(5)) {
+		switch (result.getString(5).toLowerCase()) {
 			case "c":
-			case "C":
 				group.setType(ArticlesGroupType.PARTS);
 				break;
 			case "o":
-			case "O":
 				group.setType(ArticlesGroupType.TIRES);
 				break;
 			default:

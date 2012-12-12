@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import stores.articles.c.validators.tires.DOTValidator;
+import stores.articles.c.validators.tires.TireSizeValidator;
 import stores.articles.c.validators.tires.TireValidator;
+import stores.articles.c.validators.tires.TreadValidator;
 import stores.articles.m.*;
 import stores.groups.c.GroupsService;
 import stores.groups.m.ArticlesGroup;
@@ -345,6 +347,35 @@ public class TiresService
 
     return tireSizes;
   }
+
+  public TireSize addTireSize(TireSize tireSize) throws DatabaseException, SQLException {
+    EntityValidator<TireSize> validator = new TireSizeValidator();
+    validator.validate(tireSize);
+    int id;
+
+    DatabaseManager.getInstance().startTransaction();
+    try {
+      String sQuery = "INSERT INTO RozmiaryOpon(Szerokosc, Profil, Srednica) VALUES ('"+tireSize.getWidth()+"', '"+tireSize.getProfile()+"', '"+tireSize.getDiameter()+"');";
+      DatabaseManager.getInstance().executeQuery(sQuery);
+
+      sQuery = "SELECT TOP 1 IdRozmiaru FROM RozmiaryOpon ORDER BY IdRozmiaru DESC;";
+      id = DatabaseManager.getInstance().executeQueryResult(sQuery).get(0).getInt(1);
+    } catch(SQLException ex) {
+      DatabaseManager.getInstance().rollbackTransaction();
+      throw ex;
+    }
+    DatabaseManager.getInstance().commitTransaction();
+
+    return getTireSize(id);
+  }
+
+  public void updateTireSize(TireSize tireSize) throws DatabaseException, SQLException {
+    EntityValidator<TireSize> validator = new TireSizeValidator();
+    validator.validate(tireSize);
+
+    String sQuery = "UPDATE RozmiaryOpon SET Szerokosc='"+tireSize.getWidth()+"', Profil='"+tireSize.getProfile()+"', Srednica='"+tireSize.getDiameter()+"' WHERE IdRozmiaru="+tireSize.getId()+";";
+    DatabaseManager.getInstance().executeQuery(sQuery);
+  }
   // </editor-fold>
 
   // <editor-fold defaultstate="collapsed" desc="TREAD methods">
@@ -399,6 +430,35 @@ public class TiresService
     }
 
     return treads;
+  }
+
+  public Tread addTread(Tread tread) throws DatabaseException, SQLException {
+    EntityValidator<Tread> validator = new TreadValidator();
+    validator.validate(tread);
+    int id;
+
+    DatabaseManager.getInstance().startTransaction();
+    try {
+      String sQuery = "INSERT INTO Biezniki(IdProducenta, Nazwa) VALUES ("+tread.getProducer().getId()+", '"+tread.getName()+"');";
+      DatabaseManager.getInstance().executeQuery(sQuery);
+
+      sQuery = "SELECT TOP 1 IdBieznika FROM Biezniki ORDER BY IdBieznika DESC;";
+      id = DatabaseManager.getInstance().executeQueryResult(sQuery).get(0).getInt(1);
+    } catch (SQLException ex) {
+      DatabaseManager.getInstance().rollbackTransaction();
+      throw ex;
+    }
+    DatabaseManager.getInstance().commitTransaction();
+
+    return getTread(id);
+  }
+
+  public void updateTread(Tread tread) throws DatabaseException, SQLException {
+    EntityValidator<Tread> validator = new TreadValidator();
+    validator.validate(tread);
+
+    String sQuery = "UPDATE Biezniki SET Nazwa='"+tread.getName()+"' WHERE IdBieznika="+tread.getId()+";";
+    DatabaseManager.getInstance().executeQuery(sQuery);
   }
   // </editor-fold>
 }

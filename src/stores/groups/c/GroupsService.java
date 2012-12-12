@@ -8,16 +8,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import stores.parts.c.validators.ArticleAttributeValidator;
-import stores.parts.m.ArticleAttribute;
+import stores.articles.c.validators.parts.ArticleAttributeValidator;
+import stores.articles.m.ArticleAttribute;
 import stores.groups.c.validators.ArticlesGroupValidator;
 import stores.groups.m.ArticlesGroup;
 import stores.groups.m.ArticlesGroupType;
 
 public class GroupsService {
-	// <editor-fold defaultstate="collapsed" desc="Object variables">
-	// </editor-fold>
-	
 	// <editor-fold defaultstate="collapsed" desc="Creating object">
 	// <editor-fold defaultstate="collapsed" desc="Singleton">
 	public static GroupsService getInstance() {
@@ -33,16 +30,6 @@ public class GroupsService {
 	}
 	// </editor-fold>
 
-	// <editor-fold defaultstate="collapsed" desc="Object PRIVATE methods">
-	// </editor-fold>
-	
-	// <editor-fold defaultstate="collapsed" desc="Object PUBLIC methods">
-	// <editor-fold defaultstate="collapsed" desc="Getters">
-	// </editor-fold>
-	
-	// <editor-fold defaultstate="collapsed" desc="Setters">
-	// </editor-fold>
-	
 	public ArticlesGroup getArticleGroup(int iGroupCode) throws SQLException {
 		String sQuery = "SELECT KodGrupy, Nazwa, VAT, Stawka, Zawartosc FROM GrupyTowarowe "
 				+ "INNER JOIN StawkiVAT ON GrupyTowarowe.VAT=StawkiVAT.IdStawki WHERE KodGrupy=" + iGroupCode + ";";
@@ -76,24 +63,34 @@ public class GroupsService {
 		return group;
 	}
 
-	public List<ArticlesGroup> getRootArticleGroups() throws SQLException {
-		List rootGroups = new ArrayList<>();
-		String sqlQuery = "SELECT KodGrupy FROM GrupyTowarowe WHERE KodGrupy NOT IN (SELECT KodGrupy FROM GrupyNadrzedne);";
+	public List<ArticlesGroup> getArticleGroups() throws SQLException {
+		List articleGroups = new ArrayList<>();
+		String sqlQuery = "SELECT KodGrupy FROM GrupyTowarowe;";
 		ArrayList<ResultRow> result = (ArrayList<ResultRow>) DatabaseManager.getInstance().executeQueryResult(sqlQuery);
 		for (ResultRow rr : result) {
-			rootGroups.add(getArticleGroup(rr.getInt(1)));
+			articleGroups.add(getArticleGroup(rr.getInt(1)));
 		}
-		return rootGroups;
+		return articleGroups;
 	}
 
-	public List<ArticlesGroup> getArticleSubgroups(ArticlesGroup group) throws SQLException {
-		List<ArticlesGroup> subgroups = new ArrayList<>();
-		String sqlQuery = "SELECT KodGrupy FROM GrupyNadrzedne WHERE KodGrupyNadrzednej=" + group.getCode() + ";";
+	public List<ArticlesGroup> getPartGroups() throws SQLException {
+		List articleGroups = new ArrayList<>();
+		String sqlQuery = "SELECT KodGrupy FROM GrupyTowarowe WHERE Zawartosc='c' ORDER BY Nazwa;";
 		ArrayList<ResultRow> result = (ArrayList<ResultRow>) DatabaseManager.getInstance().executeQueryResult(sqlQuery);
 		for (ResultRow rr : result) {
-			subgroups.add(getArticleGroup(rr.getInt(1)));
+			articleGroups.add(getArticleGroup(rr.getInt(1)));
 		}
-		return subgroups;
+		return articleGroups;
+	}
+
+	public List<ArticlesGroup> getTireGroups() throws SQLException {
+		List articleGroups = new ArrayList<>();
+		String sqlQuery = "SELECT KodGrupy FROM GrupyTowarowe WHERE Zawartosc='o';";
+		ArrayList<ResultRow> result = (ArrayList<ResultRow>) DatabaseManager.getInstance().executeQueryResult(sqlQuery);
+		for (ResultRow rr : result) {
+			articleGroups.add(getArticleGroup(rr.getInt(1)));
+		}
+		return articleGroups;
 	}
 
 	public List<ArticleAttribute> getArticlesGroupAttributes(int groupCode) throws SQLException {
@@ -110,10 +107,10 @@ public class GroupsService {
 
 	public List<ArticleAttribute> getAvailableAttributes(int groupCode) throws SQLException {
 		List<ArticleAttribute> result = new LinkedList<>();
-		String query = "SELECT AtrybutyCzesci.IdAtrybutu, AtrybutyCzesci.Nazwa "
-				+ "FROM AtrybutyCzesci, AtrybutyGrupTowarowych "
-				+ "WHERE AtrybutyCzesci.IdAtrybutu = AtrybutyGrupTowarowych.IdAtrybutu AND NOT AtrybutyGrupTowarowych.KodGrupy = " + groupCode + ";";
-		query = "SELECT IdAtrybutu, Nazwa "
+//		String query = "SELECT AtrybutyCzesci.IdAtrybutu, AtrybutyCzesci.Nazwa "
+//				+ "FROM AtrybutyCzesci, AtrybutyGrupTowarowych "
+//				+ "WHERE AtrybutyCzesci.IdAtrybutu = AtrybutyGrupTowarowych.IdAtrybutu AND NOT AtrybutyGrupTowarowych.KodGrupy = " + groupCode + ";";
+		String query = "SELECT IdAtrybutu, Nazwa "
 				+ "FROM AtrybutyCzesci;";
 		List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult(query);
 		for (ResultRow row : results) {
@@ -127,8 +124,8 @@ public class GroupsService {
 		ArticlesGroupValidator validator = new ArticlesGroupValidator();
 		if (validator.validate(group)) {
 			DatabaseManager.getInstance().startTransaction();
-			String query = "INSERT INTO GrupyTowarowe (Nazwa, VAT) "
-					+ "VALUES('" + group.getName() + "', " + group.getVat().getId() + ");";
+			String query = "INSERT INTO GrupyTowarowe (Nazwa, VAT, Zawartosc) "
+					+ "VALUES('" + group.getName() + "', " + group.getVat().getId() + ", '" + group.getType().toString() + "');";
 			DatabaseManager.getInstance().executeQuery(query);
 
 			query = "SELECT KodGrupy FROM GrupyTowarowe WHERE Nazwa = '" + group.getName() + "' AND VAT = " + group.getVat().getId() + ";";
@@ -155,21 +152,120 @@ public class GroupsService {
 	}
 
 	public boolean updateArticlesGroup(ArticlesGroup group) throws DatabaseException, SQLException {
-		//TODO code update articles group logic
-		return false;
+		boolean result = false;
+		ArticlesGroupValidator validator = new ArticlesGroupValidator();
+		if (validator.validate(group)) {
+			DatabaseManager.getInstance().startTransaction();
+			String query = "UPDATE GrupyTowarowe "
+					+ "SET Nazwa='" + group.getName() + "', VAT=" + group.getVat().getId() + " "
+					+ "WHERE KodGrupy=" + group.getCode() + ";";
+			DatabaseManager.getInstance().executeQuery(query);
+			StringBuilder groupAttributesIds = new StringBuilder();
+			if (!group.getAttributes().isEmpty()) {
+				for (ArticleAttribute attribute : group.getAttributes()) {
+					groupAttributesIds.append(attribute.getId()).append(", ");
+
+				}
+				groupAttributesIds.setLength(groupAttributesIds.length() - 2);
+			}
+			query = "SELECT IdAtrybutuGrupy "
+					+ "FROM AtrybutyGrupTowarowych "
+					+ "WHERE KodGrupy=" + group.getCode();
+			if (!"".equals(groupAttributesIds.toString())) {
+				query += " AND IdAtrybutu NOT IN (" + groupAttributesIds.toString() + ")";
+			}
+			query += ";";
+			System.out.println(query);
+			List<ResultRow> resultRows = DatabaseManager.getInstance().executeQueryResult(query);
+			for (ResultRow row : resultRows) {
+				query = "DELETE FROM AtrybutyGrupTowarowych "
+						+ "WHERE IdAtrybutuGrupy=" + row.getInt(1);
+				DatabaseManager.getInstance().executeQuery(query);
+			}
+			if (!"".equals(groupAttributesIds.toString())) {
+				query = "SELECT IdAtrybutu "
+						+ "FROM AtrybutyCzesci "
+						+ "WHERE IdAtrybutu NOT IN(SELECT IdAtrybutu FROM AtrybutyGrupTowarowych WHERE KodGrupy=" + group.getCode() + ")"
+						+ "AND IdAtrybutu IN (" + groupAttributesIds + ");";
+				resultRows = DatabaseManager.getInstance().executeQueryResult(query);
+				for (ResultRow row : resultRows) {
+					query = "INSERT INTO AtrybutyGrupTowarowych (KodGrupy, IdAtrybutu) "
+							+ "VALUES(" + group.getCode() + ", " + row.getInt(1) + ");";
+					DatabaseManager.getInstance().executeQuery(query);
+				}
+			}
+			result = true;
+			if (result) {
+				DatabaseManager.getInstance().commitTransaction();
+			}
+			else {
+				DatabaseManager.getInstance().rollbackTransaction();
+			}
+		}
+		return result;
 	}
 
-	public List<Integer> getSubGroupsIds(int groupId) throws SQLException {
-		List<Integer> results = new ArrayList<>();
-
-		String sQuery = "SELECT KodGrupy FROM GrupyNadrzedne WHERE KodGrupyNadrzednej=" + groupId + ";";
-		List<ResultRow> resultRows = DatabaseManager.getInstance().executeQueryResult(sQuery);
-		for (ResultRow rr : resultRows) {
-			results.add(new Integer(rr.getInt(1)));
-			results.addAll(getSubGroupsIds(rr.getInt(1)));
+	public boolean removeArticlesGroup(ArticlesGroup group) throws DatabaseException, SQLException {
+		boolean result = false;
+		ArticlesGroupValidator validator = new ArticlesGroupValidator();
+		if (validator.validate(group)) {
+			String query = "DELETE FROM GrupyTowarowe "
+					+ "WHERE KodGrupy=" + group.getCode() + ";";
+			DatabaseManager.getInstance().executeQuery(query);
+			result = true;
 		}
+		return result;
+	}
 
-		return results;
+	public int checkRemovabilityGroup(ArticlesGroup group) throws SQLException {
+		int result = 0;
+		String query;
+		List<ResultRow> resultRows;
+		switch (group.getType()) {
+			case PARTS:
+				query = "SELECT COUNT(IdCzesci) "
+						+ "FROM Czesci "
+						+ "WHERE KodGrupyTowarowej = " + group.getCode() + ";";
+				resultRows = DatabaseManager.getInstance().executeQueryResult(query);
+				if (resultRows.get(0).getInt(1) == 0) {
+					result = 1;
+				}
+				else {
+					query = "SELECT COUNT(IdCzesci) "
+							+ "FROM Czesci "
+							+ "WHERE KodGrupyTowarowej = " + group.getCode() + " AND Ilosc <> 0;";
+					resultRows = DatabaseManager.getInstance().executeQueryResult(query);
+					if (resultRows.get(0).getInt(1) == 0) {
+						result = 0;
+					}
+					else {
+						result = -1;
+					}
+				}
+				break;
+			case TIRES:
+				query = "SELECT COUNT(IdOpony) "
+						+ "FROM Opony "
+						+ "WHERE KodGrupyTowarowej = " + group.getCode() + ";";
+				resultRows = DatabaseManager.getInstance().executeQueryResult(query);
+				if (resultRows.get(0).getInt(1) == 0) {
+					result = 1;
+				}
+				else {
+					query = "SELECT Count(Opony.IdOpony) "
+							+ "FROM Opony, DOTyOpon "
+							+ "WHERE Opony.IdOpony = DOTyOpon.IdOpony AND Opony.KodGrupyTowarowej = " + group.getCode() + " AND DOTyOpon.Liczba <> 0;";
+					resultRows = DatabaseManager.getInstance().executeQueryResult(query);
+					if(resultRows.get(0).getInt(1) == 0) {
+						result = 0;
+					}
+					else {
+						result = -1;
+					}
+				}
+				break;
+		}
+		return result;
 	}
 
 	//<editor-fold defaultstate="collapsed" desc="ATTRIBUTES method">
@@ -185,5 +281,4 @@ public class GroupsService {
 		return result;
 	}
 	//</editor-fold>
-	// </editor-fold>
 }

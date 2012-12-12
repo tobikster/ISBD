@@ -4,8 +4,8 @@
  */
 package stores.groups.v;
 
-import stores.parts.c.ArticlesService;
-import stores.parts.m.ArticleAttribute;
+import stores.articles.c.PartsService;
+import stores.articles.m.ArticleAttribute;
 import core.c.ErrorHandler;
 import core.c.Reloadable;
 import core.m.DatabaseException;

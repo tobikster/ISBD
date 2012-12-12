@@ -4,7 +4,7 @@ package finance.m;
  *
  * @author tobikster
  */
-public class VATRate {
+public class VATRate implements Cloneable {
 	private int _id;
 	private double _rate; // w bazie nie jest to pole wymagane
 
@@ -37,4 +37,9 @@ public class VATRate {
 	public String toString() {
 		return (int)(_rate * 100) + " %";
 	}
+  
+  @Override
+  public VATRate clone() {
+    return new VATRate(_id, _rate);
+  }
 }

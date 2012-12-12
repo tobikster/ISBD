@@ -46,7 +46,7 @@
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Component id="_dataPanel" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Component id="_attributesTableScrollPane" pref="131" max="32767" attributes="0"/>
+              <Component id="_attributesTableScrollPane" pref="125" max="32767" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Component id="_controlPanel" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -82,8 +82,16 @@
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="_producerComboBox" alignment="0" max="32767" attributes="0"/>
-                              <Component id="_articlesGroupComboBox" alignment="0" max="32767" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="_producerComboBox" max="32767" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="_addProducerButton" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="_articlesGroupComboBox" max="32767" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="_addArticlesGroupButton" min="-2" max="-2" attributes="0"/>
+                              </Group>
                               <Component id="_nameTextField" alignment="0" max="32767" attributes="0"/>
                               <Component id="_catalogNumberTextField" alignment="1" max="32767" attributes="0"/>
                           </Group>
@@ -129,11 +137,13 @@
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="_articlesGroupLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="_articlesGroupComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="_addArticlesGroupButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="_producerLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="_producerComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="_addProducerButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -239,6 +249,7 @@
         <Component class="javax.swing.JButton" name="_choosePictureButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="Wybierz"/>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="_marginLabel">
@@ -286,6 +297,20 @@
             <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="_grossPriceTextFieldFocusLost"/>
           </Events>
         </Component>
+        <Component class="javax.swing.JButton" name="_addArticlesGroupButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Dodaj"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="_addArticlesGroupButtonActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="_addProducerButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Dodaj"/>
+            <Property name="enabled" type="boolean" value="false"/>
+          </Properties>
+        </Component>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="_controlPanel">
@@ -294,7 +319,7 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="183" max="32767" attributes="0"/>
                   <Component id="_okButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="_cancelButton" min="-2" max="-2" attributes="0"/>

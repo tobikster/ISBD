@@ -258,8 +258,7 @@ public class EditWorkerView extends ApplicationDialog
           else
             _worker.setPassword(new String(_passwordField.getPassword()));
           WorkersService.getInstance().saveWorker(_worker);
-          setHaveToReloadParent(true);
-          super.close();
+          super.close(true);
         }
         catch(DatabaseException|IllegalArgumentException|SQLException|ApplicationException ex)
         {
@@ -268,7 +267,7 @@ public class EditWorkerView extends ApplicationDialog
         break;
 
       case RET_CANCEL:
-        super.close();
+        super.close(false);
         break;
     }
   }

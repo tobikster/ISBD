@@ -179,7 +179,7 @@ public class ReportsArticlesCountWindow extends ApplicationDialog
 
   private void bCancelActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bCancelActionPerformed
   {//GEN-HEADEREND:event_bCancelActionPerformed
-    close();
+    close(false);
   }//GEN-LAST:event_bCancelActionPerformed
 
   private void cbGroupsSeparationActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_cbGroupsSeparationActionPerformed

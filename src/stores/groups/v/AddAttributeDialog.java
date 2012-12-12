@@ -147,16 +147,14 @@ public class AddAttributeDialog extends ApplicationDialog implements Reloadable{
 	}
 	
     private void _cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__cancelButtonActionPerformed
-		setHaveToReloadParent(false);
-		super.close();
+		close(false);
     }//GEN-LAST:event__cancelButtonActionPerformed
 
     private void _okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__okButtonActionPerformed
 		try {
 			save();
 			if(GroupsService.getInstance().addAttribute(_attribute)) {
-				setHaveToReloadParent(true);
-				super.close();
+				close(true);
 			}
 		}
 		catch (DatabaseException | SQLException ex) {

@@ -55,17 +55,14 @@ public class GroupsService {
 			default:
 				throw new SQLException("Article group with given CODE has unknown type!");
 		}
-		
+
 		Set<ArticleAttribute> attributes = new LinkedHashSet<>();
 		sQuery = "SELECT AtrybutyCzesci.IdAtrybutu, AtrybutyCzesci.Nazwa "
 				+ "FROM AtrybutyGrup LEFT JOIN AtrybutyCzesci ON AtrybutyGrup.IdAtrybutu = AtrybutyCzesci.IdAtrybutu "
 				+ "WHERE AtrybutyGrup.KodGrupy = " + iGroupCode + ";";
-		System.out.println(sQuery);
 		List<ResultRow> resultRows = DatabaseManager.getInstance().executeQueryResult(sQuery);
-		System.out.println("Znaleziono " + resultRows + " atrybutów");
-		for(ResultRow row : resultRows) {
+		for (ResultRow row : resultRows) {
 			ArticleAttribute attribute = new ArticleAttribute(row.getInt(1), row.getString(2));
-			System.out.println(new ArticleAttribute(row.getInt(1), row.getString(2)));
 			attributes.add(attribute);
 		}
 		group.setAttributes(attributes);
@@ -129,88 +126,86 @@ public class GroupsService {
 	}
 
 	public boolean addArticlesGroup(ArticlesGroup group) throws DatabaseException, SQLException {
-		boolean result = false;
 		ArticlesGroupValidator validator = new ArticlesGroupValidator();
 		if (validator.validate(group)) {
-			DatabaseManager.getInstance().startTransaction();
-			String query = "INSERT INTO GrupyTowarowe (Nazwa, VAT, Typ) "
-					+ "VALUES('" + group.getName() + "', " + group.getVat().getId() + ", '" + group.getType().toString() + "');";
-			DatabaseManager.getInstance().executeQuery(query);
+			try {
+				DatabaseManager.getInstance().startTransaction();
+				String query = "INSERT INTO GrupyTowarowe (Nazwa, VAT, Typ) "
+						+ "VALUES('" + group.getName() + "', " + group.getVat().getId() + ", '" + group.getType().toString() + "');";
+				DatabaseManager.getInstance().executeQuery(query);
 
-			query = "SELECT KodGrupy FROM GrupyTowarowe WHERE Nazwa = '" + group.getName() + "' AND VAT = " + group.getVat().getId() + ";";
-			List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult(query);
-			if (results.size() != 1) {
-			}
-			else {
-				group.setCode(results.get(0).getInt(1));
-				for (ArticleAttribute attribute : group.getAttributes()) {
-					query = "INSERT INTO AtrybutyGrup (KodGrupy, IdAtrybutu) "
-							+ "VALUES (" + group.getCode() + ", " + attribute.getId() + ");";
-					DatabaseManager.getInstance().executeQuery(query);
+				query = "SELECT KodGrupy FROM GrupyTowarowe WHERE Nazwa = '" + group.getName() + "' AND VAT = " + group.getVat().getId() + ";";
+				List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult(query);
+				if (results.size() != 1) {
 				}
-				result = true;
-			}
-			if (result) {
+				else {
+					group.setCode(results.get(0).getInt(1));
+					for (ArticleAttribute attribute : group.getAttributes()) {
+						query = "INSERT INTO AtrybutyGrup (KodGrupy, IdAtrybutu) "
+								+ "VALUES (" + group.getCode() + ", " + attribute.getId() + ");";
+						DatabaseManager.getInstance().executeQuery(query);
+					}
+				}
 				DatabaseManager.getInstance().commitTransaction();
 			}
-			else {
+			catch (SQLException ex) {
 				DatabaseManager.getInstance().rollbackTransaction();
+				throw ex;
 			}
 		}
-		return result;
+		return true;
 	}
 
 	public boolean updateArticlesGroup(ArticlesGroup group) throws DatabaseException, SQLException {
-		boolean result = false;
 		ArticlesGroupValidator validator = new ArticlesGroupValidator();
 		if (validator.validate(group)) {
-			DatabaseManager.getInstance().startTransaction();
-			String query = "UPDATE GrupyTowarowe "
-					+ "SET Nazwa='" + group.getName() + "', VAT=" + group.getVat().getId() + " "
-					+ "WHERE KodGrupy=" + group.getCode() + ";";
-			DatabaseManager.getInstance().executeQuery(query);
-			StringBuilder groupAttributesIds = new StringBuilder();
-			if (!group.getAttributes().isEmpty()) {
-				for (ArticleAttribute attribute : group.getAttributes()) {
-					groupAttributesIds.append(attribute.getId()).append(", ");
-
-				}
-				groupAttributesIds.setLength(groupAttributesIds.length() - 2);
-			}
-			query = "SELECT IdAtrybutuGrupy "
-					+ "FROM AtrybutyGrup "
-					+ "WHERE KodGrupy=" + group.getCode();
-			if (!"".equals(groupAttributesIds.toString())) {
-				query += " AND IdAtrybutu NOT IN (" + groupAttributesIds.toString() + ")";
-			}
-			query += ";";
-			List<ResultRow> resultRows = DatabaseManager.getInstance().executeQueryResult(query);
-			for (ResultRow row : resultRows) {
-				query = "DELETE FROM AtrybutyGrup "
-						+ "WHERE IdAtrybutuGrupy=" + row.getInt(1);
+			try {
+				DatabaseManager.getInstance().startTransaction();
+				String query = "UPDATE GrupyTowarowe "
+						+ "SET Nazwa='" + group.getName() + "', VAT=" + group.getVat().getId() + " "
+						+ "WHERE KodGrupy=" + group.getCode() + ";";
 				DatabaseManager.getInstance().executeQuery(query);
-			}
-			if (!"".equals(groupAttributesIds.toString())) {
-				query = "SELECT IdAtrybutu "
-						+ "FROM AtrybutyCzesci "
-						+ "WHERE IdAtrybutu NOT IN(SELECT IdAtrybutu FROM AtrybutyGrup WHERE KodGrupy=" + group.getCode() + ")"
-						+ "AND IdAtrybutu IN (" + groupAttributesIds + ");";
-				resultRows = DatabaseManager.getInstance().executeQueryResult(query);
+				StringBuilder groupAttributesIds = new StringBuilder();
+				if (!group.getAttributes().isEmpty()) {
+					for (ArticleAttribute attribute : group.getAttributes()) {
+						groupAttributesIds.append(attribute.getId()).append(", ");
+
+					}
+					groupAttributesIds.setLength(groupAttributesIds.length() - 2);
+				}
+				query = "SELECT IdAtrybutuGrupy "
+						+ "FROM AtrybutyGrup "
+						+ "WHERE KodGrupy=" + group.getCode();
+				if (!"".equals(groupAttributesIds.toString())) {
+					query += " AND IdAtrybutu NOT IN (" + groupAttributesIds.toString() + ")";
+				}
+				query += ";";
+				List<ResultRow> resultRows = DatabaseManager.getInstance().executeQueryResult(query);
 				for (ResultRow row : resultRows) {
-					query = "INSERT INTO AtrybutyGrup (KodGrupy, IdAtrybutu) "
-							+ "VALUES(" + group.getCode() + ", " + row.getInt(1) + ");";
+					query = "DELETE FROM AtrybutyGrup "
+							+ "WHERE IdAtrybutuGrupy=" + row.getInt(1);
 					DatabaseManager.getInstance().executeQuery(query);
 				}
-			}
-			result = true;
-			if (result) {
+				if (!"".equals(groupAttributesIds.toString())) {
+					query = "SELECT IdAtrybutu "
+							+ "FROM AtrybutyCzesci "
+							+ "WHERE IdAtrybutu NOT IN(SELECT IdAtrybutu FROM AtrybutyGrup WHERE KodGrupy=" + group.getCode() + ")"
+							+ "AND IdAtrybutu IN (" + groupAttributesIds + ");";
+					resultRows = DatabaseManager.getInstance().executeQueryResult(query);
+					for (ResultRow row : resultRows) {
+						query = "INSERT INTO AtrybutyGrup (KodGrupy, IdAtrybutu) "
+								+ "VALUES(" + group.getCode() + ", " + row.getInt(1) + ");";
+						DatabaseManager.getInstance().executeQuery(query);
+					}
+				}
 				DatabaseManager.getInstance().commitTransaction();
 			}
-			else {
+			catch (SQLException ex) {
 				DatabaseManager.getInstance().rollbackTransaction();
+				throw ex;
 			}
 		}
-		return result;
+		return true;
 	}
 
 	public boolean removeArticlesGroup(ArticlesGroup group) throws DatabaseException, SQLException {

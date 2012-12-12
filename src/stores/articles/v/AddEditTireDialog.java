@@ -203,7 +203,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable, 
       if(feedback instanceof TireSize) {
         _tire.setSize((TireSize)feedback);
       } else if(feedback instanceof Producer) {
-        _tire.setTread(new Tread(-1, (Producer)feedback, ""));
+        //_tire.setTread(new Tread(-1, (Producer)feedback, ""));
       } else if(feedback instanceof Tread) {
         _tire.setTread((Tread)feedback);
       }

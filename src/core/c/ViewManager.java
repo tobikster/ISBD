@@ -63,7 +63,7 @@ public class ViewManager {
 	public void showMainWindow() {
     _mainWindow = new MainWindow();
 		_mainWindow.setLocationRelativeTo(null);
-    //_mainWindow.setTitle("Mechaniker v1.0 ["+AuthenticationService.getInstance().getLoggedInUser().getFullName()+"]");
+    _mainWindow.setTitle("Mechaniker v1.0 ["+AuthenticationService.getInstance().getLoggedInUser().getFullName()+"]");
 		_mainWindow.setVisible(true);
 	}
   

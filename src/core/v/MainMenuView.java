@@ -4,6 +4,7 @@
  */
 package core.v;
 
+import core.c.AuthenticationService;
 import core.c.ViewManager;
 import javax.swing.JOptionPane;
 import reports.v.ReportsArticlesCountWindow;
@@ -136,7 +137,11 @@ public class MainMenuView extends javax.swing.JPanel
 
   private void bContractorsActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bContractorsActionPerformed
   {//GEN-HEADEREND:event_bContractorsActionPerformed
-    ViewManager.getInstance().openView(new WorkersView());
+    if(AuthenticationService.getInstance().getLoggedInUser().getJob().equals("Właściciel")) {
+      ViewManager.getInstance().openView(new WorkersView());
+    } else {
+      JOptionPane.showMessageDialog(this, "Nie masz wystarczających uprawnień aby korzystać z tej części aplikacji.", "Brak uprawnień", JOptionPane.ERROR_MESSAGE);
+    }
   }//GEN-LAST:event_bContractorsActionPerformed
 
   private void bSaleActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bSaleActionPerformed

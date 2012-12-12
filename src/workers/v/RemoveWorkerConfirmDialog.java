@@ -100,8 +100,7 @@ public class RemoveWorkerConfirmDialog extends ApplicationDialog
       try
       {
         WorkersService.getInstance().removeWorker(_worker);
-        setHaveToReloadParent(true);
-        super.close();
+        super.close(true);
       }
       catch(SQLException ex)
       {
@@ -110,7 +109,7 @@ public class RemoveWorkerConfirmDialog extends ApplicationDialog
     }//GEN-LAST:event__okButtonActionPerformed
 
     private void _cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__cancelButtonActionPerformed
-      super.close();
+      super.close(false);
     }//GEN-LAST:event__cancelButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton _cancelButton;

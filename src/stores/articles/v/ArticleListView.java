@@ -11,8 +11,6 @@ import java.awt.Cursor;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -27,7 +25,6 @@ import stores.groups.c.GroupsService;
 import stores.groups.m.ArticlesGroup;
 import stores.groups.m.ArticlesGroupType;
 import stores.groups.v.AddEditArticlesGroupDialog;
-import stores.groups.v.RemoveArticleGroupDialog;
 
 /**
  *

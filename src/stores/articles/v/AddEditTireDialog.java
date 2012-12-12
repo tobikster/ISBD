@@ -428,7 +428,6 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
       JTextField tf = (JTextField) c;
       tf.setHorizontalAlignment(JTextField.CENTER);
 
-      System.out.println("Column: "+column);
       if(column==0) {
         tf.addKeyListener(new KeyAdapter() {        
           @Override
@@ -777,7 +776,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
 
   private void bCancelActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bCancelActionPerformed
   {//GEN-HEADEREND:event_bCancelActionPerformed
-	  close();
+	  close(false);
   }//GEN-LAST:event_bCancelActionPerformed
 
   private void bSubmitActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bSubmitActionPerformed
@@ -789,8 +788,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
       } else {
         TiresService.getInstance().addTire(_tire);
       }
-      setHaveToReloadParent(true);
-      close();
+      close(true);
     } catch(DatabaseException|SQLException ex) {
       ErrorHandler.getInstance().reportError(ex);
     }

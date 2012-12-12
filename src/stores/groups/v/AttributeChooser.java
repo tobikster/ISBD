@@ -233,13 +233,11 @@ public class AttributeChooser extends ApplicationDialog implements Reloadable {
     }// </editor-fold>//GEN-END:initComponents
 
     private void _okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__okButtonActionPerformed
-		setHaveToReloadParent(true);
-		super.close();
+		close(true);
     }//GEN-LAST:event__okButtonActionPerformed
 
     private void _cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__cancelButtonActionPerformed
-		setHaveToReloadParent(false);
-		super.close();
+		super.close(false);
     }//GEN-LAST:event__cancelButtonActionPerformed
 
     private void _addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__addButtonActionPerformed

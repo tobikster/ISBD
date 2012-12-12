@@ -115,8 +115,7 @@ public class RemoveArticleGroupDialog extends ApplicationDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void _cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__cancelButtonActionPerformed
-		setHaveToReloadParent(false);
-		super.close();
+		super.close(false);
     }//GEN-LAST:event__cancelButtonActionPerformed
 
     private void _okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__okButtonActionPerformed

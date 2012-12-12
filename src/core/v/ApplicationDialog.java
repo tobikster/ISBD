@@ -19,14 +19,12 @@ import javax.swing.KeyStroke;
 public abstract class ApplicationDialog extends JDialog {
   // <editor-fold defaultstate="collapsed" desc="Object variables">
 	private Reloadable _reloadableParent;
-	private boolean _haveToReloadParent;
 	// </editor-fold>
 	// <editor-fold defaultstate="collapsed" desc="Creating object">
 
 	public ApplicationDialog(boolean modal, Reloadable parent) {
 		super(ViewManager.getInstance().getMainWindow(), modal);
 		_reloadableParent = parent;
-		_haveToReloadParent = false;
 
 		// Close the dialog when Esc is pressed
 		String cancelName = "cancel";
@@ -36,14 +34,14 @@ public abstract class ApplicationDialog extends JDialog {
 		actionMap.put(cancelName, new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				close();
+				close(false);
 			}
 		});
 
 		addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent evt) {
-				close();
+				close(false);
 			}
 		});
 	}
@@ -59,13 +57,10 @@ public abstract class ApplicationDialog extends JDialog {
 	// </editor-fold>
 	// <editor-fold defaultstate="collapsed" desc="Setters">
 
-	protected void setHaveToReloadParent(boolean haveToReloadParent) {
-		_haveToReloadParent = haveToReloadParent;
-	}
 	// </editor-fold>
 
-	public void close() {
-		ViewManager.getInstance().closeDialog(this, _haveToReloadParent);
+	public void close(boolean reload) {
+		ViewManager.getInstance().closeDialog(this, reload);
 	}
 	// </editor-fold>
 }

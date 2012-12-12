@@ -6,6 +6,7 @@ package stores.articles.v;
 
 import core.c.ErrorHandler;
 import core.c.Reloadable;
+import core.c.ViewManager;
 import core.m.DatabaseException;
 import core.v.ApplicationDialog;
 import java.awt.Color;
@@ -22,6 +23,8 @@ import stores.articles.m.ArticleAttribute;
 import stores.articles.m.Part;
 import stores.groups.c.GroupsService;
 import stores.groups.m.ArticlesGroup;
+import stores.groups.m.ArticlesGroupType;
+import stores.groups.v.AddEditArticlesGroupDialog;
 import stores.producers.c.ProducersService;
 import stores.producers.m.Producer;
 import utils.m.WorkingMap;
@@ -138,6 +141,7 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
 	public final void reload() {
 		if (_part != null) {
 			_nameTextField.setText(_part.getName());
+			_articlesGroupComboBox.setModel(getGroupsModel());
 			if (_part.getGroup() != null) {
 				int selectedArticlesGroupIndex = 0;
 				for (int i = 0; i < _articlesGroupComboBox.getItemCount(); ++i) {
@@ -207,6 +211,8 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
         _netPriceTextField = new javax.swing.JTextField();
         _grossPriceLabel = new javax.swing.JLabel();
         _grossPriceTextField = new javax.swing.JTextField();
+        _addArticlesGroupButton = new javax.swing.JButton();
+        _addProducerButton = new javax.swing.JButton();
         _controlPanel = new javax.swing.JPanel();
         _cancelButton = new javax.swing.JButton();
         _okButton = new javax.swing.JButton();
@@ -245,6 +251,7 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
         _picturePathTextField.setEnabled(false);
 
         _choosePictureButton.setText("Wybierz");
+        _choosePictureButton.setEnabled(false);
 
         _marginLabel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         _marginLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -285,6 +292,16 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
             }
         });
 
+        _addArticlesGroupButton.setText("Dodaj");
+        _addArticlesGroupButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                _addArticlesGroupButtonActionPerformed(evt);
+            }
+        });
+
+        _addProducerButton.setText("Dodaj");
+        _addProducerButton.setEnabled(false);
+
         javax.swing.GroupLayout _dataPanelLayout = new javax.swing.GroupLayout(_dataPanel);
         _dataPanel.setLayout(_dataPanelLayout);
         _dataPanelLayout.setHorizontalGroup(
@@ -300,8 +317,14 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
                             .addComponent(_producerLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(_dataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(_producerComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(_articlesGroupComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(_dataPanelLayout.createSequentialGroup()
+                                .addComponent(_producerComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(_addProducerButton))
+                            .addGroup(_dataPanelLayout.createSequentialGroup()
+                                .addComponent(_articlesGroupComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(_addArticlesGroupButton))
                             .addComponent(_nameTextField)
                             .addComponent(_catalogNumberTextField, javax.swing.GroupLayout.Alignment.TRAILING)))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, _dataPanelLayout.createSequentialGroup()
@@ -336,11 +359,13 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(_dataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(_articlesGroupLabel)
-                    .addComponent(_articlesGroupComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(_articlesGroupComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(_addArticlesGroupButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(_dataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(_producerLabel)
-                    .addComponent(_producerComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(_producerComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(_addProducerButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(_dataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(_catalogNumberLabel)
@@ -388,7 +413,7 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
         _controlPanelLayout.setHorizontalGroup(
             _controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, _controlPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(183, Short.MAX_VALUE)
                 .addComponent(_okButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(_cancelButton)
@@ -428,7 +453,7 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(_dataPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(_attributesTableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
+                .addComponent(_attributesTableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(_controlPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -458,7 +483,6 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
 
 		_part.getAttributes().clear();
 		for (int row = 0; row < _attributesTable.getRowCount(); ++row) {
-			System.out.println(_attributesTable.getValueAt(row, 1));
 			if (!"".equals((String) (_attributesTable.getValueAt(row, 1)))) {
 				_part.getAttributes().put((ArticleAttribute) (_attributesTable.getValueAt(row, 0)), (String) (_attributesTable.getValueAt(row, 1)));
 			}
@@ -488,8 +512,7 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
 	}
 
     private void _cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__cancelButtonActionPerformed
-		setHaveToReloadParent(false);
-		super.close();
+		close(false);
     }//GEN-LAST:event__cancelButtonActionPerformed
 
     private void _articlesGroupComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__articlesGroupComboBoxActionPerformed
@@ -591,15 +614,21 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
 			}
 
 			if (result) {
-				setHaveToReloadParent(true);
-				super.close();
+				super.close(true);
 			}
 		}
 		catch (DatabaseException | SQLException ex) {
 			ErrorHandler.getInstance().reportError(ex);
 		}
     }//GEN-LAST:event__okButtonActionPerformed
+
+    private void _addArticlesGroupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__addArticlesGroupButtonActionPerformed
+		ViewManager.getInstance().showDialog(new AddEditArticlesGroupDialog(true, this, ArticlesGroupType.PARTS));
+    }//GEN-LAST:event__addArticlesGroupButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton _addArticlesGroupButton;
+    private javax.swing.JButton _addProducerButton;
     private javax.swing.JComboBox _articlesGroupComboBox;
     private javax.swing.JLabel _articlesGroupLabel;
     private javax.swing.JTable _attributesTable;

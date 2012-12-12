@@ -222,22 +222,20 @@ public class AddEditArticlesGroupDialog extends ApplicationDialog implements Rel
     }// </editor-fold>//GEN-END:initComponents
 
     private void _cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__cancelButtonActionPerformed
-		setHaveToReloadParent(false);
-		super.close();
+		super.close(false);
     }//GEN-LAST:event__cancelButtonActionPerformed
 
     private void _okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__okButtonActionPerformed
 		try {
 			save();
-			setHaveToReloadParent(true);
 			if (_editMode) {
 				if (GroupsService.getInstance().updateArticlesGroup(_articlesGroup)) {
-					super.close();
+					super.close(true);
 				}
 			}
 			else {
 				if (GroupsService.getInstance().addArticlesGroup(_articlesGroup)) {
-					super.close();
+					super.close(true);
 				}
 			}
 		}

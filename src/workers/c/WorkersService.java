@@ -93,7 +93,8 @@ public class WorkersService {
 		String query = "DELETE * "
 				+ "FROM Pracownicy "
 				+ "WHERE IdPracownika = " + worker.getId() + ";";
-		return DatabaseManager.getInstance().executeQuery(query);
+		DatabaseManager.getInstance().executeQuery(query);
+		return true;
 	}
 
 	public boolean addWorker(Worker worker) throws SQLException, DatabaseException {

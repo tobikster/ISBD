@@ -5,23 +5,23 @@ package finance.m;
  * @author tobikster
  */
 public class VATRate implements Cloneable {
-	private int _id;
-	private double _rate; // w bazie nie jest to pole wymagane
+	private Integer _id;
+	private Float _rate; // w bazie nie jest to pole wymagane
 
 	public VATRate() {
-		this(-1, Double.NaN);
+		this(null, null);
 	}
 
-	public VATRate(int id, double rate) {
+	public VATRate(Integer id, Float rate) {
 		_id = id;
 		_rate = rate;
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return _id;
 	}
 
-	public double getRate() {
+	public Float getRate() {
 		return _rate;
 	}
 
@@ -29,7 +29,7 @@ public class VATRate implements Cloneable {
 		_id = id;
 	}
 
-	public void setRate(double rate) {
+	public void setRate(float rate) {
 		_rate = rate;
 	}
 

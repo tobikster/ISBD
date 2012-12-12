@@ -46,12 +46,12 @@ public class AuthenticationService
       if(confirmPasswordForUser(worker.getId(), new String(caPassword))) {
         m_LoggedInUser = worker;
       } else {
-        throw new UserAuthenticationException("User password is not valid");
+        throw new UserAuthenticationException("Hasło użytkownika jest nieprawidłowe!");
       }
     }
     catch(SQLException ex)
     {
-      throw new UserAuthenticationException("User login is not valid\n"+ex.getMessage(), ex);
+      throw new UserAuthenticationException("Login użytkownika jest nieprawidłowy - "+ex.getMessage(), ex);
     }
   }
   

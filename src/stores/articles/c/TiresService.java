@@ -4,6 +4,7 @@ import core.c.DatabaseManager;
 import core.c.EntityValidator;
 import core.m.DatabaseException;
 import core.m.ResultRow;
+import finance.m.VATRate;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -134,39 +135,84 @@ public class TiresService
     return tire;
   }
 
-  public List<Tire> getTires(ArticlesGroup group) throws SQLException {
+  public List<Tire> getTires(boolean fetchAll, ArticlesGroup group) throws SQLException {
     String sGroupsCondition = "";
     if(group!=null && group.getCode()>0) {
-      sGroupsCondition+=" AND KodGrupyTowarowej="+group.getCode();
+      sGroupsCondition+=" AND Opony.KodGrupy="+group.getCode();
     }
-    String sQuery = "SELECT * FROM Opony LEFT JOIN GrupyTowarowe ON Opony.KodGrupyTowarowej=GrupyTowarowe.KodGrupy "
+    String sQuery = "SELECT Opony.IdOpony, IndeksNosnosci, IndeksPredkosci, Marza, CenaBrutto, "
+      + "BieznikiOpon.IdBieznika, BieznikiOpon.Nazwa, Producenci.IdProducenta, Producenci.Nazwa, "
+      + "RozmiaryOpon.IdRozmiaru, RozmiaryOpon.Szerokosc, RozmiaryOpon.Profil, RozmiaryOpon.Srednica, "
+      + "GrupyTowarowe.KodGrupy, GrupyTowarowe.Nazwa, StawkiVAT.IdStawki, StawkiVAT.Stawka "
+      + "FROM ((Opony INNER JOIN "
+          + "(BieznikiOpon INNER JOIN Producenci ON BieznikiOpon.IdProducenta=Producenci.IdProducenta) "
+          + "ON Opony.IdBieznika=BieznikiOpon.IdBieznika) "
+        + "INNER JOIN RozmiaryOpon ON Opony.IdRozmiaru=RozmiaryOpon.IdRozmiaru) "
+        + "INNER JOIN "
+          + "(GrupyTowarowe INNER JOIN StawkiVAT ON GrupyTowarowe.VAT=StawkiVAT.IdStawki) "
+          + "ON Opony.KodGrupy=GrupyTowarowe.KodGrupy "
       + "WHERE Typ='o'"+sGroupsCondition+";";
 
+    if(fetchAll)
+      DatabaseManager.getInstance().maintainConnection();
     List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult(sQuery);
+    int iCounter = 0;
 
     List<Tire> tires = new ArrayList<>();
     for(ResultRow result : results) {
+      iCounter++;
       Tire tire = new Tire();
+      //Basic tire info
       tire.setId(result.getInt(1));
-      tire.setGroup(GroupsService.getInstance().getArticleGroup(result.getInt(2)));
-      tire.setTread(getTread(result.getInt(3)));
-      tire.setSize(getTireSize(result.getInt(4)));
-      tire.setLoadIndex(LoadIndex.valueOf(result.getInt(5)));
-      tire.setSpeedIndex(SpeedIndex.valueOf(result.getString(6)));
-      tire.setMargin(result.getDouble(7));
-      tire.setGrossPrice(result.getDouble(8));
+      tire.setLoadIndex(LoadIndex.valueOf(result.getInt(2)));
+      tire.setSpeedIndex(SpeedIndex.valueOf(result.getString(3)));
+      tire.setMargin(result.getDouble(4));
+      tire.setGrossPrice(result.getDouble(5));
+      //Tire tread info
+      Tread tread = new Tread();
+      tread.setId(result.getInt(6));
+      tread.setName(result.getString(7));
+      Producer producer = new Producer();
+      producer.setId(result.getInt(8));
+      producer.setName(result.getString(9));
+      tread.setProducer(producer);
+      tire.setTread(tread);
+      //Tire size info
+      TireSize size = new TireSize();
+      size.setId(result.getInt(10));
+      size.setWidth(result.getString(11));
+      size.setProfile(result.getString(12));
+      size.setDiameter(result.getString(13));
+      tire.setSize(size);
+      //Tire group info
+      if(group==null && !fetchAll) {
+        group = new ArticlesGroup();
+        group.setCode(result.getInt(14));
+        group.setName(result.getString(15));
+        VATRate vat = new VATRate();
+        vat.setId(result.getInt(16));
+        vat.setRate(result.getFloat(17));
+        group.setVat(vat);
+      } else if(group==null) {
+        group=GroupsService.getInstance().getArticleGroup(result.getInt(14));
+      }
+      tire.setGroup(group);
 
-      sQuery = "SELECT DOTy.IdDOTu, DOTy.DOT, Liczba FROM DOTyOpon "
-        + "INNER JOIN DOTy ON DOTyOpon.IdDOTu=DOTy.IdDOTu WHERE IdOpony="+tire.getId()+";";
-      results = DatabaseManager.getInstance().executeQueryResult(sQuery);
-      if(!results.isEmpty()) {
-        Map<DOT, Integer> tiresDOTs = new WorkingMap<>();
-        DOT currentDOT;
-        for(ResultRow rr : results) {
-          currentDOT = new DOT(rr.getInt(1), rr.getString(2));
-          tiresDOTs.put(currentDOT, rr.getInt(3));
+      if(fetchAll) {
+        sQuery = "SELECT DOTy.IdDOTu, DOTy.DOT, Liczba FROM DOTyOpon "
+          + "INNER JOIN DOTy ON DOTyOpon.IdDOTu=DOTy.IdDOTu WHERE IdOpony="+tire.getId()+";";
+        if(iCounter!=results.size())
+          DatabaseManager.getInstance().maintainConnection();
+        results = DatabaseManager.getInstance().executeQueryResult(sQuery);
+        if(!results.isEmpty()) {
+          Map<DOT, Integer> tiresDOTs = new WorkingMap<>();
+          DOT currentDOT;
+          for(ResultRow rr : results) {
+            currentDOT = new DOT(rr.getInt(1), rr.getString(2));
+            tiresDOTs.put(currentDOT, rr.getInt(3));
+          }
+          tire.setTireDOTs(tiresDOTs);
         }
-        tire.setTireDOTs(tiresDOTs);
       }
 
       tires.add(tire);
@@ -183,7 +229,7 @@ public class TiresService
     DatabaseManager.getInstance().startTransaction();
 
     try {
-      String sQuery = "INSERT INTO Opony (KodGrupyTowarowej, IdBieznika, IdRozmiaru, IndeksNosnosci, IndeksPredkosci, Marza, CenaBrutto) "
+      String sQuery = "INSERT INTO Opony (KodGrupy, IdBieznika, IdRozmiaru, IndeksNosnosci, IndeksPredkosci, Marza, CenaBrutto) "
         + "VALUES ("+tire.getGroup().getCode()+", "+tire.getTread().getId()+", "+tire.getSize().getId()+", '"+tire.getLoadIndex()+"', "
         + "'"+tire.getSpeedIndex()+"', "+tire.getMargin()+", "+tire.getGrossPrice()+");";
       DatabaseManager.getInstance().executeQuery(sQuery);
@@ -215,7 +261,7 @@ public class TiresService
       String sQuery = "UPDATE Opony SET ";
       
       if(tire.getGroup().getCode()!=oldTire.getGroup().getCode())
-        sQuery += "KodGrupyTowarowej="+tire.getGroup().getCode()+", ";
+        sQuery += "KodGrupy="+tire.getGroup().getCode()+", ";
       if(tire.getTread().getId()!=oldTire.getTread().getId())
         sQuery += "IdBieznika="+tire.getTread().getId()+", ";
       if(tire.getSize().getId()!=oldTire.getSize().getId())
@@ -380,7 +426,7 @@ public class TiresService
 
   // <editor-fold defaultstate="collapsed" desc="TREAD methods">
   public Tread getTread(int treadId) throws SQLException {
-    String sQuery="SELECT * FROM Biezniki WHERE IdBieznika="+treadId+";";
+    String sQuery="SELECT * FROM BieznikiOpon WHERE IdBieznika="+treadId+";";
 
     List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult(sQuery);
 		if (results.isEmpty()) {
@@ -397,7 +443,7 @@ public class TiresService
   }
 
   public List<Tread> getTreads() throws SQLException {
-    String sQuery="SELECT * FROM Biezniki;";
+    String sQuery="SELECT * FROM BieznikiOpon;";
 
     List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult(sQuery);
     List<Tread> treads = new ArrayList<>();
@@ -415,7 +461,7 @@ public class TiresService
   }
 
   public List<Tread> getTreads(Producer producer) throws SQLException {
-    String sQuery="SELECT * FROM Biezniki WHERE IdProducenta="+producer.getId()+";";
+    String sQuery="SELECT * FROM BieznikiOpon WHERE IdProducenta="+producer.getId()+";";
 
     List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult(sQuery);
     List<Tread> treads = new ArrayList<>();
@@ -439,10 +485,10 @@ public class TiresService
 
     DatabaseManager.getInstance().startTransaction();
     try {
-      String sQuery = "INSERT INTO Biezniki(IdProducenta, Nazwa) VALUES ("+tread.getProducer().getId()+", '"+tread.getName()+"');";
+      String sQuery = "INSERT INTO BieznikiOpon(IdProducenta, Nazwa) VALUES ("+tread.getProducer().getId()+", '"+tread.getName()+"');";
       DatabaseManager.getInstance().executeQuery(sQuery);
 
-      sQuery = "SELECT TOP 1 IdBieznika FROM Biezniki ORDER BY IdBieznika DESC;";
+      sQuery = "SELECT TOP 1 IdBieznika FROM BieznikiOpon ORDER BY IdBieznika DESC;";
       id = DatabaseManager.getInstance().executeQueryResult(sQuery).get(0).getInt(1);
     } catch (SQLException ex) {
       DatabaseManager.getInstance().rollbackTransaction();
@@ -457,7 +503,7 @@ public class TiresService
     EntityValidator<Tread> validator = new TreadValidator();
     validator.validate(tread);
 
-    String sQuery = "UPDATE Biezniki SET Nazwa='"+tread.getName()+"' WHERE IdBieznika="+tread.getId()+";";
+    String sQuery = "UPDATE BieznikiOpon SET Nazwa='"+tread.getName()+"' WHERE IdBieznika="+tread.getId()+";";
     DatabaseManager.getInstance().executeQuery(sQuery);
   }
   // </editor-fold>

@@ -52,6 +52,7 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 	private static final int TIRES_ROOT = -2;
 	private TablePagination<Part> _partsPagination;
 	private TablePagination<Tire> _tiresPagination;
+  private ArticlesGroup _currentGroup;
 
 	/**
 	 * Creates new form ArticleListView
@@ -66,7 +67,7 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 		_navPanel.setButtonsListener(new PaginationPanel.ButtonsListener() {
 			@Override
 			public void nextButtonClicked() {
-        if(getSelectedGroup().getType().equals(ArticlesGroupType.PARTS)) {
+        if(_currentGroup.getType().equals(ArticlesGroupType.PARTS)) {
           _articlesTable.setModel(getPartsTableModel(_partsPagination.getNextPage()));
           _navPanel.setCurrentPage(_partsPagination.getCurrentPage());
         } else {
@@ -77,7 +78,7 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 
 			@Override
 			public void previousButtonClicked() {
-				if(getSelectedGroup().getType().equals(ArticlesGroupType.PARTS)) {
+				if(_currentGroup.getType().equals(ArticlesGroupType.PARTS)) {
           _articlesTable.setModel(getPartsTableModel(_partsPagination.getPreviousPage()));
           _navPanel.setCurrentPage(_partsPagination.getCurrentPage());
         } else {
@@ -88,7 +89,7 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 
 			@Override
 			public void firstButtonClicked() {
-				if(getSelectedGroup().getType().equals(ArticlesGroupType.PARTS)) {
+				if(_currentGroup.getType().equals(ArticlesGroupType.PARTS)) {
           _articlesTable.setModel(getPartsTableModel(_partsPagination.getFirstPage()));
           _navPanel.setCurrentPage(_partsPagination.getCurrentPage());
         } else {
@@ -99,7 +100,7 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 
 			@Override
 			public void lastButtonClicked() {
-				if(getSelectedGroup().getType().equals(ArticlesGroupType.PARTS)) {
+				if(_currentGroup.getType().equals(ArticlesGroupType.PARTS)) {
           _articlesTable.setModel(getPartsTableModel(_partsPagination.getLastPage()));
           _navPanel.setCurrentPage(_partsPagination.getCurrentPage());
         } else {
@@ -116,8 +117,7 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 	}
 
 	private void refresArticlesToolbar() {
-		ArticlesGroup selectedGroup = getSelectedGroup();
-		if (selectedGroup.getType().equals(ArticlesGroupType.PARTS)) {
+		if (_currentGroup.getType().equals(ArticlesGroupType.PARTS)) {
 			_addPart.setVisible(true);
 			_editPart.setVisible(true);
 			_deletePart.setVisible(true);
@@ -178,15 +178,15 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 	private TreeModel getTreeModel() {
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode(new ArticlesGroup(0, "Magazyn", null, null));
 		try {
-			DefaultMutableTreeNode articles = new DefaultMutableTreeNode(new ArticlesGroup(ARTICLES_ROOT, "Części", ArticlesGroupType.PARTS, null));
-			for (ArticlesGroup group : GroupsService.getInstance().getPartGroups()) {
-				articles.add(new DefaultMutableTreeNode(group));
+			DefaultMutableTreeNode parts = new DefaultMutableTreeNode(new ArticlesGroup(ARTICLES_ROOT, "Części", ArticlesGroupType.PARTS, null));
+			for (ArticlesGroup group : GroupsService.getInstance().getPartGroups(false)) {
+				parts.add(new DefaultMutableTreeNode(group));
 			}
 			DefaultMutableTreeNode tires = new DefaultMutableTreeNode(new ArticlesGroup(TIRES_ROOT, "Opony", ArticlesGroupType.TIRES, null));
 			for (ArticlesGroup group : GroupsService.getInstance().getTireGroups()) {
 				tires.add(new DefaultMutableTreeNode(group));
 			}
-			root.add(articles);
+			root.add(parts);
 			root.add(tires);
 		}
 		catch (SQLException ex) {
@@ -195,29 +195,21 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 		return new DefaultTreeModel(root);
 	}
 
-	private ArticlesGroup getSelectedGroup() {
-//    ArticlesGroup selectedGroup = (ArticlesGroup)(((DefaultMutableTreeNode)(_articleGroupsTree.getLastSelectedPathComponent())).getUserObject());
-//    if(selectedGroup.getCode()==ARTICLES_ROOT || selectedGroup.getCode()==TIRES_ROOT)
-//      return null;
-		return (ArticlesGroup) (((DefaultMutableTreeNode) (_articleGroupsTree.getLastSelectedPathComponent())).getUserObject());
-	}
-
 	private boolean isValidGroupSelected() {
-		ArticlesGroup group = getSelectedGroup();
-		return group.getCode() != ARTICLES_ROOT && group.getCode() != TIRES_ROOT;
+		return _currentGroup.getCode() != ARTICLES_ROOT && _currentGroup.getCode() != TIRES_ROOT;
 	}
 
 	@Override
 	public final void reload() {
 		try {
-			if (getSelectedGroup().getType().equals(ArticlesGroupType.PARTS)) {
-				_partsPagination.setTableData(PartsService.getInstance().getParts(getSelectedGroup()));
+			if (_currentGroup.getType().equals(ArticlesGroupType.PARTS)) {
+				_partsPagination.setTableData(PartsService.getInstance().getParts(_currentGroup));
 				_articlesTable.setModel(getPartsTableModel(_partsPagination.getCurrentPageData()));
 				_navPanel.setCurrentPage(_partsPagination.getCurrentPage());
 				_navPanel.setPageCount(_partsPagination.getPageCount());
 			}
 			else {
-				_tiresPagination.setTableData(TiresService.getInstance().getTires(getSelectedGroup()));
+				_tiresPagination.setTableData(TiresService.getInstance().getTires(true, _currentGroup));
 				_articlesTable.setModel(getTiresTableModel(_tiresPagination.getCurrentPageData()));
 				_navPanel.setCurrentPage(_tiresPagination.getCurrentPage());
 				_navPanel.setPageCount(_tiresPagination.getPageCount());
@@ -227,6 +219,10 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 			ErrorHandler.getInstance().reportError(ex);
 		}
 	}
+
+  private void updateSelectedGroup() {
+    _currentGroup = (ArticlesGroup) (((DefaultMutableTreeNode) (_articleGroupsTree.getLastSelectedPathComponent())).getUserObject());
+  }
 
 	/**
 	 * This method is called from within the constructor to initialize the form.
@@ -301,6 +297,7 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
         bindingGroup.addBinding(binding);
 
         _articleGroupsTree.setSelectionRow(0);
+        updateSelectedGroup();
         _articleGroupsTree.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 _articleGroupsTreeMouseClicked(evt);
@@ -310,7 +307,7 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 
         _articlesTable.setColumnSelectionAllowed(false);
         _articlesTable.setShowVerticalLines(false);
-        _articlesTable.setModel(getSelectedGroup().getType().equals(ArticlesGroupType.PARTS)?getPartsTableModel(_partsPagination.getCurrentPageData()):getTiresTableModel(_tiresPagination.getCurrentPageData()));
+        _articlesTable.setModel(_currentGroup.getType().equals(ArticlesGroupType.PARTS)?getPartsTableModel(_partsPagination.getCurrentPageData()):getTiresTableModel(_tiresPagination.getCurrentPageData()));
         jScrollPane4.setViewportView(_articlesTable);
 
         bBack.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/Back-48.png"))); // NOI18N
@@ -487,24 +484,28 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 
   private void _addGroupActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event__addGroupActionPerformed
   {//GEN-HEADEREND:event__addGroupActionPerformed
-	  ViewManager.getInstance().showDialog(new AddEditArticlesGroupDialog(true, this, getSelectedGroup().getType()));
+	  ViewManager.getInstance().showDialog(new AddEditArticlesGroupDialog(true, this, _currentGroup.getType()));
   }//GEN-LAST:event__addGroupActionPerformed
 
   private void _articleGroupsTreeMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__articleGroupsTreeMouseClicked
   {//GEN-HEADEREND:event__articleGroupsTreeMouseClicked
-	  refreshPopupMenu();
-	  refresArticlesToolbar();
-	  reload();
+	  int previous = _currentGroup.getCode();
+    updateSelectedGroup();
+    if(_currentGroup.getCode()!=previous) {
+      refreshPopupMenu();
+      refresArticlesToolbar();
+      reload();
+    }
   }//GEN-LAST:event__articleGroupsTreeMouseClicked
 
   private void _editGroupActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event__editGroupActionPerformed
   {//GEN-HEADEREND:event__editGroupActionPerformed
-	  ViewManager.getInstance().showDialog(new AddEditArticlesGroupDialog(true, this, getSelectedGroup()));
+	  ViewManager.getInstance().showDialog(new AddEditArticlesGroupDialog(true, this, _currentGroup));
   }//GEN-LAST:event__editGroupActionPerformed
 
   private void _editTireMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__editTireMouseClicked
   {//GEN-HEADEREND:event__editTireMouseClicked
-	  if (_articlesTable.getSelectedRow() >= 0 && getSelectedGroup().getType().equals(ArticlesGroupType.TIRES)) {
+	  if (_articlesTable.getSelectedRow() >= 0 && _currentGroup.getType().equals(ArticlesGroupType.TIRES)) {
 		  try {
 			  Tire tire = TiresService.getInstance().getTire(_tiresPagination.getCurrentPageData().get(_articlesTable.getSelectedRow()).getId());
 			  ViewManager.getInstance().showDialog(new AddEditTireDialog(true, this, tire));
@@ -529,8 +530,8 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 
   private void _addPartMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__addPartMouseClicked
   {//GEN-HEADEREND:event__addPartMouseClicked
-	  if (getSelectedGroup().getType().equals(ArticlesGroupType.PARTS)) {
-		  ViewManager.getInstance().showDialog(new AddEditPartDialog(true, this, getSelectedGroup()));
+	  if (_currentGroup.getType().equals(ArticlesGroupType.PARTS)) {
+		  ViewManager.getInstance().showDialog(new AddEditPartDialog(true, this, _currentGroup));
 	  }
   }//GEN-LAST:event__addPartMouseClicked
 
@@ -546,7 +547,7 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 
   private void _deleteTireMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__deleteTireMouseClicked
   {//GEN-HEADEREND:event__deleteTireMouseClicked
-    if (_articlesTable.getSelectedRow() >= 0 && getSelectedGroup().getType().equals(ArticlesGroupType.TIRES)) {
+    if (_articlesTable.getSelectedRow() >= 0 && _currentGroup.getType().equals(ArticlesGroupType.TIRES)) {
       try {
         Tire tire = TiresService.getInstance().getTire(_tiresPagination.getCurrentPageData().get(_articlesTable.getSelectedRow()).getId());
 			  boolean removeTire = false;
@@ -575,6 +576,7 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
         }
         if(removeTire) {
           TiresService.getInstance().deleteTire(tire);
+          JOptionPane.showMessageDialog(this, "Dane opony zostały pomyślnie usunięte!", title, JOptionPane.INFORMATION_MESSAGE);
           reload();
         }
       } catch(SQLException ex) {
@@ -609,7 +611,7 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 
   private void _editPartMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__editPartMouseClicked
   {//GEN-HEADEREND:event__editPartMouseClicked
-	  if (_articlesTable.getSelectedRow() >= 0 && getSelectedGroup().getType().equals(ArticlesGroupType.PARTS)) {
+	  if (_articlesTable.getSelectedRow() >= 0 && _currentGroup.getType().equals(ArticlesGroupType.PARTS)) {
 		  try {
 			  Part part = PartsService.getInstance().getPart(_partsPagination.getCurrentPageData().get(_articlesTable.getSelectedRow()).getId());
 			  ViewManager.getInstance().showDialog(new AddEditPartDialog(true, this, part));
@@ -635,11 +637,13 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
   private void _deletePartMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__deletePartMouseClicked
   {//GEN-HEADEREND:event__deletePartMouseClicked
 		try {
+      String title = "Usunięcie części";
 			Part part = PartsService.getInstance().getPart(_partsPagination.getCurrentPageData().get(_articlesTable.getSelectedRow()).getId());
-			switch(JOptionPane.showOptionDialog(this, "Czy na pewno chcesz usunąć część " + part.getName(), "Usunięcie części", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[] {"Tak", "Nie"}, "Nie")) {
+			switch(JOptionPane.showOptionDialog(this, "Czy na pewno chcesz usunąć część " + part.getName(), title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[] {"Tak", "Nie"}, "Nie")) {
 				case 0:
 					PartsService.getInstance().deletePart(part);
-					reload();
+					JOptionPane.showMessageDialog(this, "Dane części zostały pomyślnie usunięte!", title, JOptionPane.INFORMATION_MESSAGE);
+          reload();
 					break;
 			}
 		}
@@ -660,8 +664,8 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 
   private void _addTireMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__addTireMouseClicked
   {//GEN-HEADEREND:event__addTireMouseClicked
-	  if(getSelectedGroup().getType().equals(ArticlesGroupType.TIRES)) {
-      ViewManager.getInstance().showDialog(new AddEditTireDialog(true, this, getSelectedGroup()));
+	  if(_currentGroup.getType().equals(ArticlesGroupType.TIRES)) {
+      ViewManager.getInstance().showDialog(new AddEditTireDialog(true, this, _currentGroup));
     }
   }//GEN-LAST:event__addTireMouseClicked
 
@@ -670,9 +674,9 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 			boolean removeGroup = false;
 			String message;
 			final String title = "Usuń grupę towarową";
-			final int removability = GroupsService.getInstance().checkRemovabilityGroup(getSelectedGroup());
+			final int removability = GroupsService.getInstance().checkRemovabilityGroup(_currentGroup);
 			if (removability > 0) {
-				message = "Czy na pewno chcesz usunąć grupę towarową \"" + getSelectedGroup() + "\"?";
+				message = "Czy na pewno chcesz usunąć grupę towarową \"" + _currentGroup + "\"?";
 				switch (JOptionPane.showOptionDialog(this, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[]{"OK", "Anuluj"}, "OK")) {
 					case 0: //OK
 						removeGroup = true;
@@ -683,15 +687,15 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 				}
 			}
 			else if (removability < 0) {
-				message = "Grupa towarowa " + getSelectedGroup().getName() + " nie może zostać usunięta, ponieważ zawiera ";
-				message += (getSelectedGroup().getType() == ArticlesGroupType.PARTS) ? "części" : "opony";
+				message = "Grupa towarowa " + _currentGroup.getName() + " nie może zostać usunięta, ponieważ zawiera ";
+				message += (_currentGroup.getType() == ArticlesGroupType.PARTS) ? "części" : "opony";
 				message += "znajdujące się na magazynie";
 				JOptionPane.showOptionDialog(this, message, title, JOptionPane.OK_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[]{"OK"}, "OK");
 				removeGroup = false;
 			}
 			else {
 				message = "Usunięcie grupy towarowej spowoduje usunięcie powiązanych z nią ";
-				message += (getSelectedGroup().getType() == ArticlesGroupType.PARTS) ? "części" : "opon";
+				message += (_currentGroup.getType() == ArticlesGroupType.PARTS) ? "części" : "opon";
 				message += ".\nCzy chcesz kontynuować?";
 				switch(JOptionPane.showOptionDialog(this, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,null, new String[] {"Tak", "Nie"}, "Nie")) {
 					case 0: //Tak
@@ -703,8 +707,9 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 				}
 			}
 			if(removeGroup) {
-				GroupsService.getInstance().removeArticlesGroup(getSelectedGroup());
-				reload();
+				GroupsService.getInstance().removeArticlesGroup(_currentGroup);
+				JOptionPane.showMessageDialog(this, "Dane grupy towarowe zostały pomyślnie usunięte!", title, JOptionPane.INFORMATION_MESSAGE);
+        reload();
 			}
 		}
 		catch (SQLException | DatabaseException ex) {

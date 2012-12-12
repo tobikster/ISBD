@@ -21,6 +21,8 @@ public class DatabaseManager
    */
   private Connection m_Connection;
   private boolean m_bTransactionMode;
+  private boolean bMaintainConnection;
+  private int iTransactionDepth;
   // </editor-fold>
 
   // <editor-fold defaultstate="collapsed" desc="Creating object">
@@ -42,6 +44,8 @@ public class DatabaseManager
     {
       DriverManager.registerDriver(new JdbcOdbcDriver());
       m_bTransactionMode=false;
+      bMaintainConnection=false;
+      iTransactionDepth=0;
     }
     catch(SQLException ex)
     {
@@ -58,9 +62,11 @@ public class DatabaseManager
 
   private void disconnect() throws SQLException
   {
-    if(m_Connection!=null)
-    {
-      m_Connection.close();
+    if(m_Connection!=null && !m_Connection.isClosed()) {
+      if(bMaintainConnection)
+        bMaintainConnection=false;
+      else
+        m_Connection.close();
     }
   }
   // </editor-fold>
@@ -82,24 +88,31 @@ public class DatabaseManager
    */
   public List<ResultRow> executeQueryResult(String sQuery) throws SQLException
   {
-    if(m_Connection==null || m_Connection.isClosed())
-      connect();
-    Statement stmt = m_Connection.createStatement();
-    ResultSet rs = stmt.executeQuery(sQuery);
-    List results = new ArrayList<>();
-    while (rs.next())
-    {
-      Map<Integer, Result> resultsRow=new WorkingMap<>();
-      for(int i=1;i<=rs.getMetaData().getColumnCount();i++)
+    //System.out.println(sQuery+"\n");
+    try {
+      if(m_Connection==null || m_Connection.isClosed())
+        connect();
+      Statement stmt = m_Connection.createStatement();
+      ResultSet rs = stmt.executeQuery(sQuery);
+      List results = new ArrayList<>();
+      while (rs.next())
       {
-        Result result = new Result(i, rs.getMetaData().getColumnName(i), rs.getString(i));
-        resultsRow.put(i, result);
+        Map<Integer, Result> resultsRow=new WorkingMap<>();
+        for(int i=1;i<=rs.getMetaData().getColumnCount();i++)
+        {
+          Result result = new Result(i, rs.getMetaData().getColumnName(i), rs.getString(i));
+          resultsRow.put(i, result);
+        }
+        results.add(new ResultRow(resultsRow));
       }
-      results.add(new ResultRow(resultsRow));
-    }
-    if(m_Connection!=null && !m_Connection.isClosed() && !m_bTransactionMode)
+      if(m_Connection!=null && !m_Connection.isClosed() && !m_bTransactionMode)
+        disconnect();
+      return results;
+    } catch(SQLException ex) {
+      bMaintainConnection=false;
       disconnect();
-    return results;
+      throw ex;
+    }
   }
   
   /**
@@ -120,30 +133,47 @@ public class DatabaseManager
     return rs;
   }
   
+  public void maintainConnection() {
+    bMaintainConnection = true;
+  }
+
   public void commitTransaction() throws SQLException {
     if(m_bTransactionMode) {
-      m_Connection.commit();
-      m_Connection.setAutoCommit(m_bTransactionMode);
-      disconnect();
-      m_bTransactionMode=false;
+      if(iTransactionDepth==1) {
+        //System.out.print("TRANSACTION - COMMIT");
+        m_Connection.commit();
+        m_Connection.setAutoCommit(m_bTransactionMode);
+        disconnect();
+        m_bTransactionMode=false;
+        //System.out.println("\t\tDONE");
+      }
+      iTransactionDepth--;
     }
   }
   
   public void startTransaction() throws SQLException {
+    iTransactionDepth++;
     if(!m_bTransactionMode) {
+      //System.out.print("TRANSACTION - START");
       if(m_Connection==null || m_Connection.isClosed())
         connect();
       m_Connection.setAutoCommit(m_bTransactionMode);
       m_bTransactionMode=true;
+      //System.out.println("\t\tDONE");
     }
   }
   
   public void rollbackTransaction() throws SQLException {
     if(m_bTransactionMode) {
-      m_Connection.rollback();
-      m_Connection.setAutoCommit(m_bTransactionMode);
-      disconnect();
-      m_bTransactionMode=false;
+      if(iTransactionDepth==1) {
+        //System.out.print("TRANSACTION - ROLLBACK");
+        m_Connection.rollback();
+        m_Connection.setAutoCommit(m_bTransactionMode);
+        disconnect();
+        m_bTransactionMode=false;
+        //System.out.println("\tDONE");
+      }
+      iTransactionDepth--;
     }
   }
   // </editor-fold>

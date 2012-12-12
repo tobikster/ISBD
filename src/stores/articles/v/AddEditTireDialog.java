@@ -4,10 +4,7 @@
  */
 package stores.articles.v;
 
-import core.c.ErrorHandler;
-import core.c.Feedbackable;
-import core.c.Reloadable;
-import core.c.ViewManager;
+import core.c.*;
 import core.m.DatabaseException;
 import core.v.ApplicationDialog;
 import java.awt.Color;
@@ -65,7 +62,6 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable, 
     initItemsLists();
     initDOTsTable();
     loadEmptyEntity();
-    reload();
   }
   
   /**
@@ -81,6 +77,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable, 
     initItemsLists();
     initDOTsTable();
     reload();
+    applyPermissions();
   }
 
   private void initItemsLists() {
@@ -473,6 +470,20 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable, 
       }
 
       return tf;
+    }
+  }
+
+  private void applyPermissions() {
+    if(AuthenticationService.getInstance().getLoggedInUser().getJob().equals("Pracownik")) {
+      _tireSizeComboBox.setEnabled(false);
+      _loadIndexComboBox.setEnabled(false);
+      _speedIndexComboBox.setEnabled(false);
+      _articlesGroupComboBox.setEnabled(false);
+      _producerComboBox.setEnabled(false);
+      _treadComboBox.setEnabled(false);
+      _marginTextField.setEnabled(false);
+      _netPriceTextField.setEnabled(false);
+      _grossPriceTextField.setEnabled(false);
     }
   }
   

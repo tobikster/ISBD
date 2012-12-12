@@ -29,7 +29,7 @@ public class ReportsArticlesCountService
   // </editor-fold>
 
   public Object[][] getTiresDataForReport(Date forDate, boolean excludeZeroStates) throws SQLException {
-    List<Tire> results = TiresService.getInstance().getTires(null);
+    List<Tire> results = TiresService.getInstance().getTires(true, null);
     int iterator = 0;
     
     if(excludeZeroStates) {
@@ -58,7 +58,7 @@ public class ReportsArticlesCountService
   }
   
   public Object[][] getTiresDataForReport(Date forDate, boolean excludeZeroStates, ArticlesGroup group) throws SQLException {
-    List<Tire> results = TiresService.getInstance().getTires(group);
+    List<Tire> results = TiresService.getInstance().getTires(true, group);
     int iterator = 0;
     
     if(excludeZeroStates) {

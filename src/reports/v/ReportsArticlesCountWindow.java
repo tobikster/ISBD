@@ -89,6 +89,8 @@ public class ReportsArticlesCountWindow extends ApplicationDialog
         jLabel2.setText("Kategoria towarów:");
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Części", "Opony", "Wszystkie" }));
+        jComboBox1.setSelectedItem("Opony");
+        jComboBox1.setEnabled(false);
 
         cbGroupsSeparateNumeration.setText("Indywidualna numeracja wewnątrz każdej grupy towarowej");
 

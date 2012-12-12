@@ -181,6 +181,10 @@
             <StringItem index="2" value="Wszystkie"/>
           </StringArray>
         </Property>
+        <Property name="selectedItem" type="java.lang.Object" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="&quot;Opony&quot;" type="code"/>
+        </Property>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JCheckBox" name="cbGroupsSeparateNumeration">

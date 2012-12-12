@@ -3,6 +3,7 @@ package stores.articles.c;
 import core.c.DatabaseManager;
 import core.m.DatabaseException;
 import core.m.ResultRow;
+import finance.m.VATRate;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ import stores.articles.m.Part;
 import stores.groups.c.GroupsService;
 import stores.groups.m.ArticlesGroup;
 import stores.producers.c.ProducersService;
+import stores.producers.m.Producer;
 import utils.m.WorkingMap;
 
 public class PartsService {
@@ -100,9 +102,15 @@ public class PartsService {
 	public List<Part> getParts(ArticlesGroup group) throws SQLException {
 		String sGroupsCondition = "";
 		if (group != null && group.getCode() > 0) {
-			sGroupsCondition += " AND KodGrupyTowarowej=" + group.getCode();
+			sGroupsCondition += " AND Czesci.KodGrupy=" + group.getCode();
 		}
-		String sQuery = "SELECT * FROM Czesci LEFT JOIN GrupyTowarowe ON Czesci.KodGrupyTowarowej=GrupyTowarowe.KodGrupy "
+		String sQuery = "SELECT Czesci.IdCzesci, Czesci.NumerKatalogowy, Czesci.Nazwa, Czesci.Marza, Czesci.Cena, Czesci.Ilosc, "
+        + "GrupyTowarowe.KodGrupy, GrupyTowarowe.Nazwa, StawkiVAT.IdStawki, StawkiVAT.Stawka, "
+        + "Producenci.IdProducenta, Producenci.Nazwa "
+        + "FROM (Czesci INNER JOIN "
+          + "(GrupyTowarowe INNER JOIN StawkiVAT ON GrupyTowarowe.VAT=StawkiVAT.IdStawki) "
+          + "ON Czesci.KodGrupy=GrupyTowarowe.KodGrupy) "
+        + "INNER JOIN Producenci ON Czesci.IdProducenta=Producenci.IdProducenta "
 				+ "WHERE Typ='c'" + sGroupsCondition + ";";
 
 		List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult(sQuery);
@@ -110,14 +118,30 @@ public class PartsService {
 
 		for (ResultRow result : results) {
 			Part part = new Part();
+      //Part basic info
 			part.setId(result.getInt(1));
-			part.setGroup(GroupsService.getInstance().getArticleGroup(result.getInt(2)));
-			part.setProducer(ProducersService.getInstance().getProducer(result.getInt(3)));
-			part.setCatalogNumber(result.getString(4));
-			part.setName(result.getString(5));
-			part.setMargin(result.getFloat(6));
-			part.setGrossPrice(result.getFloat(7));
-			part.setCount(result.getFloat(8));
+      part.setCatalogNumber(result.getString(2));
+			part.setName(result.getString(3));
+			part.setMargin(result.getFloat(4));
+			part.setGrossPrice(result.getFloat(5));
+			part.setCount(result.getFloat(6));
+      //Part group info
+      if(group==null) {
+        group = new ArticlesGroup();
+        group.setCode(result.getInt(7));
+        group.setName(result.getString(8));
+        VATRate vat = new VATRate();
+        vat.setId(result.getInt(9));
+        vat.setRate(result.getFloat(10));
+        group.setVat(vat);
+      }
+			part.setGroup(group);
+      //Part producer info
+      Producer producer = new Producer();
+      producer.setId(result.getInt(11));
+      producer.setName(result.getString(12));
+			part.setProducer(producer);
+			
 			parts.add(part);
 		}
 		//TODO load image for part item
@@ -130,7 +154,7 @@ public class PartsService {
 		if (validator.validate(part)) {
 			try {
 				DatabaseManager.getInstance().startTransaction();
-				String query = "INSERT INTO Czesci(KodGrupyTowarowej, IdProducenta, NrKatalogowy, Nazwa, Marza, CenaBrutto, Ilosc) "
+				String query = "INSERT INTO Czesci(KodGrupy, IdProducenta, NumerKatalogowy, Nazwa, Marza, Cena, Ilosc) "
 						+ "VALUES(" + part.getGroup().getCode() + ", " + part.getProducer().getId() + ", '" + part.getCatalogNumber() + "', '" + part.getName() + "', " + part.getMargin() + ", " + part.getGrossPrice() + ", " + part.getCount() + ");";
 				DatabaseManager.getInstance().executeQuery(query);
 
@@ -164,12 +188,12 @@ public class PartsService {
 			try {
 				DatabaseManager.getInstance().startTransaction();
 				String query = "UPDATE Czesci "
-						+ "SET KodGrupyTowarowej = " + part.getGroup().getCode() + ", "
+						+ "SET KodGrupy = " + part.getGroup().getCode() + ", "
 						+ "IdProducenta = " + part.getProducer().getId() + ", "
-						+ "NrKatalogowy = '" + part.getCatalogNumber() + "', "
+						+ "NumerKatalogowy = '" + part.getCatalogNumber() + "', "
 						+ "Nazwa = '" + part.getName() + "', "
 						+ "Marza = " + part.getMargin() + ", "
-						+ "CenaBrutto = " + part.getGrossPrice() + ", "
+						+ "Cena = " + part.getGrossPrice() + ", "
 						+ "Ilosc = " + part.getCount() + " "
 						+ "WHERE IdCzesci = " + part.getId() + ";";
 				DatabaseManager.getInstance().executeQuery(query);

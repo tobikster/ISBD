@@ -1,8 +1,8 @@
 package stores.groups.m;
 
 import finance.m.VATRate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import stores.articles.m.ArticleAttribute;
 
 /**
@@ -15,7 +15,7 @@ public class ArticlesGroup implements Cloneable {
 	private ArticlesGroupType _type;
 	private VATRate _vat;
 //	private ArticlesGroup _parentGroup;
-	private Set<ArticleAttribute> _attributes;
+	private List<ArticleAttribute> _attributes;
 
 	public ArticlesGroup() {
 		this(-1, null, null, null);
@@ -25,7 +25,7 @@ public class ArticlesGroup implements Cloneable {
 		this(code, name, type, vat, null);
 	}
 
-	public ArticlesGroup(int code, String name, ArticlesGroupType type, VATRate vat, Set<ArticleAttribute> attributes) {
+	public ArticlesGroup(int code, String name, ArticlesGroupType type, VATRate vat, List<ArticleAttribute> attributes) {
 		_code = code;
 		_name = name;
 		_type = type;
@@ -49,7 +49,7 @@ public class ArticlesGroup implements Cloneable {
 		return _vat;
 	}
 
-	public Set<ArticleAttribute> getAttributes() {
+	public List<ArticleAttribute> getAttributes() {
 		return _attributes;
 	}
 
@@ -69,7 +69,7 @@ public class ArticlesGroup implements Cloneable {
 		_vat = vat;
 	}
 
-	public void setAttributes(Set<ArticleAttribute> attributes) {
+	public void setAttributes(List<ArticleAttribute> attributes) {
 		_attributes = attributes;
 	}
 
@@ -103,7 +103,7 @@ public class ArticlesGroup implements Cloneable {
   @Override
   public ArticlesGroup clone() {
     if(_attributes!=null) {
-      Set<ArticleAttribute> newAttributes = new HashSet<>();
+      List<ArticleAttribute> newAttributes = new ArrayList<>();
       for(ArticleAttribute attribute : _attributes) {
         newAttributes.add(attribute.clone());
       }

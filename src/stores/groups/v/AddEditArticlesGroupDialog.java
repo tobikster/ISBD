@@ -12,9 +12,8 @@ import core.v.ApplicationDialog;
 import finance.c.FinanceService;
 import finance.m.VATRate;
 import java.sql.SQLException;
-import java.util.LinkedHashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import stores.articles.m.ArticleAttribute;
@@ -42,7 +41,7 @@ public class AddEditArticlesGroupDialog extends ApplicationDialog implements Rel
 		super(modal, reloadableParent);
 		_articlesGroup = new ArticlesGroup();
 		_articlesGroup.setType(type);
-		_articlesGroup.setAttributes(new LinkedHashSet<ArticleAttribute>());
+		_articlesGroup.setAttributes(new ArrayList<ArticleAttribute>());
 		_editMode = false;
 		initComponents();
 		reload();
@@ -269,7 +268,7 @@ public class AddEditArticlesGroupDialog extends ApplicationDialog implements Rel
 //			_parentGroupTextField.setText(_articlesGroup.getParentGroup() != null ? _articlesGroup.getParentGroup().getName() : "");
 
 			DefaultListModel<ArticleAttribute> model = new DefaultListModel<>();
-			Set<ArticleAttribute> articlesGroupAttributes = _articlesGroup.getAttributes();
+			List<ArticleAttribute> articlesGroupAttributes = _articlesGroup.getAttributes();
 			for (ArticleAttribute attribute : articlesGroupAttributes) {
 				model.addElement(attribute);
 			}

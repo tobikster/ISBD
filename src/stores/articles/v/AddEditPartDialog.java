@@ -4,6 +4,7 @@
  */
 package stores.articles.v;
 
+import core.c.AuthenticationService;
 import core.c.ErrorHandler;
 import core.c.Reloadable;
 import core.c.ViewManager;
@@ -80,12 +81,13 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
 		_part = part;
 		initComponents();
 		reload();
+    applyPermissions();
 	}
 
 	private DefaultComboBoxModel<ArticlesGroup> getGroupsModel() {
 		DefaultComboBoxModel<ArticlesGroup> result = null;
 		try {
-			List<ArticlesGroup> groupsList = GroupsService.getInstance().getPartGroups();
+			List<ArticlesGroup> groupsList = GroupsService.getInstance().getPartGroups(false);
 			ArticlesGroup[] groups = new ArticlesGroup[groupsList.size()];
 			for (int i = 0; i < groups.length; ++i) {
 				groups[i] = groupsList.get(i);
@@ -136,6 +138,20 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
 		}
 		return result;
 	}
+
+  private void applyPermissions() {
+    if(AuthenticationService.getInstance().getLoggedInUser().getJob().equals("Pracownik")) {
+      _nameTextField.setEnabled(false);
+      _articlesGroupComboBox.setEnabled(false);
+      _addArticlesGroupButton.setEnabled(false);
+      _producerComboBox.setEnabled(false);
+      _catalogNumberTextField.setEnabled(false);
+      _marginTextField.setEnabled(false);
+      _netPriceTextField.setEnabled(false);
+      _grossPriceTextField.setEnabled(false);
+      _attributesTable.setEnabled(false);
+    }
+  }
 
 	@Override
 	public final void reload() {

@@ -38,7 +38,7 @@ public class FinanceService {
 				+ "FROM StawkiVAT;";
 		List<ResultRow> queryResults = DatabaseManager.getInstance().executeQueryResult(query);
 		for (ResultRow row : queryResults) {
-			result.add(new VATRate(row.getInt(1), row.getDouble(2)));
+			result.add(new VATRate(row.getInt(1), row.getFloat(2)));
 		}
 		return result;
 	}

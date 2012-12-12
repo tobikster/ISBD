@@ -263,6 +263,11 @@ public class TiresService
 
     DatabaseManager.getInstance().commitTransaction();
   }
+
+  public void deleteTire(Tire tire) throws SQLException {
+    String sQuery = "DELETE FROM Opony WHERE IdOpony="+tire.getId()+";";
+    DatabaseManager.getInstance().executeQuery(sQuery);
+  }
   
   private void addTireDOT(Tire tire, DOT dot) throws DatabaseException, SQLException {
     try {

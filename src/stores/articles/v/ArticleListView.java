@@ -549,17 +549,41 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 
   private void _deleteTireMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__deleteTireMouseClicked
   {//GEN-HEADEREND:event__deleteTireMouseClicked
-//    if(_workersTable.getSelectedRow()>=0) {
-//      try
-//      {
-//        Worker worker=WorkersService.getInstance().getWorker(_pagination.getCurrentPageData().get(_workersTable.getSelectedRow()).getId());
-//        ViewManager.getInstance().showDialog(new RemoveWorkerConfirmDialog(true, this, worker));
-//      }
-//      catch(SQLException ex)
-//      {
-//        ErrorHandler.getInstance().reportError(ex);
-//      }
-//    }
+    if (_articlesTable.getSelectedRow() >= 0 && getSelectedGroup().getType().equals(ArticlesGroupType.TIRES)) {
+      try {
+        Tire tire = TiresService.getInstance().getTire(_tiresPagination.getCurrentPageData().get(_articlesTable.getSelectedRow()).getId());
+			  boolean removeTire = false;
+        String title = "Usuń oponę";
+        String message;
+        if(tire.getCount()>0) {
+          message = "Czy jesteś pewien, że chcesz usunąć oponę, która wciąż znajduje się na magazynie w ilości "+tire.getCount()+" szt.?";
+          switch(JOptionPane.showOptionDialog(this, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,null, new String[] {"Tak", "Nie"}, "Nie")) {
+            case 0: //Tak
+              removeTire = true;
+              break;
+            case 1:
+              removeTire = false;
+              break;
+          }
+        } else {
+          message = "Czy jesteś pewien, że chcesz usunąć wybraną oponę?";
+          switch(JOptionPane.showOptionDialog(this, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,null, new String[] {"Tak", "Nie"}, "Nie")) {
+            case 0: //Tak
+              removeTire = true;
+              break;
+            case 1:
+              removeTire = false;
+              break;
+          }
+        }
+        if(removeTire) {
+          TiresService.getInstance().deleteTire(tire);
+          reload();
+        }
+      } catch(SQLException ex) {
+        ErrorHandler.getInstance().reportError(ex);
+      }
+    }
   }//GEN-LAST:event__deleteTireMouseClicked
 
   private void _deleteTireMouseEntered(java.awt.event.MouseEvent evt)//GEN-FIRST:event__deleteTireMouseEntered

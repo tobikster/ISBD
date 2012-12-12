@@ -55,7 +55,7 @@ public class TireSize implements Cloneable {
   
   @Override
   public String toString() {
-    return _width+"/"+_profile+"/"+_diameter;
+    return _width+(_profile!=null && !_profile.equals("")?"/"+_profile:"")+(_diameter!=null && !_diameter.equals("")?"/"+_diameter:"");
   }
 
   @Override

@@ -1,10 +1,13 @@
 package stores.producers.c;
 
 import core.c.DatabaseManager;
+import core.c.EntityValidator;
+import core.m.DatabaseException;
 import core.m.ResultRow;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import stores.producers.c.validators.ProducerValidator;
 import stores.producers.m.Producer;
 
 public class ProducersService
@@ -62,6 +65,35 @@ public class ProducersService
     }
 
     return producers;
+  }
+  
+  public Producer addProducer(Producer producer) throws DatabaseException, SQLException {
+    EntityValidator<Producer> validator = new ProducerValidator();
+    validator.validate(producer);
+    int id;
+
+    DatabaseManager.getInstance().startTransaction();
+    try {
+      String sQuery = "INSERT INTO Producenci(Nazwa, Logo) VALUES ('"+producer.getName()+"', NULL);";
+      DatabaseManager.getInstance().executeQuery(sQuery);
+
+      sQuery = "SELECT TOP 1 IdProducenta FROM Producenci ORDER BY IdProducenta DESC;";
+      id = DatabaseManager.getInstance().executeQueryResult(sQuery).get(0).getInt(1);
+    } catch(SQLException ex) {
+      DatabaseManager.getInstance().rollbackTransaction();
+      throw ex;
+    }
+    DatabaseManager.getInstance().commitTransaction();
+
+    return getProducer(id);
+  }
+
+  public void updateProducer(Producer producer) throws DatabaseException, SQLException {
+    EntityValidator<Producer> validator = new ProducerValidator();
+    validator.validate(producer);
+
+    String sQuery = "UPDATE Producenci SET Nazwa='"+producer.getName()+"' WHERE IdProducenta="+producer.getId()+";";
+    DatabaseManager.getInstance().executeQuery(sQuery);
   }
   // </editor-fold>
 }

@@ -9,17 +9,6 @@ import java.util.List;
 
 public class ProducerValidator implements EntityValidator<Producer>
 {
-  // <editor-fold defaultstate="collapsed" desc="Object variables">
-  // </editor-fold>
-  // <editor-fold defaultstate="collapsed" desc="Creating object">
-  // </editor-fold>
-  // <editor-fold defaultstate="collapsed" desc="Object PRIVATE methods">
-  // </editor-fold>
-  // <editor-fold defaultstate="collapsed" desc="Object PUBLIC methods">
-  // <editor-fold defaultstate="collapsed" desc="Getters">
-  // </editor-fold>
-  // <editor-fold defaultstate="collapsed" desc="Setters">
-  // </editor-fold>
   @Override
   public boolean validate(Producer object) throws DatabaseException
   {
@@ -36,5 +25,4 @@ public class ProducerValidator implements EntityValidator<Producer>
 
     return errors.isEmpty();
   }
-  // </editor-fold>
 }

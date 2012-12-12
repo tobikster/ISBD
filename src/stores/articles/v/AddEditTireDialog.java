@@ -5,7 +5,9 @@
 package stores.articles.v;
 
 import core.c.ErrorHandler;
+import core.c.Feedbackable;
 import core.c.Reloadable;
+import core.c.ViewManager;
 import core.m.DatabaseException;
 import core.v.ApplicationDialog;
 import java.awt.Color;
@@ -30,13 +32,14 @@ import stores.groups.c.GroupsService;
 import stores.groups.m.ArticlesGroup;
 import stores.producers.c.ProducersService;
 import stores.producers.m.Producer;
+import stores.producers.v.AddEditProducerDialog;
 import utils.m.WorkingMap;
 
 /**
  *
  * @author MRKACZOR
  */
-public class AddEditTireDialog extends ApplicationDialog implements Reloadable
+public class AddEditTireDialog extends ApplicationDialog implements Reloadable, Feedbackable
 {
   private boolean _editMode;
   private Tire _tire;
@@ -170,7 +173,9 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
       _speedIndexComboBox.setSelectedIndex(findIndexForItem(_tire.getSpeedIndex()));
     }
     if(_tire.getTread()!=null) {
+      Tread tmpTread=_tire.getTread();
       _producerComboBox.setSelectedIndex(findIndexForItem(_tire.getTread().getProducer()));
+      _tire.setTread(tmpTread);
       _treadComboBox.setSelectedIndex(findIndexForItem(_tire.getTread()));
     }
     if(_tire.getGroup()!=null) {
@@ -192,12 +197,26 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
     }
   }
 
+  @Override
+  public void sendFeedback(Object feedback) {
+    if(feedback!=null) {
+      if(feedback instanceof TireSize) {
+        _tire.setSize((TireSize)feedback);
+      } else if(feedback instanceof Producer) {
+        _tire.setTread(new Tread(-1, (Producer)feedback, ""));
+      } else if(feedback instanceof Tread) {
+        _tire.setTread((Tread)feedback);
+      }
+    }
+  }
+
   private void loadTireSizesList() {
     DefaultComboBoxModel<TireSize> tireSizes = new DefaultComboBoxModel<>();
     try {
       for(TireSize tireSize:  TiresService.getInstance().getTireSizes()) {
         tireSizes.addElement(tireSize);
       }
+      tireSizes.addElement(new TireSize(0, "Dodaj...", null, null));
     } catch(SQLException ex) {
       ErrorHandler.getInstance().reportError(ex);
     }
@@ -244,6 +263,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
       for(Producer producer : ProducersService.getInstance().getProducers()) {
         producers.addElement(producer);
       }
+      producers.addElement(new Producer(0, "Dodaj..."));
     } catch(SQLException ex) {
       ErrorHandler.getInstance().reportError(ex);
     }
@@ -264,6 +284,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
       for(Tread tread : TiresService.getInstance().getTreads((Producer)_producerComboBox.getSelectedItem())) {
         treads.addElement(tread);
       }
+      treads.addElement(new Tread(0, (Producer)_producerComboBox.getSelectedItem(), "Dodaj..."));
     } catch(SQLException ex) {
       ErrorHandler.getInstance().reportError(ex);
     }
@@ -346,6 +367,15 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
       }
     }
     _tire.setTireDOTsText(tireDOTs);
+  }
+
+  private void refreshListsSelections() {
+    if(((TireSize)_tireSizeComboBox.getSelectedItem()).getId()==0)
+      _tire.setSize(null);
+    if(((Producer)_producerComboBox.getSelectedItem()).getId()==0)
+      _tire.getTread().setProducer(null);
+    if(((Tread)_treadComboBox.getSelectedItem()).getId()==0)
+      _tire.setTread(null);
   }
 
   private class ListCellRenderer extends DefaultTableCellRenderer
@@ -771,8 +801,15 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
 
   private void _producerComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event__producerComboBoxActionPerformed
   {//GEN-HEADEREND:event__producerComboBoxActionPerformed
-    loadTreadsList();
-    _tire.setTread((Tread)_treadComboBox.getSelectedItem());
+    if(((Producer)_producerComboBox.getSelectedItem()).getId()==0) {
+      ViewManager.getInstance().showDialog(new AddEditProducerDialog(true, this));
+      loadProducersList();
+      loadTreadsList();
+      reload();
+    } else {
+      loadTreadsList();
+      _tire.setTread((Tread)_treadComboBox.getSelectedItem());
+    }
   }//GEN-LAST:event__producerComboBoxActionPerformed
 
   private void bCancelActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bCancelActionPerformed
@@ -783,6 +820,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
   private void bSubmitActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bSubmitActionPerformed
   {//GEN-HEADEREND:event_bSubmitActionPerformed
     parseDOTsToEntity();
+    refreshListsSelections();
     try {
       if(_editMode) {
         TiresService.getInstance().updateTire(_tire);
@@ -888,7 +926,13 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
 
   private void _tireSizeComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event__tireSizeComboBoxActionPerformed
   {//GEN-HEADEREND:event__tireSizeComboBoxActionPerformed
-    _tire.setSize((TireSize)_tireSizeComboBox.getSelectedItem());
+    if(((TireSize)_tireSizeComboBox.getSelectedItem()).getId()==0) {
+      ViewManager.getInstance().showDialog(new AddEditTireSizeDialog(true, this));
+      loadTireSizesList();
+      reload();
+    } else {
+      _tire.setSize((TireSize)_tireSizeComboBox.getSelectedItem());
+    }
   }//GEN-LAST:event__tireSizeComboBoxActionPerformed
 
   private void _loadIndexComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event__loadIndexComboBoxActionPerformed
@@ -903,7 +947,14 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
 
   private void _treadComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event__treadComboBoxActionPerformed
   {//GEN-HEADEREND:event__treadComboBoxActionPerformed
-    _tire.setTread((Tread)_treadComboBox.getSelectedItem());
+    if(((Tread)_treadComboBox.getSelectedItem()).getId()==0) {
+      ViewManager.getInstance().showDialog(new AddEditTreadDialog(true, this, (Producer)_producerComboBox.getSelectedItem()));
+      loadProducersList();
+      loadTreadsList();
+      reload();
+    } else {
+      _tire.setTread((Tread)_treadComboBox.getSelectedItem());
+    }
   }//GEN-LAST:event__treadComboBoxActionPerformed
 
   private void _articlesGroupComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event__articlesGroupComboBoxActionPerformed

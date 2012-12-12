@@ -192,10 +192,9 @@ public class AddEditTireSizeDialog extends ApplicationDialog
         TiresService.getInstance().updateTireSize(_tireSize);
       else
         _tireSize = TiresService.getInstance().addTireSize(_tireSize);
-      setHaveToReloadParent(true);
       if(_parent!=null)
         _parent.sendFeedback(_tireSize);
-      close();
+      close(true);
     }
     catch(DatabaseException|SQLException ex)
     {

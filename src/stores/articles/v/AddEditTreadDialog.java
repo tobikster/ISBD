@@ -227,10 +227,9 @@ public class AddEditTreadDialog extends ApplicationDialog implements Reloadable,
         TiresService.getInstance().updateTread(_tread);
       else
         _tread = TiresService.getInstance().addTread(_tread);
-      setHaveToReloadParent(true);
       if(_parent!=null)
         _parent.sendFeedback(_tread);
-      close();
+      close(true);
     }
     catch(DatabaseException|SQLException ex)
     {

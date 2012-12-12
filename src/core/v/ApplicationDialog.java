@@ -2,15 +2,9 @@ package core.v;
 
 import core.c.Reloadable;
 import core.c.ViewManager;
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import javax.swing.AbstractAction;
-import javax.swing.ActionMap;
-import javax.swing.InputMap;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 
 /**
  *
@@ -58,6 +52,10 @@ public abstract class ApplicationDialog extends JDialog {
 	// <editor-fold defaultstate="collapsed" desc="Setters">
 
 	// </editor-fold>
+
+  public void close() {
+		ViewManager.getInstance().closeDialog(this, false);
+	}
 
 	public void close(boolean reload) {
 		ViewManager.getInstance().closeDialog(this, reload);

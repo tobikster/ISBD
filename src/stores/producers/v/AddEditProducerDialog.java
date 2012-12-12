@@ -139,10 +139,9 @@ public class AddEditProducerDialog extends ApplicationDialog
         ProducersService.getInstance().updateProducer(_producer);
       else
         _producer = ProducersService.getInstance().addProducer(_producer);
-      setHaveToReloadParent(true);
       if(_parent!=null)
         _parent.sendFeedback(_producer);
-      close();
+      close(true);
     }
     catch(DatabaseException|SQLException ex)
     {
@@ -152,7 +151,7 @@ public class AddEditProducerDialog extends ApplicationDialog
 
   private void bCancelActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bCancelActionPerformed
   {//GEN-HEADEREND:event_bCancelActionPerformed
-    close();
+    close(false);
   }//GEN-LAST:event_bCancelActionPerformed
 
   private void _nameTextFieldFocusLost(java.awt.event.FocusEvent evt)//GEN-FIRST:event__nameTextFieldFocusLost

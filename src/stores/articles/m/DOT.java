@@ -34,6 +34,16 @@ public class DOT implements Cloneable {
 	}
 
   @Override
+  public String toString() {
+    return _dot;
+  }
+
+  @Override
+  public boolean equals(Object dot) {
+    return _dot.equals(((DOT)dot)._dot);
+  }
+
+  @Override
   public DOT clone() {
     return new DOT(_id, _dot);
   }

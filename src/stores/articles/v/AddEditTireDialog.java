@@ -184,6 +184,12 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
       if(_tire.getGroup()!=null)
         _netPriceTextField.setText(_priceFormat.format(_tire.getNetPrice()));
     }
+    if(_tire.getTireDOTs()!=null) {
+      int iRowId = 0;
+      for(DOT dot : _tire.getTireDOTs().keySet()) {
+        ((DefaultTableModel)_tireDOTsTable.getModel()).insertRow(iRowId++, new Object[] {dot.toString(), _tire.getTireDOTs().get(dot).toString()});
+      }
+    }
   }
 
   private void loadTireSizesList() {
@@ -315,13 +321,13 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
   }
 
   private boolean isProperCount(Object value) {
-        try {
-          Integer.parseInt((String)value);
-          return true;
-        } catch(NumberFormatException ex) {
-          return false;
-        }
-      }
+    try {
+      Integer.parseInt((String)value);
+      return true;
+    } catch(NumberFormatException ex) {
+      return false;
+    }
+  }
 
   private boolean isEmptyCell(Object value) {
     return value==null || value.equals("");
@@ -765,7 +771,8 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
 
   private void _producerComboBoxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event__producerComboBoxActionPerformed
   {//GEN-HEADEREND:event__producerComboBoxActionPerformed
-	  loadTreadsList();
+    loadTreadsList();
+    _tire.setTread((Tread)_treadComboBox.getSelectedItem());
   }//GEN-LAST:event__producerComboBoxActionPerformed
 
   private void bCancelActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bCancelActionPerformed
@@ -778,10 +785,12 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
     parseDOTsToEntity();
     try {
       if(_editMode) {
-        TiresService.getInstance();
+        TiresService.getInstance().updateTire(_tire);
       } else {
         TiresService.getInstance().addTire(_tire);
       }
+      setHaveToReloadParent(true);
+      close();
     } catch(DatabaseException|SQLException ex) {
       ErrorHandler.getInstance().reportError(ex);
     }
@@ -805,7 +814,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
     try {
       value = Double.parseDouble(currentInput);
       _marginTextField.setText(_percentFormat.format(value));
-      _marginTextField.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+      _marginTextField.setBorder(_defaultComponentBorder);
       _tire.setMargin(value);
     } catch (NumberFormatException ex) {
       //currentInput+=" %";
@@ -834,7 +843,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
     {
       value=Double.parseDouble(currentInput);
       _netPriceTextField.setText(_priceFormat.format(value));
-      _netPriceTextField.setBorder(null);
+      _netPriceTextField.setBorder(_defaultComponentBorder);
       refreshGrossPrice();
     }
     catch(NumberFormatException ex)
@@ -864,7 +873,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable
     {
       value=Double.parseDouble(currentInput);
       _grossPriceTextField.setText(_priceFormat.format(value));
-      _grossPriceTextField.setBorder(null);
+      _grossPriceTextField.setBorder(_defaultComponentBorder);
       refreshNetPrice();
       _tire.setGrossPrice(value);
     }

@@ -48,7 +48,8 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 		"",
 		"Producent",
 		"Bieżnik",
-		"Cena brutto"
+		"Cena brutto",
+		"Ilość"
 	};
 	private static final int ARTICLES_ROOT = -1;
 	private static final int TIRES_ROOT = -2;
@@ -68,26 +69,46 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 		_navPanel.setButtonsListener(new PaginationPanel.ButtonsListener() {
 			@Override
 			public void nextButtonClicked() {
-				_articlesTable.setModel(getPartsTableModel(_partsPagination.getNextPage()));
-				_navPanel.setCurrentPage(_partsPagination.getCurrentPage());
+        if(getSelectedGroup().getType().equals(ArticlesGroupType.PARTS)) {
+          _articlesTable.setModel(getPartsTableModel(_partsPagination.getNextPage()));
+          _navPanel.setCurrentPage(_partsPagination.getCurrentPage());
+        } else {
+          _articlesTable.setModel(getTiresTableModel(_tiresPagination.getNextPage()));
+          _navPanel.setCurrentPage(_tiresPagination.getCurrentPage());
+        }
 			}
 
 			@Override
 			public void previousButtonClicked() {
-				_articlesTable.setModel(getPartsTableModel(_partsPagination.getPreviousPage()));
-				_navPanel.setCurrentPage(_partsPagination.getCurrentPage());
+				if(getSelectedGroup().getType().equals(ArticlesGroupType.PARTS)) {
+          _articlesTable.setModel(getPartsTableModel(_partsPagination.getPreviousPage()));
+          _navPanel.setCurrentPage(_partsPagination.getCurrentPage());
+        } else {
+          _articlesTable.setModel(getTiresTableModel(_tiresPagination.getPreviousPage()));
+          _navPanel.setCurrentPage(_tiresPagination.getCurrentPage());
+        }
 			}
 
 			@Override
 			public void firstButtonClicked() {
-				_articlesTable.setModel(getPartsTableModel(_partsPagination.getFirstPage()));
-				_navPanel.setCurrentPage(_partsPagination.getCurrentPage());
+				if(getSelectedGroup().getType().equals(ArticlesGroupType.PARTS)) {
+          _articlesTable.setModel(getPartsTableModel(_partsPagination.getFirstPage()));
+          _navPanel.setCurrentPage(_partsPagination.getCurrentPage());
+        } else {
+          _articlesTable.setModel(getTiresTableModel(_tiresPagination.getFirstPage()));
+          _navPanel.setCurrentPage(_tiresPagination.getCurrentPage());
+        }
 			}
 
 			@Override
 			public void lastButtonClicked() {
-				_articlesTable.setModel(getPartsTableModel(_partsPagination.getLastPage()));
-				_navPanel.setCurrentPage(_partsPagination.getCurrentPage());
+				if(getSelectedGroup().getType().equals(ArticlesGroupType.PARTS)) {
+          _articlesTable.setModel(getPartsTableModel(_partsPagination.getLastPage()));
+          _navPanel.setCurrentPage(_partsPagination.getCurrentPage());
+        } else {
+          _articlesTable.setModel(getTiresTableModel(_tiresPagination.getLastPage()));
+          _navPanel.setCurrentPage(_tiresPagination.getCurrentPage());
+        }
 			}
 		});
 	}
@@ -140,13 +161,14 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 		Object[][] data = new Object[articles.size()][];
 		for (int i = 0; i < articles.size(); ++i) {
 			Tire article = articles.get(i);
-			data[i] = new Object[6];
+			data[i] = new Object[7];
 			data[i][0] = article.getSize();
 			data[i][1] = article.getLoadIndex();
 			data[i][2] = article.getSpeedIndex();
 			data[i][3] = article.getTread().getProducer().getName();
 			data[i][4] = article.getTread().getName();
 			data[i][5] = article.getGrossPrice();
+			data[i][6] = article.getCount();
 		}
 		return new DefaultTableModel(data, TIRES_COLUMN_NAMES) {
 			@Override

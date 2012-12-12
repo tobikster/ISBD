@@ -1,8 +1,6 @@
 package core.v;
 
-import stores.articles.v.ArticleListView;
-import core.c.ViewManager;
-import javax.swing.JOptionPane;
+import core.c.AuthenticationService;
 import javax.swing.JPanel;
 
 /**
@@ -17,7 +15,6 @@ public class MainWindow extends javax.swing.JFrame
   public MainWindow()
   {
     initComponents();
-    
   }
   
   public JPanel getMainPanel() {
@@ -36,11 +33,12 @@ public class MainWindow extends javax.swing.JFrame
         jpMainMenu = new core.v.MainMenuView();
         jMenuBar1 = new javax.swing.JMenuBar();
         mFile = new javax.swing.JMenu();
+        miLogout = new javax.swing.JMenuItem();
         mFile_Exit = new javax.swing.JMenuItem();
         mEdit = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Mechaniker v0.1");
+        setTitle("Mechaniker v1.0");
         setMinimumSize(new java.awt.Dimension(800, 600));
         setPreferredSize(new java.awt.Dimension(800, 600));
         getContentPane().setLayout(new java.awt.CardLayout());
@@ -51,6 +49,14 @@ public class MainWindow extends javax.swing.JFrame
         getContentPane().add(jpMainPanel, "card2");
 
         mFile.setText("Plik");
+
+        miLogout.setText("Wyloguj");
+        miLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miLogoutActionPerformed(evt);
+            }
+        });
+        mFile.add(miLogout);
 
         mFile_Exit.setText("Zakończ");
         mFile_Exit.addActionListener(new java.awt.event.ActionListener() {
@@ -75,6 +81,11 @@ public class MainWindow extends javax.swing.JFrame
     System.exit(0);
   }//GEN-LAST:event_mFile_ExitActionPerformed
 
+  private void miLogoutActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_miLogoutActionPerformed
+  {//GEN-HEADEREND:event_miLogoutActionPerformed
+    AuthenticationService.getInstance().logout();
+  }//GEN-LAST:event_miLogoutActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar jMenuBar1;
     private core.v.MainMenuView jpMainMenu;
@@ -82,5 +93,6 @@ public class MainWindow extends javax.swing.JFrame
     private javax.swing.JMenu mEdit;
     private javax.swing.JMenu mFile;
     private javax.swing.JMenuItem mFile_Exit;
+    private javax.swing.JMenuItem miLogout;
     // End of variables declaration//GEN-END:variables
 }

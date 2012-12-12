@@ -6,8 +6,10 @@ import core.m.ResultRow;
 import finance.m.VATRate;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import stores.articles.c.validators.parts.ArticleAttributeValidator;
 import stores.articles.m.ArticleAttribute;
 import stores.groups.c.validators.ArticlesGroupValidator;
@@ -31,7 +33,7 @@ public class GroupsService {
 	// </editor-fold>
 
 	public ArticlesGroup getArticleGroup(int iGroupCode) throws SQLException {
-		String sQuery = "SELECT KodGrupy, Nazwa, VAT, Stawka, Zawartosc FROM GrupyTowarowe "
+		String sQuery = "SELECT KodGrupy, Nazwa, VAT, Stawka, Typ FROM GrupyTowarowe "
 				+ "INNER JOIN StawkiVAT ON GrupyTowarowe.VAT=StawkiVAT.IdStawki WHERE KodGrupy=" + iGroupCode + ";";
 
 		List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult(sQuery);
@@ -59,7 +61,20 @@ public class GroupsService {
 			default:
 				throw new SQLException("Article group with given CODE has unknown type!");
 		}
-
+		
+		Set<ArticleAttribute> attributes = new LinkedHashSet<>();
+		sQuery = "SELECT AtrybutyCzesci.IdAtrybutu, AtrybutyCzesci.Nazwa "
+				+ "FROM AtrybutyGrup LEFT JOIN AtrybutyCzesci ON AtrybutyGrup.IdAtrybutu = AtrybutyCzesci.IdAtrybutu "
+				+ "WHERE AtrybutyGrup.KodGrupy = " + iGroupCode + ";";
+		System.out.println(sQuery);
+		List<ResultRow> resultRows = DatabaseManager.getInstance().executeQueryResult(sQuery);
+		System.out.println("Znaleziono " + resultRows + " atrybutów");
+		for(ResultRow row : resultRows) {
+			ArticleAttribute attribute = new ArticleAttribute(row.getInt(1), row.getString(2));
+			System.out.println(new ArticleAttribute(row.getInt(1), row.getString(2)));
+			attributes.add(attribute);
+		}
+		group.setAttributes(attributes);
 		return group;
 	}
 
@@ -75,7 +90,7 @@ public class GroupsService {
 
 	public List<ArticlesGroup> getPartGroups() throws SQLException {
 		List articleGroups = new ArrayList<>();
-		String sqlQuery = "SELECT KodGrupy FROM GrupyTowarowe WHERE Zawartosc='c' ORDER BY Nazwa;";
+		String sqlQuery = "SELECT KodGrupy FROM GrupyTowarowe WHERE Typ='c' ORDER BY Nazwa;";
 		ArrayList<ResultRow> result = (ArrayList<ResultRow>) DatabaseManager.getInstance().executeQueryResult(sqlQuery);
 		for (ResultRow rr : result) {
 			articleGroups.add(getArticleGroup(rr.getInt(1)));
@@ -85,7 +100,7 @@ public class GroupsService {
 
 	public List<ArticlesGroup> getTireGroups() throws SQLException {
 		List articleGroups = new ArrayList<>();
-		String sqlQuery = "SELECT KodGrupy FROM GrupyTowarowe WHERE Zawartosc='o';";
+		String sqlQuery = "SELECT KodGrupy FROM GrupyTowarowe WHERE Typ='o';";
 		ArrayList<ResultRow> result = (ArrayList<ResultRow>) DatabaseManager.getInstance().executeQueryResult(sqlQuery);
 		for (ResultRow rr : result) {
 			articleGroups.add(getArticleGroup(rr.getInt(1)));
@@ -124,7 +139,7 @@ public class GroupsService {
 		ArticlesGroupValidator validator = new ArticlesGroupValidator();
 		if (validator.validate(group)) {
 			DatabaseManager.getInstance().startTransaction();
-			String query = "INSERT INTO GrupyTowarowe (Nazwa, VAT, Zawartosc) "
+			String query = "INSERT INTO GrupyTowarowe (Nazwa, VAT, Typ) "
 					+ "VALUES('" + group.getName() + "', " + group.getVat().getId() + ", '" + group.getType().toString() + "');";
 			DatabaseManager.getInstance().executeQuery(query);
 
@@ -255,7 +270,7 @@ public class GroupsService {
 							+ "FROM Opony, DOTyOpon "
 							+ "WHERE Opony.IdOpony = DOTyOpon.IdOpony AND Opony.KodGrupyTowarowej = " + group.getCode() + " AND DOTyOpon.Liczba <> 0;";
 					resultRows = DatabaseManager.getInstance().executeQueryResult(query);
-					if(resultRows.get(0).getInt(1) == 0) {
+					if (resultRows.get(0).getInt(1) == 0) {
 						result = 0;
 					}
 					else {

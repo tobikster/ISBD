@@ -103,7 +103,7 @@ public class PartsService {
 			sGroupsCondition += " AND KodGrupyTowarowej=" + group.getCode();
 		}
 		String sQuery = "SELECT * FROM Czesci LEFT JOIN GrupyTowarowe ON Czesci.KodGrupyTowarowej=GrupyTowarowe.KodGrupy "
-				+ "WHERE Zawartosc='c'" + sGroupsCondition + ";";
+				+ "WHERE Typ='c'" + sGroupsCondition + ";";
 
 		List<ResultRow> results = DatabaseManager.getInstance().executeQueryResult(sQuery);
 		List<Part> parts = new ArrayList<>();

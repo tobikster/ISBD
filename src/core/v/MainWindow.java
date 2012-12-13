@@ -1,7 +1,13 @@
 package core.v;
 
 import core.c.AuthenticationService;
+import core.c.ErrorHandler;
+import core.c.ViewManager;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
+import stores.producers.v.ProducersListDialog;
 
 /**
  *
@@ -36,6 +42,8 @@ public class MainWindow extends javax.swing.JFrame
         miLogout = new javax.swing.JMenuItem();
         mFile_Exit = new javax.swing.JMenuItem();
         mEdit = new javax.swing.JMenu();
+        mKnowlageBase = new javax.swing.JMenu();
+        miProducers = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Mechaniker v1.0");
@@ -71,6 +79,18 @@ public class MainWindow extends javax.swing.JFrame
         mEdit.setText("Edycja");
         jMenuBar1.add(mEdit);
 
+        mKnowlageBase.setText("Baza wiedzy");
+
+        miProducers.setText("Producenci");
+        miProducers.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miProducersActionPerformed(evt);
+            }
+        });
+        mKnowlageBase.add(miProducers);
+
+        jMenuBar1.add(mKnowlageBase);
+
         setJMenuBar(jMenuBar1);
 
         pack();
@@ -86,6 +106,15 @@ public class MainWindow extends javax.swing.JFrame
     AuthenticationService.getInstance().logout();
   }//GEN-LAST:event_miLogoutActionPerformed
 
+    private void miProducersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miProducersActionPerformed
+		try {
+			ViewManager.getInstance().showDialog(new ProducersListDialog(true, null));
+		}
+		catch (SQLException ex) {
+			ErrorHandler.getInstance().reportError(ex);
+		}
+    }//GEN-LAST:event_miProducersActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar jMenuBar1;
     private core.v.MainMenuView jpMainMenu;
@@ -93,6 +122,8 @@ public class MainWindow extends javax.swing.JFrame
     private javax.swing.JMenu mEdit;
     private javax.swing.JMenu mFile;
     private javax.swing.JMenuItem mFile_Exit;
+    private javax.swing.JMenu mKnowlageBase;
     private javax.swing.JMenuItem miLogout;
+    private javax.swing.JMenuItem miProducers;
     // End of variables declaration//GEN-END:variables
 }

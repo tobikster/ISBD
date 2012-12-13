@@ -208,6 +208,9 @@
               <Connection code="getProducersModel()" type="code"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="_producerComboBoxActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="_catalogNumberLabel">
           <Properties>
@@ -215,6 +218,9 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="_catalogNumberTextField">
+          <Events>
+            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="_catalogNumberTextFieldFocusLost"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="_nameLabel">
           <Properties>
@@ -222,6 +228,9 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="_nameTextField">
+          <Events>
+            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="_nameTextFieldFocusLost"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="_countLabel">
           <Properties>
@@ -234,6 +243,9 @@
               <SpinnerModel initial="0.0" minimum="0.0" numberType="java.lang.Float" stepSize="1.0" type="number"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="_countSpinnerFocusLost"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="_pictureLabel">
           <Properties>

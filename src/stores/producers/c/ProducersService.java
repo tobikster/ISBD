@@ -115,7 +115,7 @@ public class ProducersService {
 		System.out.println(query);
 		List<ResultRow> resultRows = DatabaseManager.getInstance().executeQueryResult(query);
 		if (!resultRows.isEmpty()) {
-			try {
+			if(resultRows.get(0).getString(1) != null) {
 				if (resultRows.get(0).getFloat(1) == 0.0) {
 //					result += containsPartsButEmpty;
 					result = -1;
@@ -125,10 +125,9 @@ public class ProducersService {
 					result = -2;
 				}
 			}
-			catch (SQLException ex) {
+			else {
 //				result += noParts;
 				result = 0;
-				throw ex;
 			}
 		}
 		query = "SELECT Sum(DOTyOpon.Liczba) "

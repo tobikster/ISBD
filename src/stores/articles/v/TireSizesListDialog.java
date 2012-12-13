@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package stores.producers.v;
+package stores.articles.v;
 
 import core.c.ErrorHandler;
 import core.c.Reloadable;
@@ -15,53 +15,49 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-import stores.producers.c.ProducersService;
-import stores.producers.m.Producer;
+import stores.articles.c.TiresService;
+import stores.articles.m.TireSize;
 
 /**
  *
  * @author tobikster
  */
-public class ProducersListDialog extends ApplicationDialog implements Reloadable {
-	public static final String[] PRODUCERS_TABLE_HEADERS = {
-		"Nazwa"
+public class TireSizesListDialog extends ApplicationDialog implements Reloadable {
+	public static final String[] TIRE_SIZES_TABLE_HEADERS = {
+		"Rozmiar"
 	};
 
 	/**
-	 * Creates new form ProducersListDialog
+	 * Creates new form TireSizesListDialog
 	 */
-	public ProducersListDialog(boolean modal, Reloadable reloadableParent) throws SQLException {
-		super(modal, reloadableParent);
+	public TireSizesListDialog(boolean modal, Reloadable parent) throws SQLException {
+		super(modal, parent);
 		initComponents();
-		initTables();
+		initTireSizesTable();
 	}
 
 	@Override
 	public void reload() {
 		try {
-			initTables();
+			initTireSizesTable();
 		}
 		catch (SQLException ex) {
 			ErrorHandler.getInstance().reportError(ex);
 		}
 	}
 
-	private void initTables() throws SQLException {
-		initProducersTable();
+	private void initTireSizesTable() throws SQLException {
+		_tireSizesTable.setModel(getTireSizesTableModel());
 	}
 
-	private void initProducersTable() throws SQLException {
-		_producersTable.setModel(getProducersTableModel());
-	}
-
-	private TableModel getProducersTableModel() throws SQLException {
-		List<Producer> producers = ProducersService.getInstance().getProducers();
-		Object[][] tableData = new Producer[producers.size()][];
+	private TableModel getTireSizesTableModel() throws SQLException {
+		List<TireSize> tireSizes = TiresService.getInstance().getTireSizes();
+		Object[][] tableData = new Object[tireSizes.size()][];
 		for (int i = 0; i < tableData.length; ++i) {
-			tableData[i] = new Producer[1];
-			tableData[i][0] = producers.get(i);
+			tableData[i] = new TireSize[1];
+			tableData[i][0] = tireSizes.get(i);
 		}
-		return new DefaultTableModel(tableData, PRODUCERS_TABLE_HEADERS);
+		return new DefaultTableModel(tableData, TIRE_SIZES_TABLE_HEADERS);
 	}
 
 	/**
@@ -76,19 +72,19 @@ public class ProducersListDialog extends ApplicationDialog implements Reloadable
 
         _titleLabel = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        _producersTableScrollPane = new javax.swing.JScrollPane();
-        _producersTable = new javax.swing.JTable();
+        _tireSizesTableScrollPane = new javax.swing.JScrollPane();
+        _tireSizesTable = new javax.swing.JTable();
         _actionsPanel = new javax.swing.JPanel();
-        _removeButton = new javax.swing.JButton();
         _addButton = new javax.swing.JButton();
+        _removeButton = new javax.swing.JButton();
         _editButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         _titleLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        _titleLabel.setText("Producenci");
+        _titleLabel.setText("Rozmiary opon");
 
-        _producersTable.setModel(new javax.swing.table.DefaultTableModel(
+        _tireSizesTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -96,16 +92,7 @@ public class ProducersListDialog extends ApplicationDialog implements Reloadable
 
             }
         ));
-        _producersTableScrollPane.setViewportView(_producersTable);
-
-        _actionsPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        _removeButton.setText("Usuń");
-        _removeButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                _removeButtonActionPerformed(evt);
-            }
-        });
+        _tireSizesTableScrollPane.setViewportView(_tireSizesTable);
 
         _addButton.setText("Dodaj");
         _addButton.addActionListener(new java.awt.event.ActionListener() {
@@ -114,7 +101,14 @@ public class ProducersListDialog extends ApplicationDialog implements Reloadable
             }
         });
 
-        _editButton.setText("Edytuj");
+        _removeButton.setText("Usuń");
+        _removeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                _removeButtonActionPerformed(evt);
+            }
+        });
+
+        _editButton.setText("Edycja");
         _editButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 _editButtonActionPerformed(evt);
@@ -125,12 +119,12 @@ public class ProducersListDialog extends ApplicationDialog implements Reloadable
         _actionsPanel.setLayout(_actionsPanelLayout);
         _actionsPanelLayout.setHorizontalGroup(
             _actionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(_actionsPanelLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, _actionsPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(_removeButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(_editButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(_addButton)
                 .addContainerGap())
         );
@@ -139,8 +133,8 @@ public class ProducersListDialog extends ApplicationDialog implements Reloadable
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, _actionsPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(_actionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(_removeButton)
                     .addComponent(_addButton)
+                    .addComponent(_removeButton)
                     .addComponent(_editButton))
                 .addContainerGap())
         );
@@ -152,13 +146,15 @@ public class ProducersListDialog extends ApplicationDialog implements Reloadable
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSeparator1)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(_titleLabel)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(_producersTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(_actionsPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                        .addGap(0, 121, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(_actionsPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(_tireSizesTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -168,58 +164,62 @@ public class ProducersListDialog extends ApplicationDialog implements Reloadable
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(_producersTableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
+                .addComponent(_tireSizesTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(_actionsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void _addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__addButtonActionPerformed
-		ViewManager.getInstance().showDialog(new AddEditProducerDialog(true, this));
+		ViewManager.getInstance().showDialog(new AddEditTireSizeDialog(true, this));
     }//GEN-LAST:event__addButtonActionPerformed
 
     private void _editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__editButtonActionPerformed
-		if (_producersTable.getSelectedRow() >= 0) {
-			ViewManager.getInstance().showDialog(new AddEditProducerDialog(true, this, ((Producer) (_producersTable.getValueAt(_producersTable.getSelectedRow(), 0))).clone()));
+		if (_tireSizesTable.getSelectedRow() >= 0) {
+			TireSize tireSize = (TireSize) _tireSizesTable.getValueAt(_tireSizesTable.getSelectedRow(), 0);
+			ViewManager.getInstance().showDialog(new AddEditTireSizeDialog(true, this, tireSize));
 		}
     }//GEN-LAST:event__editButtonActionPerformed
 
     private void _removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__removeButtonActionPerformed
-		if (_producersTable.getSelectedRow() >= 0) {
+		if (_tireSizesTable.getSelectedRow() >= 0) {
 			try {
-				Producer producer = (Producer) (_producersTable.getValueAt(_producersTable.getSelectedRow(), 0));
+				TireSize tireSize = (TireSize) _tireSizesTable.getValueAt(_tireSizesTable.getSelectedRow(), 0);
+				boolean remove = false;
+				String message;
+				String title = "Usuwanie rozmiaru opon";
+				switch (TiresService.getInstance().getTireSizeRemovability(tireSize)) {
+					case 1:
+						message = "Czy na pewno chcesz usunąć rozmiar opony \"" + tireSize + "\"?";
+						switch (JOptionPane.showOptionDialog(this, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[]{"Tak", "Nie"}, "Nie")) {
+							case 0:
+								remove = true;
+								break;
+						}
+						break;
 
-				int removability = ProducersService.getInstance().checkProducerRemovability(producer);
-
-
-				boolean removeProducer = false;
-
-				switch (removability) {
 					case 0:
-						removeProducer = JOptionPane.showOptionDialog(this, "Czy na pewno chcesz usunąć producenta \"" + producer.getName() + "\"", "Usuwanie producenta", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[]{"Tak", "Nie"}, "Nie") == 0;
+						message = "Usunięcie rozmiaru opony spowoduje usunięcie powiązanych z nim opon. Czy na pewno chcesz to zrobić?";
+						switch (JOptionPane.showOptionDialog(this, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[]{"Tak", "Nie"}, "Nie")) {
+							case 0:
+								remove = true;
+								break;
+						}
 						break;
 
 					case -1:
-						removeProducer = JOptionPane.showOptionDialog(this, "Usunięcie producenta spowoduje usunięcie powiązanych z nim opon lub części. Czy chcesz kontynuować?", "Usuwanie producenta", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[]{"Tak", "Nie"}, "Nie") == 0;
-						break;
-
-					case -2:
-						JOptionPane.showOptionDialog(this, "Usunięcie producenta nie jest możliwe, ponieważ spowodowałoby to usunięcie opon lub części z niezerowym stanem magazynowym!", "Usuwanie producenta", JOptionPane.OK_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[]{"OK"}, "OK");
-						removeProducer = false;
-						break;
+						message = "Usunięcie rozmiaru opon jest niemożliwe, ponieważ spowodowałoby to usunięcie danych opon, których stan magazynowych jest niezerowy!";
+						JOptionPane.showMessageDialog(this, message, title, JOptionPane.WARNING_MESSAGE);
 				}
-
-				if (removeProducer) {
-					if (ProducersService.getInstance().removeProducer(producer)) {
-						reload();
-						JOptionPane.showMessageDialog(this, "Producent " + producer.getName() + " usunięty pomyślnie!", "Usuwanie producenta", JOptionPane.INFORMATION_MESSAGE);
-					}
-					else {
-						JOptionPane.showMessageDialog(this, "Producent " + producer.getName() + " nie został usunięty!", "Usuwanie producenta", JOptionPane.WARNING_MESSAGE);
-					}
+				
+				if(remove) {
+					TiresService.getInstance().deleteTireSize(tireSize);
+					message = "Rozmiar opony usunięty pomyślnie!";
+					reload();
+					JOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 			catch (SQLException ex) {
@@ -231,9 +231,9 @@ public class ProducersListDialog extends ApplicationDialog implements Reloadable
     private javax.swing.JPanel _actionsPanel;
     private javax.swing.JButton _addButton;
     private javax.swing.JButton _editButton;
-    private javax.swing.JTable _producersTable;
-    private javax.swing.JScrollPane _producersTableScrollPane;
     private javax.swing.JButton _removeButton;
+    private javax.swing.JTable _tireSizesTable;
+    private javax.swing.JScrollPane _tireSizesTableScrollPane;
     private javax.swing.JLabel _titleLabel;
     private javax.swing.JSeparator jSeparator1;
     // End of variables declaration//GEN-END:variables

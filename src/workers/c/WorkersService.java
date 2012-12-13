@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import workers.c.validators.WorkerValidator;
 import workers.m.Worker;
+import workers.m.WorkerPosition;
 
 public class WorkersService {
 	// <editor-fold defaultstate="collapsed" desc="Creating object">
@@ -32,7 +33,7 @@ public class WorkersService {
 			result.add(new Worker(resultRow.getInt(1),
 								  resultRow.getString(2),
 								  resultRow.getString(3),
-								  resultRow.getString(4)));
+								  WorkerPosition.valueFor(resultRow.getString(4))));
 		}
 		return result;
 	}
@@ -48,7 +49,7 @@ public class WorkersService {
 			result = new Worker(resultRow.getInt(1),
 								resultRow.getString(2),
 								resultRow.getString(3),
-								resultRow.getString(4),
+								WorkerPosition.valueFor(resultRow.getString(4)),
 								resultRow.getString(5),
 								resultRow.getString(6));
 		}
@@ -70,7 +71,7 @@ public class WorkersService {
     result = new Worker(resultRow.getInt(1),
               resultRow.getString(2),
               resultRow.getString(3),
-              resultRow.getString(4),
+              WorkerPosition.valueFor(resultRow.getString(4)),
               resultRow.getString(5),
               resultRow.getString(6));
 		

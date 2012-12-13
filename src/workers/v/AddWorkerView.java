@@ -11,8 +11,10 @@ import core.m.ApplicationException;
 import core.m.DatabaseException;
 import core.v.ApplicationDialog;
 import java.sql.SQLException;
+import javax.swing.DefaultComboBoxModel;
 import workers.c.WorkersService;
 import workers.m.Worker;
+import workers.m.WorkerPosition;
 
 /**
  *
@@ -38,6 +40,15 @@ public class AddWorkerView extends ApplicationDialog
     super(modal, reloadableParent);
     _worker=new Worker();
     initComponents();
+    loadJobsList();
+  }
+  
+  private void loadJobsList() {
+    DefaultComboBoxModel<WorkerPosition> tireSizes = new DefaultComboBoxModel<>();
+    for(WorkerPosition job:  WorkerPosition.values()) {
+      tireSizes.addElement(job);
+    }
+    _jobComboBox.setModel(tireSizes);
   }
 
   /**
@@ -65,13 +76,13 @@ public class AddWorkerView extends ApplicationDialog
         _surnameLabel = new javax.swing.JLabel();
         _surnameTextField = new javax.swing.JTextField();
         _jobLabel = new javax.swing.JLabel();
-        _jobTextField = new javax.swing.JTextField();
         _loginLabel = new javax.swing.JLabel();
         _loginTextField = new javax.swing.JTextField();
         _passwordField = new javax.swing.JPasswordField();
         _passwordLabel = new javax.swing.JLabel();
         _repeatPasswordLabel = new javax.swing.JLabel();
         _repeatPasswordField = new javax.swing.JPasswordField();
+        _jobComboBox = new javax.swing.JComboBox();
         _titleLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -106,8 +117,6 @@ public class AddWorkerView extends ApplicationDialog
 
         _jobLabel.setText("Stanowisko");
 
-        _jobTextField.setText(_worker.getJob());
-
         _loginLabel.setText("Login:");
 
         _loginTextField.setText(_worker.getLogin());
@@ -120,6 +129,8 @@ public class AddWorkerView extends ApplicationDialog
 
         _repeatPasswordField.setText(_worker.getPassword());
 
+        _jobComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout _dataPanelLayout = new javax.swing.GroupLayout(_dataPanel);
         _dataPanel.setLayout(_dataPanelLayout);
         _dataPanelLayout.setHorizontalGroup(
@@ -130,14 +141,14 @@ public class AddWorkerView extends ApplicationDialog
                     .addGroup(_dataPanelLayout.createSequentialGroup()
                         .addComponent(_jobLabel)
                         .addGap(18, 18, 18)
-                        .addComponent(_jobTextField))
+                        .addComponent(_jobComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(_dataPanelLayout.createSequentialGroup()
                         .addGroup(_dataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(_passwordLabel)
                             .addComponent(_repeatPasswordLabel))
                         .addGap(22, 22, 22)
                         .addGroup(_dataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(_passwordField)
+                            .addComponent(_passwordField, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
                             .addComponent(_repeatPasswordField)))
                     .addGroup(_dataPanelLayout.createSequentialGroup()
                         .addGroup(_dataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -167,7 +178,7 @@ public class AddWorkerView extends ApplicationDialog
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(_dataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(_jobLabel)
-                    .addComponent(_jobTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(_jobComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(9, 9, 9)
                 .addGroup(_dataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(_loginLabel)
@@ -199,7 +210,6 @@ public class AddWorkerView extends ApplicationDialog
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(_cancelButton))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(_titleLabel)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(_dataPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -252,7 +262,7 @@ public class AddWorkerView extends ApplicationDialog
         {
           _worker.setName(_nameTextField.getText());
           _worker.setSurname(_surnameTextField.getText());
-          _worker.setJob(_jobTextField.getText());
+          _worker.setJob((WorkerPosition)_jobComboBox.getSelectedItem());
           _worker.setLogin(_loginTextField.getText());
           if(!FormManager.getInstance().passwordMatches(_passwordField.getPassword(), _repeatPasswordField.getPassword()))
             throw new ApplicationException("Hasła się różnią!");
@@ -275,8 +285,8 @@ public class AddWorkerView extends ApplicationDialog
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton _cancelButton;
     private javax.swing.JPanel _dataPanel;
+    private javax.swing.JComboBox _jobComboBox;
     private javax.swing.JLabel _jobLabel;
-    private javax.swing.JTextField _jobTextField;
     private javax.swing.JLabel _loginLabel;
     private javax.swing.JTextField _loginTextField;
     private javax.swing.JLabel _nameLabel;

@@ -41,22 +41,22 @@ public class AddEditServicesGroupDialog extends ApplicationDialog
   {
     super(modal, parent);
     _editMode = true;
-    _group = group;
+    _group = group.clone();
     initComponents();
     initialize();
   }
 
   private void loadVATRateList() {
-    DefaultComboBoxModel<VATRate> tireSizes = new DefaultComboBoxModel<>();
+    DefaultComboBoxModel<VATRate> vatRates = new DefaultComboBoxModel<>();
     try {
       List<VATRate> rates = FinanceService.getInstance().getVatRates();
       for(VATRate rate : rates) {
-        tireSizes.addElement(rate);
+        vatRates.addElement(rate);
       }
     } catch(SQLException ex) {
       ErrorHandler.getInstance().reportError(ex);
     }
-    _VATRatesList.setModel(tireSizes);
+    _VATRatesList.setModel(vatRates);
   }
   
   private void initialize() {

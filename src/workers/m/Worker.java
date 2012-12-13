@@ -8,7 +8,7 @@ public class Worker implements Cloneable {
 	private int _id;
 	private String _name;
 	private String _surname;
-	private String _job;
+	private WorkerPosition _job;
 	private String _login; // w bazie nie jest wymagane
 	private String _password; // w bazie nie jest wymagane
 
@@ -17,11 +17,11 @@ public class Worker implements Cloneable {
 		this(0, null, null, null, null, null);
 	}
 	
-	public Worker(int id, String name, String surname, String job) {
+	public Worker(int id, String name, String surname, WorkerPosition job) {
 		this(id, name, surname, job, null, null);
 	}
 
-	public Worker(int id, String name, String surname, String job, String login, String password) {
+	public Worker(int id, String name, String surname, WorkerPosition job, String login, String password) {
 		_id = id;
 		_name = name;
 		_surname = surname;
@@ -34,7 +34,7 @@ public class Worker implements Cloneable {
 		return _id;
 	}
 
-	public String getJob() {
+	public WorkerPosition getJob() {
 		return _job;
 	}
 
@@ -58,7 +58,7 @@ public class Worker implements Cloneable {
 		_id = id;
 	}
 
-	public void setJob(String job) {
+	public void setJob(WorkerPosition job) {
 		_job = job;
 	}
 

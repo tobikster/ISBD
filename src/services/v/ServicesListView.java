@@ -11,6 +11,7 @@ import core.c.ViewManager;
 import core.m.DatabaseException;
 import core.v.MainMenuView;
 import core.v.PaginationPanel;
+import java.awt.Cursor;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,7 @@ public class ServicesListView extends javax.swing.JPanel implements Reloadable
 		"Cena minimalna",
 		"Cena maksymalna"
 	};
-	private TablePagination<Service> _partsPagination;
+	private TablePagination<Service> _servicesPagination;
   private ServicesGroup _currentGroup;
   private boolean _reloadTree;
 
@@ -47,7 +48,7 @@ public class ServicesListView extends javax.swing.JPanel implements Reloadable
    */
   public ServicesListView()
   {
-    _partsPagination = new TablePagination<>(new ArrayList<Service>(), ROWS_PER_PAGE);
+    _servicesPagination = new TablePagination<>(new ArrayList<Service>(), ROWS_PER_PAGE);
     _reloadTree = false;
     initComponents();
 		refreshPopupMenu();
@@ -56,26 +57,26 @@ public class ServicesListView extends javax.swing.JPanel implements Reloadable
     _navPanel.setButtonsListener(new PaginationPanel.ButtonsListener() {
 			@Override
 			public void nextButtonClicked() {
-        _servicesTable.setModel(getPartsTableModel(_partsPagination.getNextPage()));
-        _navPanel.setCurrentPage(_partsPagination.getCurrentPage());
+        _servicesTable.setModel(getPartsTableModel(_servicesPagination.getNextPage()));
+        _navPanel.setCurrentPage(_servicesPagination.getCurrentPage());
 			}
 
 			@Override
 			public void previousButtonClicked() {
-				_servicesTable.setModel(getPartsTableModel(_partsPagination.getPreviousPage()));
-        _navPanel.setCurrentPage(_partsPagination.getCurrentPage());
+				_servicesTable.setModel(getPartsTableModel(_servicesPagination.getPreviousPage()));
+        _navPanel.setCurrentPage(_servicesPagination.getCurrentPage());
 			}
 
 			@Override
 			public void firstButtonClicked() {
-				_servicesTable.setModel(getPartsTableModel(_partsPagination.getFirstPage()));
-        _navPanel.setCurrentPage(_partsPagination.getCurrentPage());
+				_servicesTable.setModel(getPartsTableModel(_servicesPagination.getFirstPage()));
+        _navPanel.setCurrentPage(_servicesPagination.getCurrentPage());
 			}
 
 			@Override
 			public void lastButtonClicked() {
-				_servicesTable.setModel(getPartsTableModel(_partsPagination.getLastPage()));
-        _navPanel.setCurrentPage(_partsPagination.getCurrentPage());
+				_servicesTable.setModel(getPartsTableModel(_servicesPagination.getLastPage()));
+        _navPanel.setCurrentPage(_servicesPagination.getCurrentPage());
 			}
 		});
   }
@@ -87,10 +88,11 @@ public class ServicesListView extends javax.swing.JPanel implements Reloadable
 
   public TableModel getPartsTableModel(List<Service> services) {
 		Object[][] data = new Object[services.size()][];
+    int iStartIndex = _servicesPagination.getCurrentPage()+_servicesPagination.getRowsPerPage();
 		for (int i = 0; i < services.size(); ++i) {
 			Service service = services.get(i);
 			data[i] = new Object[4];
-      data[i][0] = 1;
+      data[i][0] = ++iStartIndex;
 			data[i][1] = service.getName();
 			data[i][2] = service.getMinPrice();
 			data[i][3] = service.getMaxPrice();
@@ -122,10 +124,10 @@ public class ServicesListView extends javax.swing.JPanel implements Reloadable
   public final void reload()
   {
     try {
-			_partsPagination.setTableData(ServicesService.getInstance().getServices(_currentGroup));
-			_servicesTable.setModel(getPartsTableModel(_partsPagination.getCurrentPageData()));
-			_navPanel.setCurrentPage(_partsPagination.getCurrentPage());
-			_navPanel.setPageCount(_partsPagination.getPageCount());
+			_servicesPagination.setTableData(ServicesService.getInstance().getServices(_currentGroup));
+			_servicesTable.setModel(getPartsTableModel(_servicesPagination.getCurrentPageData()));
+			_navPanel.setCurrentPage(_servicesPagination.getCurrentPage());
+			_navPanel.setPageCount(_servicesPagination.getPageCount());
       //reload groups tree if needed
       if(_reloadTree) {
         int iSelectedRow = _servicesGroupsTree.getSelectionRows()[0];
@@ -151,7 +153,6 @@ public class ServicesListView extends javax.swing.JPanel implements Reloadable
   @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         _groupsPopupMenu = new javax.swing.JPopupMenu();
         _addGroup = new javax.swing.JMenuItem();
@@ -164,6 +165,11 @@ public class ServicesListView extends javax.swing.JPanel implements Reloadable
         _servicesGroupsTree = new javax.swing.JTree();
         jScrollPane4 = new javax.swing.JScrollPane();
         _servicesTable = new javax.swing.JTable();
+        jpArticlesToolbar = new javax.swing.JPanel();
+        _addService = new javax.swing.JLabel();
+        _addProvidedService = new javax.swing.JLabel();
+        _editService = new javax.swing.JLabel();
+        _deleteService = new javax.swing.JLabel();
 
         _addGroup.setText("Dodaj dział");
         _addGroup.addActionListener(new java.awt.event.ActionListener() {
@@ -204,10 +210,6 @@ public class ServicesListView extends javax.swing.JPanel implements Reloadable
 
         _servicesGroupsTree.setModel(getTreeModel());
         _servicesGroupsTree.setRootVisible(false);
-
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, _groupsPopupMenu, org.jdesktop.beansbinding.ObjectProperty.create(), _servicesGroupsTree, org.jdesktop.beansbinding.BeanProperty.create("componentPopupMenu"));
-        bindingGroup.addBinding(binding);
-
         _servicesGroupsTree.setSelectionRow(0);
         updateSelectedGroup();
         _servicesGroupsTree.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -219,8 +221,88 @@ public class ServicesListView extends javax.swing.JPanel implements Reloadable
 
         _servicesTable.setColumnSelectionAllowed(false);
         _servicesTable.setShowVerticalLines(false);
-        _servicesTable.setModel(getPartsTableModel(_partsPagination.getCurrentPageData()));
+        _servicesTable.setModel(getPartsTableModel(_servicesPagination.getCurrentPageData()));
         jScrollPane4.setViewportView(_servicesTable);
+
+        _addService.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/Service-Add-48.png"))); // NOI18N
+        _addService.setToolTipText("Dodaj nową oponę");
+        _addService.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                _addServiceMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                _addServiceMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                _addServiceMouseExited(evt);
+            }
+        });
+
+        _addProvidedService.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/Document-Service-48.png"))); // NOI18N
+        _addProvidedService.setToolTipText("Usuń wybraną część");
+        _addProvidedService.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                _addProvidedServiceMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                _addProvidedServiceMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                _addProvidedServiceMouseExited(evt);
+            }
+        });
+
+        _editService.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/Service-Edit-48.png"))); // NOI18N
+        _editService.setToolTipText("Edytuj wybraną oponę");
+        _editService.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                _editServiceMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                _editServiceMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                _editServiceMouseExited(evt);
+            }
+        });
+
+        _deleteService.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/48x48/Service-Delete-48.png"))); // NOI18N
+        _deleteService.setToolTipText("Usuń wybraną oponę");
+        _deleteService.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                _deleteServiceMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                _deleteServiceMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                _deleteServiceMouseExited(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jpArticlesToolbarLayout = new javax.swing.GroupLayout(jpArticlesToolbar);
+        jpArticlesToolbar.setLayout(jpArticlesToolbarLayout);
+        jpArticlesToolbarLayout.setHorizontalGroup(
+            jpArticlesToolbarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpArticlesToolbarLayout.createSequentialGroup()
+                .addComponent(_addProvidedService)
+                .addGap(18, 18, 18)
+                .addComponent(_addService, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(_editService, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(_deleteService))
+        );
+        jpArticlesToolbarLayout.setVerticalGroup(
+            jpArticlesToolbarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpArticlesToolbarLayout.createSequentialGroup()
+                .addGroup(jpArticlesToolbarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(_deleteService, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE)
+                    .addComponent(_editService, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(_addService, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(_addProvidedService, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, 0))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -230,36 +312,36 @@ public class ServicesListView extends javax.swing.JPanel implements Reloadable
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(lTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
-                        .addGap(396, 396, 396))
+                        .addComponent(lTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jpArticlesToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(bBack)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(_navPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
+                        .addComponent(_navPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 571, Short.MAX_VALUE)
-                        .addContainerGap())))
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 571, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE)
+                    .addComponent(jpArticlesToolbar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
                     .addComponent(jScrollPane3))
                 .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(_navPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(bBack, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(bBack, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(_navPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
-
-        bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
 
   private void bBackActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bBackActionPerformed
@@ -338,10 +420,148 @@ public class ServicesListView extends javax.swing.JPanel implements Reloadable
     }
   }//GEN-LAST:event__deleteGroupActionPerformed
 
+  private void _addServiceMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__addServiceMouseClicked
+  {//GEN-HEADEREND:event__addServiceMouseClicked
+    ViewManager.getInstance().showDialog(new AddEditServiceDialog(true, this, _currentGroup));
+  }//GEN-LAST:event__addServiceMouseClicked
+
+  private void _addServiceMouseEntered(java.awt.event.MouseEvent evt)//GEN-FIRST:event__addServiceMouseEntered
+  {//GEN-HEADEREND:event__addServiceMouseEntered
+    setCursor(new Cursor(Cursor.HAND_CURSOR));
+  }//GEN-LAST:event__addServiceMouseEntered
+
+  private void _addServiceMouseExited(java.awt.event.MouseEvent evt)//GEN-FIRST:event__addServiceMouseExited
+  {//GEN-HEADEREND:event__addServiceMouseExited
+    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+  }//GEN-LAST:event__addServiceMouseExited
+
+  private void _addProvidedServiceMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__addProvidedServiceMouseClicked
+  {//GEN-HEADEREND:event__addProvidedServiceMouseClicked
+//    try
+//    {
+//      String title="Usunięcie części";
+//      Part part=PartsService.getInstance().getPart(_partsPagination.getCurrentPageData().get(_articlesTable.getSelectedRow()).getId());
+//      switch(JOptionPane.showOptionDialog(this, "Czy na pewno chcesz usunąć część "+part.getName(), title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[]
+//        {
+//          "Tak", "Nie"
+//        }, "Nie"))
+//      {
+//        case 0:
+//          PartsService.getInstance().deletePart(part);
+//          JOptionPane.showMessageDialog(this, "Dane części zostały pomyślnie usunięte!", title, JOptionPane.INFORMATION_MESSAGE);
+//          reload();
+//          break;
+//      }
+//    }
+//    catch(SQLException ex)
+//    {
+//      ErrorHandler.getInstance().reportError(ex);
+//    }
+  }//GEN-LAST:event__addProvidedServiceMouseClicked
+
+  private void _addProvidedServiceMouseEntered(java.awt.event.MouseEvent evt)//GEN-FIRST:event__addProvidedServiceMouseEntered
+  {//GEN-HEADEREND:event__addProvidedServiceMouseEntered
+//    if(_articlesTable.getSelectedRow()>=0)
+//      setCursor(new Cursor(Cursor.HAND_CURSOR));
+  }//GEN-LAST:event__addProvidedServiceMouseEntered
+
+  private void _addProvidedServiceMouseExited(java.awt.event.MouseEvent evt)//GEN-FIRST:event__addProvidedServiceMouseExited
+  {//GEN-HEADEREND:event__addProvidedServiceMouseExited
+    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+  }//GEN-LAST:event__addProvidedServiceMouseExited
+
+  private void _editServiceMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__editServiceMouseClicked
+  {//GEN-HEADEREND:event__editServiceMouseClicked
+    if(_servicesTable.getSelectedRow()>=0) {
+        Service service=_servicesPagination.getCurrentPageData().get(_servicesTable.getSelectedRow());
+        ViewManager.getInstance().showDialog(new AddEditServiceDialog(true, this, service));
+    }
+  }//GEN-LAST:event__editServiceMouseClicked
+
+  private void _editServiceMouseEntered(java.awt.event.MouseEvent evt)//GEN-FIRST:event__editServiceMouseEntered
+  {//GEN-HEADEREND:event__editServiceMouseEntered
+    if(_servicesTable.getSelectedRow()>=0)
+      setCursor(new Cursor(Cursor.HAND_CURSOR));
+  }//GEN-LAST:event__editServiceMouseEntered
+
+  private void _editServiceMouseExited(java.awt.event.MouseEvent evt)//GEN-FIRST:event__editServiceMouseExited
+  {//GEN-HEADEREND:event__editServiceMouseExited
+    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+  }//GEN-LAST:event__editServiceMouseExited
+
+  private void _deleteServiceMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__deleteServiceMouseClicked
+  {//GEN-HEADEREND:event__deleteServiceMouseClicked
+//    if(_servicesTable.getSelectedRow()>=0)
+//      try
+//      {
+//        Tire tire=TiresService.getInstance().getTire(_tiresPagination.getCurrentPageData().get(_articlesTable.getSelectedRow()).getId());
+//        boolean removeTire=false;
+//        String title="Usuń oponę";
+//        String message;
+//        if(tire.getCount()>0)
+//        {
+//          message="Czy jesteś pewien, że chcesz usunąć oponę, która wciąż znajduje się na magazynie w ilości "+tire.getCount()+" szt.?";
+//          switch(JOptionPane.showOptionDialog(this, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[]
+//            {
+//              "Tak", "Nie"
+//            }, "Nie"))
+//          {
+//            case 0: //Tak
+//              removeTire=true;
+//              break;
+//            case 1:
+//              removeTire=false;
+//              break;
+//          }
+//        }
+//        else
+//        {
+//          message="Czy jesteś pewien, że chcesz usunąć wybraną oponę?";
+//          switch(JOptionPane.showOptionDialog(this, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[]
+//            {
+//              "Tak", "Nie"
+//            }, "Nie"))
+//          {
+//            case 0: //Tak
+//              removeTire=true;
+//              break;
+//            case 1:
+//              removeTire=false;
+//              break;
+//          }
+//        }
+//        if(removeTire)
+//        {
+//          TiresService.getInstance().deleteTire(tire);
+//          JOptionPane.showMessageDialog(this, "Dane opony zostały pomyślnie usunięte!", title, JOptionPane.INFORMATION_MESSAGE);
+//          reload();
+//        }
+//      }
+//      catch(SQLException ex)
+//      {
+//        ErrorHandler.getInstance().reportError(ex);
+//      }
+  }//GEN-LAST:event__deleteServiceMouseClicked
+
+  private void _deleteServiceMouseEntered(java.awt.event.MouseEvent evt)//GEN-FIRST:event__deleteServiceMouseEntered
+  {//GEN-HEADEREND:event__deleteServiceMouseEntered
+    if(_servicesTable.getSelectedRow()>=0)
+      setCursor(new Cursor(Cursor.HAND_CURSOR));
+  }//GEN-LAST:event__deleteServiceMouseEntered
+
+  private void _deleteServiceMouseExited(java.awt.event.MouseEvent evt)//GEN-FIRST:event__deleteServiceMouseExited
+  {//GEN-HEADEREND:event__deleteServiceMouseExited
+    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+  }//GEN-LAST:event__deleteServiceMouseExited
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem _addGroup;
+    private javax.swing.JLabel _addProvidedService;
+    private javax.swing.JLabel _addService;
     private javax.swing.JMenuItem _deleteGroup;
+    private javax.swing.JLabel _deleteService;
     private javax.swing.JMenuItem _editGroup;
+    private javax.swing.JLabel _editService;
     private javax.swing.JPopupMenu _groupsPopupMenu;
     private core.v.PaginationPanel _navPanel;
     private javax.swing.JTree _servicesGroupsTree;
@@ -349,8 +569,8 @@ public class ServicesListView extends javax.swing.JPanel implements Reloadable
     private javax.swing.JButton bBack;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JPanel jpArticlesToolbar;
     private javax.swing.JLabel lTitle;
-    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 
 }

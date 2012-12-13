@@ -31,6 +31,7 @@ import stores.groups.v.AddEditArticlesGroupDialog;
 import stores.producers.c.ProducersService;
 import stores.producers.m.Producer;
 import utils.m.WorkingMap;
+import workers.m.WorkerPosition;
 
 /**
  *
@@ -145,7 +146,7 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
 	}
 
   private void applyPermissions() {
-    if(AuthenticationService.getInstance().getLoggedInUser().getJob().equals("Pracownik")) {
+    if(AuthenticationService.getInstance().getLoggedInUser().getJob().equals(WorkerPosition.MECHANIC)) {
       _nameTextField.setEnabled(false);
       _articlesGroupComboBox.setEnabled(false);
       _addArticlesGroupButton.setEnabled(false);

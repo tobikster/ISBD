@@ -52,6 +52,6 @@ public class ServicesGroup implements Cloneable {
 
   @Override
   public ServicesGroup clone() {
-    return new ServicesGroup(_id.intValue(), _name, _vat.clone());
+    return new ServicesGroup(_id.intValue(), _name, _vat!=null?_vat.clone():null);
   }
 }

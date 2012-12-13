@@ -9,7 +9,9 @@ public class Service implements Cloneable {
 	private ServicesGroup _group;
 	private String _name;
 	private Float _minPrice;
+	private String _minPriceText;
 	private Float _maxPrice;
+	private String _maxPriceText;
 
   public Service() {
     
@@ -39,8 +41,16 @@ public class Service implements Cloneable {
 		return _maxPrice;
 	}
 
+	public String getMaxPriceText() {
+		return _maxPriceText;
+	}
+
 	public Float getMinPrice() {
 		return _minPrice;
+	}
+
+	public String getMinPriceText() {
+		return _minPriceText;
 	}
 
 	public String getName() {
@@ -59,8 +69,16 @@ public class Service implements Cloneable {
 		_maxPrice = maxPrice;
 	}
 
+	public void setMaxPrice(String maxPrice) {
+		_maxPriceText = maxPrice;
+	}
+
 	public void setMinPrice(float minPrice) {
 		_minPrice = minPrice;
+	}
+
+	public void setMinPrice(String minPrice) {
+		_minPriceText = minPrice;
 	}
 
 	public void setName(String name) {

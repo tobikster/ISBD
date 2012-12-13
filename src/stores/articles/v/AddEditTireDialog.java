@@ -15,7 +15,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
 import java.util.Map;
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -30,6 +29,7 @@ import stores.groups.m.ArticlesGroup;
 import stores.producers.c.ProducersService;
 import stores.producers.m.Producer;
 import stores.producers.v.AddEditProducerDialog;
+import utils.c.Formatter;
 import utils.m.WorkingMap;
 
 /**
@@ -40,8 +40,6 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable, 
 {
   private boolean _editMode;
   private Tire _tire;
-  private DecimalFormat _priceFormat = new DecimalFormat("0.00 zł");
-  private DecimalFormat _percentFormat = new DecimalFormat("0.00 %");
   private ListCellRenderer _DOTsTableCellRenderer;
   private ListCellEditor _DOTsTableCellEditor;
   private Border _defaultComponentBorder;
@@ -71,7 +69,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable, 
   {
     super(modal, reloadableParent);
     _editMode=true;
-    _tire=tire;
+    _tire=tire.clone();
     _defaultComponentBorder = new JLabel().getBorder();
     initComponents();
     initItemsLists();
@@ -179,12 +177,12 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable, 
       _articlesGroupComboBox.setSelectedIndex(findIndexForItem(_tire.getGroup()));
     }
     if(_tire.getMargin()!=null) {
-      _marginTextField.setText(_percentFormat.format(_tire.getMargin()));
+      _marginTextField.setText(Formatter.formatPercent(_tire.getMargin()));
     }
     if(_tire.getGrossPrice()!=null) {
-      _grossPriceTextField.setText(_priceFormat.format(_tire.getGrossPrice()));
+      _grossPriceTextField.setText(Formatter.formatPrice(_tire.getGrossPrice()));
       if(_tire.getGroup()!=null)
-        _netPriceTextField.setText(_priceFormat.format(_tire.getNetPrice()));
+        _netPriceTextField.setText(Formatter.formatPrice(_tire.getNetPrice()));
     }
     if(_tire.getTireDOTs()!=null) {
       int iRowId = 0;
@@ -323,7 +321,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable, 
       currentInput=currentInput.replace(",", ".");
       double value = Double.parseDouble(currentInput);
       value*=1+_tire.getGroup().getVat().getRate();
-      _grossPriceTextField.setText(_priceFormat.format(value));
+      _grossPriceTextField.setText(Formatter.formatPrice(value));
     }
   }
   
@@ -334,7 +332,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable, 
       currentInput=currentInput.replace(",", ".");
       double value = Double.parseDouble(currentInput);
       value/=1+_tire.getGroup().getVat().getRate();
-      _netPriceTextField.setText(_priceFormat.format(value));
+      _netPriceTextField.setText(Formatter.formatPrice(value));
     }
   }
 
@@ -860,7 +858,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable, 
     double value;
     try {
       value = Double.parseDouble(currentInput);
-      _marginTextField.setText(_percentFormat.format(value));
+      _marginTextField.setText(Formatter.formatPercent(value));
       _marginTextField.setBorder(_defaultComponentBorder);
       _tire.setMargin(value);
     } catch (NumberFormatException ex) {
@@ -889,7 +887,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable, 
     try
     {
       value=Double.parseDouble(currentInput);
-      _netPriceTextField.setText(_priceFormat.format(value));
+      _netPriceTextField.setText(Formatter.formatPrice(value));
       _netPriceTextField.setBorder(_defaultComponentBorder);
       refreshGrossPrice();
     }
@@ -919,7 +917,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable, 
     try
     {
       value=Double.parseDouble(currentInput);
-      _grossPriceTextField.setText(_priceFormat.format(value));
+      _grossPriceTextField.setText(Formatter.formatPrice(value));
       _grossPriceTextField.setBorder(_defaultComponentBorder);
       refreshNetPrice();
       _tire.setGrossPrice(value);

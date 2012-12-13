@@ -1,9 +1,6 @@
 package stores.articles.v;
 
-import core.c.ErrorHandler;
-import core.c.Reloadable;
-import core.c.TablePagination;
-import core.c.ViewManager;
+import core.c.*;
 import core.m.DatabaseException;
 import core.v.MainMenuView;
 import core.v.PaginationPanel;
@@ -25,6 +22,7 @@ import stores.groups.c.GroupsService;
 import stores.groups.m.ArticlesGroup;
 import stores.groups.m.ArticlesGroupType;
 import stores.groups.v.AddEditArticlesGroupDialog;
+import workers.m.WorkerPosition;
 
 /**
  *
@@ -530,14 +528,15 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 
   private void _addPartMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__addPartMouseClicked
   {//GEN-HEADEREND:event__addPartMouseClicked
-	  if (_currentGroup.getType().equals(ArticlesGroupType.PARTS)) {
+	  if (AuthenticationService.getInstance().getLoggedInUser().getJob().equals(WorkerPosition.BOSS) && _currentGroup.getType().equals(ArticlesGroupType.PARTS)) {
 		  ViewManager.getInstance().showDialog(new AddEditPartDialog(true, this, _currentGroup));
 	  }
   }//GEN-LAST:event__addPartMouseClicked
 
   private void _addPartMouseEntered(java.awt.event.MouseEvent evt)//GEN-FIRST:event__addPartMouseEntered
   {//GEN-HEADEREND:event__addPartMouseEntered
-	  setCursor(new Cursor(Cursor.HAND_CURSOR));
+	  if(AuthenticationService.getInstance().getLoggedInUser().getJob().equals(WorkerPosition.BOSS))
+      setCursor(new Cursor(Cursor.HAND_CURSOR));
   }//GEN-LAST:event__addPartMouseEntered
 
   private void _addPartMouseExited(java.awt.event.MouseEvent evt)//GEN-FIRST:event__addPartMouseExited
@@ -547,7 +546,8 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 
   private void _deleteTireMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__deleteTireMouseClicked
   {//GEN-HEADEREND:event__deleteTireMouseClicked
-    if (_articlesTable.getSelectedRow() >= 0 && _currentGroup.getType().equals(ArticlesGroupType.TIRES)) {
+    if (_articlesTable.getSelectedRow() >= 0 && _currentGroup.getType().equals(ArticlesGroupType.TIRES) &&
+      AuthenticationService.getInstance().getLoggedInUser().getJob().equals(WorkerPosition.BOSS)) {
       try {
         Tire tire = TiresService.getInstance().getTire(_tiresPagination.getCurrentPageData().get(_articlesTable.getSelectedRow()).getId());
 			  boolean removeTire = false;
@@ -587,7 +587,7 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 
   private void _deleteTireMouseEntered(java.awt.event.MouseEvent evt)//GEN-FIRST:event__deleteTireMouseEntered
   {//GEN-HEADEREND:event__deleteTireMouseEntered
-	  if (_articlesTable.getSelectedRow() >= 0) {
+	  if (_articlesTable.getSelectedRow() >= 0 && AuthenticationService.getInstance().getLoggedInUser().getJob().equals(WorkerPosition.BOSS)) {
 		  setCursor(new Cursor(Cursor.HAND_CURSOR));
 	  }
   }//GEN-LAST:event__deleteTireMouseEntered
@@ -624,7 +624,7 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 
   private void _deletePartMouseEntered(java.awt.event.MouseEvent evt)//GEN-FIRST:event__deletePartMouseEntered
   {//GEN-HEADEREND:event__deletePartMouseEntered
-	  if (_articlesTable.getSelectedRow() >= 0) {
+	  if (_articlesTable.getSelectedRow() >= 0 && AuthenticationService.getInstance().getLoggedInUser().getJob().equals(WorkerPosition.BOSS)) {
 		  setCursor(new Cursor(Cursor.HAND_CURSOR));
 	  }
   }//GEN-LAST:event__deletePartMouseEntered
@@ -636,25 +636,29 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 
   private void _deletePartMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__deletePartMouseClicked
   {//GEN-HEADEREND:event__deletePartMouseClicked
-		try {
-      String title = "Usunięcie części";
-			Part part = PartsService.getInstance().getPart(_partsPagination.getCurrentPageData().get(_articlesTable.getSelectedRow()).getId());
-			switch(JOptionPane.showOptionDialog(this, "Czy na pewno chcesz usunąć część " + part.getName(), title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[] {"Tak", "Nie"}, "Nie")) {
-				case 0:
-					PartsService.getInstance().deletePart(part);
-					JOptionPane.showMessageDialog(this, "Dane części zostały pomyślnie usunięte!", title, JOptionPane.INFORMATION_MESSAGE);
-          reload();
-					break;
-			}
-		}
-		catch (SQLException ex) {
-			ErrorHandler.getInstance().reportError(ex);
-		}
+		if(_articlesTable.getSelectedRow() >= 0 && _currentGroup.getType().equals(ArticlesGroupType.PARTS) &&
+      AuthenticationService.getInstance().getLoggedInUser().getJob().equals(WorkerPosition.BOSS)) {
+      try {
+        String title = "Usunięcie części";
+        Part part = PartsService.getInstance().getPart(_partsPagination.getCurrentPageData().get(_articlesTable.getSelectedRow()).getId());
+        switch(JOptionPane.showOptionDialog(this, "Czy na pewno chcesz usunąć część " + part.getName(), title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[] {"Tak", "Nie"}, "Nie")) {
+          case 0:
+            PartsService.getInstance().deletePart(part);
+            JOptionPane.showMessageDialog(this, "Dane części zostały pomyślnie usunięte!", title, JOptionPane.INFORMATION_MESSAGE);
+            reload();
+            break;
+        }
+      }
+      catch (SQLException ex) {
+        ErrorHandler.getInstance().reportError(ex);
+      }
+    }
   }//GEN-LAST:event__deletePartMouseClicked
 
   private void _addTireMouseEntered(java.awt.event.MouseEvent evt)//GEN-FIRST:event__addTireMouseEntered
   {//GEN-HEADEREND:event__addTireMouseEntered
-	  setCursor(new Cursor(Cursor.HAND_CURSOR));
+	  if(AuthenticationService.getInstance().getLoggedInUser().getJob().equals(WorkerPosition.BOSS))
+      setCursor(new Cursor(Cursor.HAND_CURSOR));
   }//GEN-LAST:event__addTireMouseEntered
 
   private void _addTireMouseExited(java.awt.event.MouseEvent evt)//GEN-FIRST:event__addTireMouseExited
@@ -664,7 +668,7 @@ public class ArticleListView extends javax.swing.JPanel implements Reloadable {
 
   private void _addTireMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__addTireMouseClicked
   {//GEN-HEADEREND:event__addTireMouseClicked
-	  if(_currentGroup.getType().equals(ArticlesGroupType.TIRES)) {
+	  if(AuthenticationService.getInstance().getLoggedInUser().getJob().equals(WorkerPosition.BOSS) && _currentGroup.getType().equals(ArticlesGroupType.TIRES)) {
       ViewManager.getInstance().showDialog(new AddEditTireDialog(true, this, _currentGroup));
     }
   }//GEN-LAST:event__addTireMouseClicked

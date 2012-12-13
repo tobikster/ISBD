@@ -16,11 +16,11 @@ public class WorkerValidator implements EntityValidator<Worker> {
 	public boolean validate(Worker object) throws DatabaseException {
 		List<String> errors = new LinkedList<>();
 
-		if (!ElementaryValidator.hasValue(object.getJob())) {
+		if (object.getJob()==null) {
 			errors.add("Nie podano nazwy stanowiska.");
 		}
 		else {
-			if (!ElementaryValidator.maxLengthValidator(object.getJob(), 20)) {
+			if (!ElementaryValidator.maxLengthValidator(object.getJob().toString(), 20)) {
 				errors.add("Nazwy stanowiska jest za długa. Maksymalna długość wynosi 20 znaków.");
 			}
 		}

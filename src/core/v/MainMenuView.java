@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import reports.v.ReportsArticlesCountWindow;
 import services.v.ServicesListView;
 import stores.articles.v.ArticleListView;
+import workers.m.WorkerPosition;
 import workers.v.WorkersView;
 
 /**
@@ -138,7 +139,7 @@ public class MainMenuView extends javax.swing.JPanel
 
   private void bContractorsActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bContractorsActionPerformed
   {//GEN-HEADEREND:event_bContractorsActionPerformed
-    if(AuthenticationService.getInstance().getLoggedInUser().getJob().equals("Właściciel")) {
+    if(AuthenticationService.getInstance().getLoggedInUser().getJob().equals(WorkerPosition.BOSS)) {
       ViewManager.getInstance().openView(new WorkersView());
     } else {
       JOptionPane.showMessageDialog(this, "Nie masz wystarczających uprawnień aby korzystać z tej części aplikacji.", "Brak uprawnień", JOptionPane.ERROR_MESSAGE);
@@ -168,7 +169,7 @@ public class MainMenuView extends javax.swing.JPanel
 
   private void bSettingsActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bSettingsActionPerformed
   {//GEN-HEADEREND:event_bSettingsActionPerformed
-    // TODO add your handling code here:
+    JOptionPane.showMessageDialog(this, "Wybrana funkcjonalność nie jest dostępna w tej wersji aplikacji.");
   }//GEN-LAST:event_bSettingsActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

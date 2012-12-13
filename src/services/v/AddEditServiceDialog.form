@@ -51,7 +51,7 @@
                               <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="1" attributes="0">
                                   <Component id="_maxPriceTextField" max="32767" attributes="0"/>
-                                  <Component id="_minPriceTextField" pref="208" max="32767" attributes="0"/>
+                                  <Component id="_minPriceTextField" pref="137" max="32767" attributes="0"/>
                                   <Component id="_nameTextField" max="32767" attributes="0"/>
                               </Group>
                           </Group>
@@ -110,7 +110,7 @@
           <Font name="Tahoma" size="14" style="1"/>
         </Property>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="_editMode?&quot;Edycja opony&quot;:&quot;Nowa opona&quot;" type="code"/>
+          <Connection code="_editMode?&quot;Edycja us&#x142;ugi&quot;:&quot;Nowa us&#x142;uga&quot;" type="code"/>
         </Property>
         <Property name="verticalAlignment" type="int" value="3"/>
       </Properties>

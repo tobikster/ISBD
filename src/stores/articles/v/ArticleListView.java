@@ -29,7 +29,7 @@ import workers.m.WorkerPosition;
  * @author MRKACZOR
  */
 public class ArticleListView extends javax.swing.JPanel implements Reloadable {
-	public static final int ROWS_PER_PAGE = 5;
+	public static final int ROWS_PER_PAGE = 15;
 	public static final String[] PARTS_COLUMN_NAMES = {
 		"Nazwa",
 		"Producent",

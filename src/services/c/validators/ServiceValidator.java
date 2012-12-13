@@ -33,14 +33,14 @@ public class ServiceValidator implements EntityValidator<Service>
 				errors.add("Wprowadzona nazwa uśługi jest zbyt długa (maksymalna długość wynosi 40 znaków).");
 		}
 		
-		if(!ElementaryValidator.minNumberValidator(object.getMinPrice(), 0)) {
+    if(object.getMinPrice()!=null && !ElementaryValidator.minNumberValidator(object.getMinPrice(), 0)) {
 			errors.add("Minimalna cena usługi nie może być mniejsza od zera.");
 		}
     
-    if(!ElementaryValidator.minNumberValidator(object.getMaxPrice(), 0)) {
+    if(object.getMaxPrice()!=null && !ElementaryValidator.minNumberValidator(object.getMaxPrice(), 0)) {
 			errors.add("Maksymalna cena usługi nie może być mniejsza od zera.");
 		}
-		if(object.getMinPrice() > object.getMaxPrice()) {
+		if(object.getMinPrice()!=null && object.getMaxPrice()!=null && object.getMinPrice() > object.getMaxPrice()) {
 			errors.add("Minimalna cena usługi nie może być większa od ceny maksymalnej.");
 		}
 

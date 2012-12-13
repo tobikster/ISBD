@@ -135,7 +135,7 @@ public class AddEditServiceDialog extends ApplicationDialog
         setMinimumSize(new java.awt.Dimension(300, 210));
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel1.setText(_editMode?"Edycja opony":"Nowa opona");
+        jLabel1.setText(_editMode?"Edycja usługi":"Nowa usługa");
         jLabel1.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
 
         _minPriceTextField.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -221,7 +221,7 @@ public class AddEditServiceDialog extends ApplicationDialog
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(_maxPriceTextField)
-                                    .addComponent(_minPriceTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+                                    .addComponent(_minPriceTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
                                     .addComponent(_nameTextField))))
                         .addGap(24, 24, 24))
                     .addComponent(jSeparator1)

@@ -177,7 +177,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable, 
       _articlesGroupComboBox.setSelectedIndex(findIndexForItem(_tire.getGroup()));
     }
     if(_tire.getMargin()!=null) {
-      _marginTextField.setText(Formatter.formatPercent(_tire.getMargin()));
+      _marginTextField.setText(Formatter.formatPercent(_tire.getMargin()*100));
     }
     if(_tire.getGrossPrice()!=null) {
       _grossPriceTextField.setText(Formatter.formatPrice(_tire.getGrossPrice()));
@@ -860,7 +860,7 @@ public class AddEditTireDialog extends ApplicationDialog implements Reloadable, 
       value = Double.parseDouble(currentInput);
       _marginTextField.setText(Formatter.formatPercent(value));
       _marginTextField.setBorder(_defaultComponentBorder);
-      _tire.setMargin(value);
+      _tire.setMargin(value/100);
     } catch (NumberFormatException ex) {
       //currentInput+=" %";
       _marginTextField.setText(currentInput);

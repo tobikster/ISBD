@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package services.c;
+package services.c.validators;
 
 import core.c.ElementaryValidator;
 import core.c.EntityValidator;

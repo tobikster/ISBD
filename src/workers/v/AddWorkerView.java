@@ -84,6 +84,7 @@ public class AddWorkerView extends ApplicationDialog
         _repeatPasswordField = new javax.swing.JPasswordField();
         _jobComboBox = new javax.swing.JComboBox();
         _titleLabel = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Dodawanie pracownika");
@@ -194,8 +195,8 @@ public class AddWorkerView extends ApplicationDialog
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        _titleLabel.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        _titleLabel.setText("Wprowadź dane pracownika");
+        _titleLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        _titleLabel.setText("Nowy pracownik");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -212,7 +213,8 @@ public class AddWorkerView extends ApplicationDialog
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(_titleLabel)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(_dataPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(_dataPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
 
@@ -224,8 +226,10 @@ public class AddWorkerView extends ApplicationDialog
                 .addContainerGap()
                 .addComponent(_titleLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(_dataPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(_dataPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(_cancelButton)
                     .addComponent(_okButton))
@@ -299,6 +303,7 @@ public class AddWorkerView extends ApplicationDialog
     private javax.swing.JLabel _surnameLabel;
     private javax.swing.JTextField _surnameTextField;
     private javax.swing.JLabel _titleLabel;
+    private javax.swing.JSeparator jSeparator1;
     // End of variables declaration//GEN-END:variables
   private int returnStatus=RET_CANCEL;
 }

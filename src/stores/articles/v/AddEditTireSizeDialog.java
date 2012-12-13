@@ -38,9 +38,28 @@ public class AddEditTireSizeDialog extends ApplicationDialog
     super(modal, parent);
     if(parent instanceof Feedbackable)
       _parent = (Feedbackable)parent;
-    _editMode = false;
-    _tireSize = tireSize;
+    _editMode = true;
+    _tireSize = tireSize.clone();
     initComponents();
+	initTextFields();
+  }
+  
+  private void initTextFields() {
+	  initWidthTextField();
+	  initProfileTextField();
+	  initDiametertextField();
+  }
+  
+  private void initWidthTextField() {
+	  _widthTextField.setText(_tireSize.getWidth());
+  }
+  
+  private void initProfileTextField() {
+	  _profileTextField.setText(_tireSize.getProfile());
+  }
+  
+  private void initDiametertextField() {
+	  _diameterTextField.setText(_tireSize.getDiameter());
   }
 
   /**

@@ -8,11 +8,13 @@ import core.c.ErrorHandler;
 import core.c.Reloadable;
 import core.c.TablePagination;
 import core.c.ViewManager;
+import core.m.DatabaseException;
 import core.v.MainMenuView;
 import core.v.PaginationPanel;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -38,6 +40,7 @@ public class ServicesListView extends javax.swing.JPanel implements Reloadable
 	};
 	private TablePagination<Service> _partsPagination;
   private ServicesGroup _currentGroup;
+  private boolean _reloadTree;
 
   /**
    * Creates new form ServicesListView
@@ -45,6 +48,7 @@ public class ServicesListView extends javax.swing.JPanel implements Reloadable
   public ServicesListView()
   {
     _partsPagination = new TablePagination<>(new ArrayList<Service>(), ROWS_PER_PAGE);
+    _reloadTree = false;
     initComponents();
 		refreshPopupMenu();
 		//refresArticlesToolbar();
@@ -52,33 +56,33 @@ public class ServicesListView extends javax.swing.JPanel implements Reloadable
     _navPanel.setButtonsListener(new PaginationPanel.ButtonsListener() {
 			@Override
 			public void nextButtonClicked() {
-        _articlesTable.setModel(getPartsTableModel(_partsPagination.getNextPage()));
+        _servicesTable.setModel(getPartsTableModel(_partsPagination.getNextPage()));
         _navPanel.setCurrentPage(_partsPagination.getCurrentPage());
 			}
 
 			@Override
 			public void previousButtonClicked() {
-				_articlesTable.setModel(getPartsTableModel(_partsPagination.getPreviousPage()));
+				_servicesTable.setModel(getPartsTableModel(_partsPagination.getPreviousPage()));
         _navPanel.setCurrentPage(_partsPagination.getCurrentPage());
 			}
 
 			@Override
 			public void firstButtonClicked() {
-				_articlesTable.setModel(getPartsTableModel(_partsPagination.getFirstPage()));
+				_servicesTable.setModel(getPartsTableModel(_partsPagination.getFirstPage()));
         _navPanel.setCurrentPage(_partsPagination.getCurrentPage());
 			}
 
 			@Override
 			public void lastButtonClicked() {
-				_articlesTable.setModel(getPartsTableModel(_partsPagination.getLastPage()));
+				_servicesTable.setModel(getPartsTableModel(_partsPagination.getLastPage()));
         _navPanel.setCurrentPage(_partsPagination.getCurrentPage());
 			}
 		});
   }
 
   private void refreshPopupMenu() {
-		_editGroup.setEnabled(_currentGroup!=null);
-		_deleteGroup.setEnabled(_currentGroup!=null);
+		_editGroup.setEnabled(_currentGroup.getId()!=0);
+		_deleteGroup.setEnabled(_currentGroup.getId()!=0);
 	}
 
   public TableModel getPartsTableModel(List<Service> services) {
@@ -119,16 +123,24 @@ public class ServicesListView extends javax.swing.JPanel implements Reloadable
   {
     try {
 			_partsPagination.setTableData(ServicesService.getInstance().getServices(_currentGroup));
-			_articlesTable.setModel(getPartsTableModel(_partsPagination.getCurrentPageData()));
+			_servicesTable.setModel(getPartsTableModel(_partsPagination.getCurrentPageData()));
 			_navPanel.setCurrentPage(_partsPagination.getCurrentPage());
 			_navPanel.setPageCount(_partsPagination.getPageCount());
+      //reload groups tree if needed
+      if(_reloadTree) {
+        int iSelectedRow = _servicesGroupsTree.getSelectionRows()[0];
+        _servicesGroupsTree.setModel(getTreeModel());
+        _servicesGroupsTree.expandRow(0);
+        _servicesGroupsTree.setSelectionRow(iSelectedRow);
+        _reloadTree = false;
+      }
     } catch(SQLException ex) {
       ErrorHandler.getInstance().reportError(ex);
     }
   }
   
   private void updateSelectedGroup() {
-    _currentGroup = (ServicesGroup) (((DefaultMutableTreeNode) (_articleGroupsTree.getLastSelectedPathComponent())).getUserObject());
+    _currentGroup = (ServicesGroup) (((DefaultMutableTreeNode) (_servicesGroupsTree.getLastSelectedPathComponent())).getUserObject());
   }
 
   /**
@@ -139,6 +151,7 @@ public class ServicesListView extends javax.swing.JPanel implements Reloadable
   @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         _groupsPopupMenu = new javax.swing.JPopupMenu();
         _addGroup = new javax.swing.JMenuItem();
@@ -148,9 +161,9 @@ public class ServicesListView extends javax.swing.JPanel implements Reloadable
         bBack = new javax.swing.JButton();
         _navPanel = new core.v.PaginationPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        _articleGroupsTree = new javax.swing.JTree();
+        _servicesGroupsTree = new javax.swing.JTree();
         jScrollPane4 = new javax.swing.JScrollPane();
-        _articlesTable = new javax.swing.JTable();
+        _servicesTable = new javax.swing.JTable();
 
         _addGroup.setText("Dodaj dział");
         _addGroup.addActionListener(new java.awt.event.ActionListener() {
@@ -189,21 +202,25 @@ public class ServicesListView extends javax.swing.JPanel implements Reloadable
             }
         });
 
-        _articleGroupsTree.setModel(getTreeModel());
-        _articleGroupsTree.setRootVisible(false);
-        _articleGroupsTree.setSelectionRow(0);
+        _servicesGroupsTree.setModel(getTreeModel());
+        _servicesGroupsTree.setRootVisible(false);
+
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, _groupsPopupMenu, org.jdesktop.beansbinding.ObjectProperty.create(), _servicesGroupsTree, org.jdesktop.beansbinding.BeanProperty.create("componentPopupMenu"));
+        bindingGroup.addBinding(binding);
+
+        _servicesGroupsTree.setSelectionRow(0);
         updateSelectedGroup();
-        _articleGroupsTree.addMouseListener(new java.awt.event.MouseAdapter() {
+        _servicesGroupsTree.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                _articleGroupsTreeMouseClicked(evt);
+                _servicesGroupsTreeMouseClicked(evt);
             }
         });
-        jScrollPane3.setViewportView(_articleGroupsTree);
+        jScrollPane3.setViewportView(_servicesGroupsTree);
 
-        _articlesTable.setColumnSelectionAllowed(false);
-        _articlesTable.setShowVerticalLines(false);
-        _articlesTable.setModel(getPartsTableModel(_partsPagination.getCurrentPageData()));
-        jScrollPane4.setViewportView(_articlesTable);
+        _servicesTable.setColumnSelectionAllowed(false);
+        _servicesTable.setShowVerticalLines(false);
+        _servicesTable.setModel(getPartsTableModel(_partsPagination.getCurrentPageData()));
+        jScrollPane4.setViewportView(_servicesTable);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -241,6 +258,8 @@ public class ServicesListView extends javax.swing.JPanel implements Reloadable
                     .addComponent(bBack, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
+
+        bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
 
   private void bBackActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bBackActionPerformed
@@ -248,8 +267,8 @@ public class ServicesListView extends javax.swing.JPanel implements Reloadable
     ViewManager.getInstance().openView(new MainMenuView());
   }//GEN-LAST:event_bBackActionPerformed
 
-  private void _articleGroupsTreeMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__articleGroupsTreeMouseClicked
-  {//GEN-HEADEREND:event__articleGroupsTreeMouseClicked
+  private void _servicesGroupsTreeMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event__servicesGroupsTreeMouseClicked
+  {//GEN-HEADEREND:event__servicesGroupsTreeMouseClicked
     int previous=_currentGroup.getId();
     updateSelectedGroup();
     if(_currentGroup.getId()!=previous)
@@ -258,96 +277,80 @@ public class ServicesListView extends javax.swing.JPanel implements Reloadable
       //refresArticlesToolbar();
       reload();
     }
-  }//GEN-LAST:event__articleGroupsTreeMouseClicked
+  }//GEN-LAST:event__servicesGroupsTreeMouseClicked
 
   private void _addGroupActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event__addGroupActionPerformed
   {//GEN-HEADEREND:event__addGroupActionPerformed
-//    ssViewManager.getInstance().showDialog(new AddEditArticlesGroupDialog(true, this, _currentGroup.getType()));
+    _reloadTree = true;
+    ViewManager.getInstance().showDialog(new AddEditServicesGroupDialog(true, this));
   }//GEN-LAST:event__addGroupActionPerformed
 
   private void _editGroupActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event__editGroupActionPerformed
   {//GEN-HEADEREND:event__editGroupActionPerformed
-//    ViewManager.getInstance().showDialog(new AddEditArticlesGroupDialog(true, this, _currentGroup));
+    _reloadTree = true;
+    ViewManager.getInstance().showDialog(new AddEditServicesGroupDialog(true, this, _currentGroup));
   }//GEN-LAST:event__editGroupActionPerformed
 
   private void _deleteGroupActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event__deleteGroupActionPerformed
   {//GEN-HEADEREND:event__deleteGroupActionPerformed
-//    try
-//    {
-//      boolean removeGroup=false;
-//      String message;
-//      final String title="Usuń grupę towarową";
-//      final int removability=GroupsService.getInstance().checkRemovabilityGroup(_currentGroup);
-//      if(removability>0)
-//      {
-//        message="Czy na pewno chcesz usunąć grupę towarową \""+_currentGroup+"\"?";
-//        switch(JOptionPane.showOptionDialog(this, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[]
-//          {
-//            "OK", "Anuluj"
-//          }, "OK"))
-//        {
-//          case 0: //OK
-//            removeGroup=true;
-//            break;
-//          case 1: //Cancel
-//            removeGroup=false;
-//            break;
-//        }
-//      }
-//      else if(removability<0)
-//      {
-//        message="Grupa towarowa "+_currentGroup.getName()+" nie może zostać usunięta, ponieważ zawiera ";
-//        message+=(_currentGroup.getType()==ArticlesGroupType.PARTS) ? "części" : "opony";
-//        message+="znajdujące się na magazynie";
-//        JOptionPane.showOptionDialog(this, message, title, JOptionPane.OK_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[]
-//          {
-//            "OK"
-//          }, "OK");
-//        removeGroup=false;
-//      }
-//      else
-//      {
-//        message="Usunięcie grupy towarowej spowoduje usunięcie powiązanych z nią ";
-//        message+=(_currentGroup.getType()==ArticlesGroupType.PARTS) ? "części" : "opon";
-//        message+=".\nCzy chcesz kontynuować?";
-//        switch(JOptionPane.showOptionDialog(this, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[]
-//          {
-//            "Tak", "Nie"
-//          }, "Nie"))
-//        {
-//          case 0: //Tak
-//            removeGroup=true;
-//            break;
-//          case 1:
-//            removeGroup=false;
-//            break;
-//        }
-//      }
-//      if(removeGroup)
-//      {
-//        GroupsService.getInstance().removeArticlesGroup(_currentGroup);
-//        JOptionPane.showMessageDialog(this, "Dane grupy towarowe zostały pomyślnie usunięte!", title, JOptionPane.INFORMATION_MESSAGE);
-//        reload();
-//      }
-//    }
-//    catch(SQLException|DatabaseException ex)
-//    {
-//      ErrorHandler.getInstance().reportError(ex);
-//    }
+    try {
+      boolean removeGroup=false;
+      String message;
+      final String title="Usuń dział usług";
+      final int removability=ServicesGroupsService.getInstance().checkRemovabilityGroup(_currentGroup);
+      if(removability>0) {
+        message="Czy na pewno chcesz usunąć grupę towarową \""+_currentGroup+"\"?";
+        switch(JOptionPane.showOptionDialog(this, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[] {"OK", "Anuluj"}, "OK"))
+        {
+          case 0: //OK
+            removeGroup=true;
+            break;
+          case 1: //Cancel
+            removeGroup=false;
+            break;
+        }
+      }
+      else if(removability<0) {
+        message="Dział usług "+_currentGroup+" nie może zostać usunięty, ponieważ zawiera usługi znajdujące się w historii świadczonych usług.";
+        JOptionPane.showOptionDialog(this, message, title, JOptionPane.OK_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[] {"OK"}, "OK");
+        removeGroup=false;
+      }
+      else {
+        message="Usunięcie wybranego działu usług spowoduje utratę danych dotyczących powiązanych z nim usług.\nCzy chcesz kontynuować?";
+        switch(JOptionPane.showOptionDialog(this, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[] {"Tak", "Nie"}, "Nie"))
+        {
+          case 0: //Tak
+            removeGroup=true;
+            break;
+          case 1:
+            removeGroup=false;
+            break;
+        }
+      }
+      if(removeGroup) {
+        ServicesGroupsService.getInstance().deleteServicesGroup(_currentGroup);
+        JOptionPane.showMessageDialog(this, "Dane działu usług zostały pomyślnie usunięte!", title, JOptionPane.INFORMATION_MESSAGE);
+        _reloadTree = true;
+        reload();
+      }
+    } catch(SQLException ex) {
+      ErrorHandler.getInstance().reportError(ex);
+    }
   }//GEN-LAST:event__deleteGroupActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem _addGroup;
-    private javax.swing.JTree _articleGroupsTree;
-    private javax.swing.JTable _articlesTable;
     private javax.swing.JMenuItem _deleteGroup;
     private javax.swing.JMenuItem _editGroup;
     private javax.swing.JPopupMenu _groupsPopupMenu;
     private core.v.PaginationPanel _navPanel;
+    private javax.swing.JTree _servicesGroupsTree;
+    private javax.swing.JTable _servicesTable;
     private javax.swing.JButton bBack;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JLabel lTitle;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 
 }

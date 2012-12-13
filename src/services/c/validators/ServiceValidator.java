@@ -23,38 +23,28 @@ public class ServiceValidator implements EntityValidator<Service>
 	{
 		List<String> errors = new LinkedList<>();
 		
-		if(object.getGroup() == null)
-		{
+		if(object.getGroup() == null) {
 			errors.add("Nie wprowadzono działu usług dla usługi.");
 		}
 
-		if(!ElementaryValidator.hasValue(object.getName()))
-		{
+		if(!ElementaryValidator.hasValue(object.getName())) {
 			errors.add("Nie wprowadzono nazwy usługi.");
-		}else
-		{
-			if(!ElementaryValidator.maxLengthValidator(object.getName(), 40))
-			{
-				errors.add("Wprowadzona nazwa uśługi jest za długa, maksymalna długość wynosi 40 znaków.");
-			}
+		} else if(!ElementaryValidator.maxLengthValidator(object.getName(), 40)) {
+				errors.add("Wprowadzona nazwa uśługi jest zbyt długa (maksymalna długość wynosi 40 znaków).");
 		}
 		
-		if(!ElementaryValidator.minNumberValidator(object.getMinPrice(), 0))
-		{
+		if(!ElementaryValidator.minNumberValidator(object.getMinPrice(), 0)) {
 			errors.add("Minimalna cena usługi nie może być mniejsza od zera.");
 		}
-		if(!ElementaryValidator.minNumberValidator(object.getMaxPrice(), 0))
-		{
+    
+    if(!ElementaryValidator.minNumberValidator(object.getMaxPrice(), 0)) {
 			errors.add("Maksymalna cena usługi nie może być mniejsza od zera.");
 		}
-		if(object.getMinPrice() > object.getMaxPrice())
-		{
-			errors.add("Minimalna cena usługi nie może być wieksza od ceny maksymalnej.");
+		if(object.getMinPrice() > object.getMaxPrice()) {
+			errors.add("Minimalna cena usługi nie może być większa od ceny maksymalnej.");
 		}
-		
 
-		if (!errors.isEmpty())
-		{
+		if(!errors.isEmpty()) {
 			throw new DatabaseException(errors);
 		}
 

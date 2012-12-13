@@ -237,15 +237,10 @@ public class GroupsService {
 	}
 
 	public boolean removeArticlesGroup(ArticlesGroup group) throws DatabaseException, SQLException {
-		boolean result = false;
-		ArticlesGroupValidator validator = new ArticlesGroupValidator();
-		if (validator.validate(group)) {
-			String query = "DELETE FROM GrupyTowarowe "
-					+ "WHERE KodGrupy=" + group.getCode() + ";";
-			DatabaseManager.getInstance().executeQuery(query);
-			result = true;
-		}
-		return result;
+    String query = "DELETE FROM GrupyTowarowe "
+        + "WHERE KodGrupy=" + group.getCode() + ";";
+    DatabaseManager.getInstance().executeQuery(query);
+		return true;
 	}
 
 	public int checkRemovabilityGroup(ArticlesGroup group) throws SQLException {

@@ -28,7 +28,8 @@ public class ServicesGroupValidator implements EntityValidator<ServicesGroup>
 			errors.add("Nie podano nazwy działu usług.");
 		}else
 		{
-			if(!ElementaryValidator.maxLengthValidator(object.getName(), 30));
+			if(!ElementaryValidator.maxLengthValidator(object.getName(), 30))
+        errors.add("Podana nazwa działu jest zbyt długa (dopuszczalne 30 znaków)!");
 		}
 		
 		if(object.getVat() == null)

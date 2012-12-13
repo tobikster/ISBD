@@ -32,6 +32,21 @@
             <Property name="text" type="java.lang.String" value="Edycja"/>
           </Properties>
         </Menu>
+        <Menu class="javax.swing.JMenu" name="mKnowlageBase">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Baza wiedzy"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="miProducers">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Producenci"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="miProducersActionPerformed"/>
+              </Events>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
       </SubComponents>
     </Menu>
   </NonVisualComponents>

@@ -37,6 +37,17 @@ public class AddEditProducerDialog extends ApplicationDialog
     _editMode = true;
     _producer = producer;
     initComponents();
+	initTextFields();
+  }
+  
+  private void initTextFields() {
+	  initNameTextField();
+  }
+  
+  private void initNameTextField() {
+	  if(_producer != null) {
+		  _nameTextField.setText(_producer.getName());
+	  }
   }
 
   /**

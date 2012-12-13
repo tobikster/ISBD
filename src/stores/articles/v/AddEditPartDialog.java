@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JLabel;
+import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import stores.articles.c.PartsService;
@@ -39,6 +41,7 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
 	private Part _part;
 	private DecimalFormat _priceFormat;
 	private DecimalFormat _percentFormat;
+	private final Border _defaultBorder;
 	public static final String[] COLUMN_NAMES = {
 		"Nazwa",
 		"Wartość"
@@ -55,6 +58,7 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
 		super(modal, reloadableParent);
 		_priceFormat = new DecimalFormat("0.00 zł");
 		_percentFormat = new DecimalFormat("0.00 %");
+		_defaultBorder = new JLabel().getBorder();
 		_editMode = false;
 		_part = new Part();
 		_part.setAttributes(new WorkingMap<ArticleAttribute, String>());
@@ -77,6 +81,7 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
 		super(modal, reloadableParent);
 		_priceFormat = new DecimalFormat("0.00 zł");
 		_percentFormat = new DecimalFormat("0.00 %");
+		_defaultBorder = new JLabel().getBorder();
 		_editMode = true;
 		_part = part;
 		initComponents();
@@ -252,14 +257,36 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
         });
 
         _producerComboBox.setModel(getProducersModel());
+        _producerComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                _producerComboBoxActionPerformed(evt);
+            }
+        });
 
         _catalogNumberLabel.setText("Numer katalogowy:");
 
+        _catalogNumberTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                _catalogNumberTextFieldFocusLost(evt);
+            }
+        });
+
         _nameLabel.setText("Nazwa:");
+
+        _nameTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                _nameTextFieldFocusLost(evt);
+            }
+        });
 
         _countLabel.setText("Ilość:");
 
         _countSpinner.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), Float.valueOf(0.0f), null, Float.valueOf(1.0f)));
+        _countSpinner.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                _countSpinnerFocusLost(evt);
+            }
+        });
 
         _pictureLabel.setText("Zdjęcie:");
 
@@ -429,7 +456,7 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
         _controlPanelLayout.setHorizontalGroup(
             _controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, _controlPanelLayout.createSequentialGroup()
-                .addContainerGap(183, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(_okButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(_cancelButton)
@@ -551,19 +578,19 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
     }//GEN-LAST:event__marginTextFieldFocusGained
 
     private void _marginTextFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event__marginTextFieldFocusLost
-		String currentInput = _marginTextField.getText();
-		currentInput = currentInput.replace(",", ".");
-		double value;
-		try {
-			value = Double.parseDouble(currentInput);
-			_marginTextField.setText(_percentFormat.format(value));
-			_marginTextField.setBorder(null);
-		}
-		catch (NumberFormatException ex) {
-			currentInput += " %";
-			_marginTextField.setText(currentInput);
-			_marginTextField.setBorder(BorderFactory.createLineBorder(Color.red));
-		}
+    String currentInput=_marginTextField.getText();
+    currentInput=currentInput.replace(",", ".");
+    try {
+      float value = Float.parseFloat(currentInput);
+      _marginTextField.setText(_percentFormat.format(value));
+      _marginTextField.setBorder(_defaultBorder);
+      _part.setMargin(value);
+    } catch (NumberFormatException ex) {
+      //currentInput+=" %";
+      _marginTextField.setText(currentInput);
+      _marginTextField.setBorder(BorderFactory.createLineBorder(Color.RED));
+      _part.setMarginText(currentInput);
+    }
     }//GEN-LAST:event__marginTextFieldFocusLost
 
     private void _netPriceTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event__netPriceTextFieldFocusGained
@@ -576,20 +603,21 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
     }//GEN-LAST:event__netPriceTextFieldFocusGained
 
     private void _netPriceTextFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event__netPriceTextFieldFocusLost
-		String currentInput = _netPriceTextField.getText();
-		currentInput = currentInput.replace(",", ".");
-		double value;
-		try {
-			value = Double.parseDouble(currentInput);
-			_netPriceTextField.setText(_priceFormat.format(value));
-			_netPriceTextField.setBorder(null);
-			refreshGrossPrice();
-		}
-		catch (NumberFormatException ex) {
-			currentInput += " zł";
-			_netPriceTextField.setText(currentInput);
-			_netPriceTextField.setBorder(BorderFactory.createLineBorder(Color.red));
-		}
+    String currentInput=_netPriceTextField.getText();
+    currentInput=currentInput.replace(",", ".");
+    try
+    {
+      float value=Float.parseFloat(currentInput);
+      _netPriceTextField.setText(_priceFormat.format(value));
+      _netPriceTextField.setBorder(_defaultBorder);
+      refreshGrossPrice();
+    }
+    catch(NumberFormatException ex)
+    {
+      //currentInput+=" zł";
+      _netPriceTextField.setText(currentInput);
+      _netPriceTextField.setBorder(BorderFactory.createLineBorder(Color.red));
+    }
     }//GEN-LAST:event__netPriceTextFieldFocusLost
 
     private void _grossPriceTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event__grossPriceTextFieldFocusGained
@@ -602,20 +630,23 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
     }//GEN-LAST:event__grossPriceTextFieldFocusGained
 
     private void _grossPriceTextFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event__grossPriceTextFieldFocusLost
-		String currentInput = _grossPriceTextField.getText();
-		currentInput = currentInput.replace(",", ".");
-		double value;
-		try {
-			value = Double.parseDouble(currentInput);
-			_grossPriceTextField.setText(_priceFormat.format(value));
-			_grossPriceTextField.setBorder(null);
-			refreshNetPrice();
-		}
-		catch (NumberFormatException ex) {
-			currentInput += " zł";
-			_grossPriceTextField.setText(currentInput);
-			_grossPriceTextField.setBorder(BorderFactory.createLineBorder(Color.red));
-		}
+    String currentInput=_grossPriceTextField.getText();
+    currentInput=currentInput.replace(",", ".");
+    try
+    {
+      float value=Float.parseFloat(currentInput);
+      _grossPriceTextField.setText(_priceFormat.format(value));
+      _grossPriceTextField.setBorder(_defaultBorder);
+      refreshNetPrice();
+      _part.setGrossPrice(value);
+    }
+    catch(NumberFormatException ex)
+    {
+      //currentInput+=" zł";
+      _grossPriceTextField.setText(currentInput);
+      _grossPriceTextField.setBorder(BorderFactory.createLineBorder(Color.red));
+      _part.setGrossPriceText(currentInput);
+    }
     }//GEN-LAST:event__grossPriceTextFieldFocusLost
 
     private void _okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__okButtonActionPerformed
@@ -641,6 +672,22 @@ public class AddEditPartDialog extends ApplicationDialog implements Reloadable {
     private void _addArticlesGroupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__addArticlesGroupButtonActionPerformed
 		ViewManager.getInstance().showDialog(new AddEditArticlesGroupDialog(true, this, ArticlesGroupType.PARTS));
     }//GEN-LAST:event__addArticlesGroupButtonActionPerformed
+
+    private void _nameTextFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event__nameTextFieldFocusLost
+		_part.setName(_nameTextField.getText());
+    }//GEN-LAST:event__nameTextFieldFocusLost
+
+    private void _catalogNumberTextFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event__catalogNumberTextFieldFocusLost
+        _part.setCatalogNumber(_catalogNumberTextField.getText());
+    }//GEN-LAST:event__catalogNumberTextFieldFocusLost
+
+    private void _producerComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__producerComboBoxActionPerformed
+        _part.setProducer((Producer)(_producerComboBox.getSelectedItem()));
+    }//GEN-LAST:event__producerComboBoxActionPerformed
+
+    private void _countSpinnerFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event__countSpinnerFocusLost
+		_part.setCount((Float)(_countSpinner.getValue()));
+    }//GEN-LAST:event__countSpinnerFocusLost
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton _addArticlesGroupButton;

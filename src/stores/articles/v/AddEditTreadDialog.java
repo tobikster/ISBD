@@ -52,7 +52,7 @@ public class AddEditTreadDialog extends ApplicationDialog implements Reloadable,
     if(parent instanceof Feedbackable)
       _parent = (Feedbackable)parent;
     _editMode = true;
-    _tread = tread;
+    _tread = tread.clone();
     initComponents();
     loadProducersList();
     reload();

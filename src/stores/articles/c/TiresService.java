@@ -445,7 +445,7 @@ public class TiresService {
 				+ "WHERE Opony.IdRozmiaru = " + tireSize.getId() + ";";
 		List<ResultRow> resultRows = DatabaseManager.getInstance().executeQueryResult(query);
 		if (!resultRows.isEmpty()) {
-			if(resultRows.get(0).getString(1) != null) {
+			if (resultRows.get(0).getString(1) != null) {
 				if (resultRows.get(0).getFloat(1) == 0.0) {
 					result = 0;
 				}
@@ -566,6 +566,61 @@ public class TiresService {
 
 		String sQuery = "UPDATE BieznikiOpon SET Nazwa='" + tread.getName() + "' WHERE IdBieznika=" + tread.getId() + ";";
 		DatabaseManager.getInstance().executeQuery(sQuery);
+	}
+
+	public int getTreadRemovability(Tread tread) throws SQLException {
+		int result = -1;
+		String query = "SELECT SUM(DOTyOpon.Liczba) "
+				+ "FROM Opony INNER JOIN DOTyOpon ON Opony.IdOpony = DOTyOpon.IdOpony "
+				+ "WHERE Opony.IdBieznika = " + tread.getId() + ";";
+		System.out.println("query = " + query);
+		List<ResultRow> resultRows = DatabaseManager.getInstance().executeQueryResult(query);
+		if (!resultRows.isEmpty()) {
+			if (resultRows.get(0).getString(1) != null) {
+				if (resultRows.get(0).getFloat(1) == 0.0) {
+					result = 0;
+				}
+				else {
+					result = -1;
+				}
+			}
+			else {
+				query = "SELECT COUNT(Opony.IdOpony) "
+						+ "FROM Opony "
+						+ "WHERE Opony.IdBieznika = " + tread.getId() + ";";
+				resultRows = DatabaseManager.getInstance().executeQueryResult(query);
+				if (!resultRows.isEmpty() && resultRows.get(0).getString(1) != null && resultRows.get(0).getInt(1) == 0) {
+					result = 1;
+				}
+				else {
+					result = 0;
+				}
+			}
+		}
+		return result;
+	}
+
+	public void deleteTread(Tread tread) throws SQLException {
+		DatabaseManager.getInstance().startTransaction();
+		try {
+			String query = "SELECT Opony.IdOpony "
+					+ "FROM Opony "
+					+ "WHERE IdBieznika = " + tread.getId() + ";";
+			List<ResultRow> resultRows = DatabaseManager.getInstance().executeQueryResult(query);
+			for (ResultRow row : resultRows) {
+				query = "DELETE FROM Opony "
+						+ "WHERE IdOpony = " + row.getInt(1) + ";";
+				DatabaseManager.getInstance().executeQuery(query);
+			}
+			query = "DELETE FROM BieznikiOpon "
+					+ "WHERE BieznikiOpon.IdBieznika = " + tread.getId() + ";";
+			DatabaseManager.getInstance().executeQuery(query);
+			DatabaseManager.getInstance().commitTransaction();
+		}
+		catch (SQLException ex) {
+			DatabaseManager.getInstance().rollbackTransaction();
+			throw ex;
+		}
 	}
 	// </editor-fold>
 }

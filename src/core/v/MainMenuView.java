@@ -8,6 +8,7 @@ import core.c.AuthenticationService;
 import core.c.ViewManager;
 import javax.swing.JOptionPane;
 import reports.v.ReportsArticlesCountWindow;
+import services.v.ServicesListView;
 import stores.articles.v.ArticleListView;
 import workers.v.WorkersView;
 
@@ -36,7 +37,7 @@ public class MainMenuView extends javax.swing.JPanel
 
         bContractors = new javax.swing.JButton();
         bSale = new javax.swing.JButton();
-        bDelivery = new javax.swing.JButton();
+        bServices = new javax.swing.JButton();
         bWarehouse = new javax.swing.JButton();
         bDocuments = new javax.swing.JButton();
         bSettings = new javax.swing.JButton();
@@ -56,10 +57,10 @@ public class MainMenuView extends javax.swing.JPanel
             }
         });
 
-        bDelivery.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/128x128/Caargo-128.png"))); // NOI18N
-        bDelivery.addActionListener(new java.awt.event.ActionListener() {
+        bServices.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/128x128/Hand-Tools-128.png"))); // NOI18N
+        bServices.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bDeliveryActionPerformed(evt);
+                bServicesActionPerformed(evt);
             }
         });
 
@@ -110,7 +111,7 @@ public class MainMenuView extends javax.swing.JPanel
                     .addGap(78, 78, 78)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(bSettings)
-                        .addComponent(bDelivery))
+                        .addComponent(bServices))
                     .addContainerGap(81, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
@@ -123,7 +124,7 @@ public class MainMenuView extends javax.swing.JPanel
                 .addGroup(layout.createSequentialGroup()
                     .addGap(158, 158, 158)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(bDelivery)
+                        .addComponent(bServices)
                         .addComponent(bSale)
                         .addComponent(bContractors))
                     .addGap(60, 60, 60)
@@ -149,10 +150,10 @@ public class MainMenuView extends javax.swing.JPanel
     JOptionPane.showMessageDialog(this, "Wybrana funkcjonalność nie jest dostępna w tej wersji aplikacji.");
   }//GEN-LAST:event_bSaleActionPerformed
 
-  private void bDeliveryActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bDeliveryActionPerformed
-  {//GEN-HEADEREND:event_bDeliveryActionPerformed
-    JOptionPane.showMessageDialog(this, "Wybrana funkcjonalność nie jest dostępna w tej wersji aplikacji.");
-  }//GEN-LAST:event_bDeliveryActionPerformed
+  private void bServicesActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bServicesActionPerformed
+  {//GEN-HEADEREND:event_bServicesActionPerformed
+    ViewManager.getInstance().openView(new ServicesListView());
+  }//GEN-LAST:event_bServicesActionPerformed
 
   private void bWarehouseActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_bWarehouseActionPerformed
   {//GEN-HEADEREND:event_bWarehouseActionPerformed
@@ -172,9 +173,9 @@ public class MainMenuView extends javax.swing.JPanel
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bContractors;
-    private javax.swing.JButton bDelivery;
     private javax.swing.JButton bDocuments;
     private javax.swing.JButton bSale;
+    private javax.swing.JButton bServices;
     private javax.swing.JButton bSettings;
     private javax.swing.JButton bWarehouse;
     private javax.swing.JLabel lTitle;

@@ -5,21 +5,21 @@ package services.m;
  * @author tobikster
  */
 public class Service implements Cloneable {
-  private int _id;
+  private Integer _id;
 	private ServicesGroup _group;
 	private String _name;
-	private Double _minPrice;
-	private Double _maxPrice;
+	private Float _minPrice;
+	private Float _maxPrice;
 
   public Service() {
     
   }
 
 	public Service(int id, ServicesGroup group, String name) {
-		this(id, group, name, Double.NaN, Double.NaN);
+
 	}
 
-	public Service(int id, ServicesGroup group, String name, double minPrice, double maxPrice) {
+	public Service(int id, ServicesGroup group, String name, float minPrice, float maxPrice) {
 		_id = id;
     _group = group;
 		_name = name;
@@ -35,11 +35,11 @@ public class Service implements Cloneable {
 		return _group;
 	}
 
-	public Double getMaxPrice() {
+	public Float getMaxPrice() {
 		return _maxPrice;
 	}
 
-	public Double getMinPrice() {
+	public Float getMinPrice() {
 		return _minPrice;
 	}
 
@@ -55,11 +55,11 @@ public class Service implements Cloneable {
 		_group = group;
 	}
 
-	public void setMaxPrice(double maxPrice) {
+	public void setMaxPrice(float maxPrice) {
 		_maxPrice = maxPrice;
 	}
 
-	public void setMinPrice(double minPrice) {
+	public void setMinPrice(float minPrice) {
 		_minPrice = minPrice;
 	}
 

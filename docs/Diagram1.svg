@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created by diasvg.py -->
+<svg width="51.100cm" height="40.100cm" viewBox="-2.050 -10.050 49.050 30.050"
+ xmlns="http://www.w3.org/2000/svg"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+<rect x="16.906" y="-1.050" width="6.188" height="2.100" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="16.906" y="-1.050" width="6.188" height="2.100" fill="none" stroke="#000000" stroke-width="0.300" />
+<text x="20.000" y="0.195"  fill="#000000" text-anchor="middle" font-size="0.80" font-family="sans" font-style="normal" font-weight="700">
+Ekran główny</text>
+<rect x="3.000" y="6.000" width="10.000" height="2.000" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="3.000" y="6.000" width="10.000" height="2.000" fill="none" stroke="#000000" stroke-width="0.200" />
+<text x="8.000" y="7.195"  fill="#000000" text-anchor="middle" font-size="0.80" font-family="sans" font-style="normal" font-weight="400">
+Wyświetlanie pracowników</text>
+<rect x="-2.000" y="12.000" width="9.000" height="2.000" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="-2.000" y="12.000" width="9.000" height="2.000" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="2.500" y="13.195"  fill="#000000" text-anchor="middle" font-size="0.80" font-family="sans" font-style="normal" font-weight="400">
+Dodawanie pracownika</text>
+<rect x="9.000" y="12.000" width="7.082" height="2.000" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="9.000" y="12.000" width="7.082" height="2.000" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="12.541" y="13.195"  fill="#000000" text-anchor="middle" font-size="0.80" font-family="sans" font-style="normal" font-weight="400">
+Edycja pracownika</text>
+<rect x="29.000" y="6.000" width="10.000" height="2.000" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="29.000" y="6.000" width="10.000" height="2.000" fill="none" stroke="#000000" stroke-width="0.200" />
+<text x="34.000" y="7.195"  fill="#000000" text-anchor="middle" font-size="0.80" font-family="sans" font-style="normal" font-weight="400">
+Wyświetlanie części i opon</text>
+<rect x="42.000" y="18.000" width="6.825" height="1.900" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="42.000" y="18.000" width="6.825" height="1.900" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="45.413" y="19.145"  fill="#000000" text-anchor="middle" font-size="0.80" font-family="sans" font-style="normal" font-weight="400">
+Dodawanie części</text>
+<rect x="33.000" y="18.000" width="5.362" height="1.900" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="33.000" y="18.000" width="5.362" height="1.900" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="35.681" y="19.145"  fill="#000000" text-anchor="middle" font-size="0.80" font-family="sans" font-style="normal" font-weight="400">
+Edycja części</text>
+<rect x="15.000" y="18.000" width="7.000" height="2.000" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="15.000" y="18.000" width="7.000" height="2.000" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="18.500" y="19.195"  fill="#000000" text-anchor="middle" font-size="0.80" font-family="sans" font-style="normal" font-weight="400">
+Dodawanie opony</text>
+<rect x="24.000" y="18.000" width="6.000" height="2.000" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="24.000" y="18.000" width="6.000" height="2.000" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="27.000" y="19.195"  fill="#000000" text-anchor="middle" font-size="0.80" font-family="sans" font-style="normal" font-weight="400">
+Edycja opony</text>
+<rect x="38.000" y="-2.000" width="11.000" height="2.000" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="38.000" y="-2.000" width="11.000" height="2.000" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="43.500" y="-0.805"  fill="#000000" text-anchor="middle" font-size="0.80" font-family="sans" font-style="normal" font-weight="400">
+Dodawanie grupy towarowej</text>
+<rect x="26.000" y="-2.000" width="9.000" height="2.000" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="26.000" y="-2.000" width="9.000" height="2.000" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="30.500" y="-0.805"  fill="#000000" text-anchor="middle" font-size="0.80" font-family="sans" font-style="normal" font-weight="400">
+Edycja grupy towarowej</text>
+<rect x="30.000" y="-10.000" width="14.000" height="2.000" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="30.000" y="-10.000" width="14.000" height="2.000" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="37.000" y="-8.805"  fill="#000000" text-anchor="middle" font-size="0.80" font-family="sans" font-style="normal" font-weight="400">
+Wybieranie atrybutów grupy towarowej</text>
+<rect x="12.000" y="-10.000" width="14.000" height="2.000" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="12.000" y="-10.000" width="14.000" height="2.000" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="19.000" y="-8.805"  fill="#000000" text-anchor="middle" font-size="0.80" font-family="sans" font-style="normal" font-weight="400">
+Dodawanie atrybutu grupy towarowej</text>
+<rect x="36.000" y="28.000" width="8.535" height="1.900" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="36.000" y="28.000" width="8.535" height="1.900" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="40.267" y="29.145"  fill="#000000" text-anchor="middle" font-size="0.80" font-family="sans" font-style="normal" font-weight="400">
+Dodawanie producenta</text>
+<rect x="19.000" y="28.000" width="8.000" height="2.000" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<rect x="19.000" y="28.000" width="8.000" height="2.000" fill="none" stroke="#000000" stroke-width="0.100" />
+<text x="23.000" y="29.195"  fill="#000000" text-anchor="middle" font-size="0.80" font-family="sans" font-style="normal" font-weight="400">
+Dodawanie bieżnika</text>
+<path stroke="#000000" fill="none" stroke-width="0.100"  d="M 16.270,0.000 C 12.773,0.000 8.000,1.900 8.000,5.413 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="16.645,0.000 16.145,0.250 16.270,0.000 16.145,-0.250 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="16.645,0.000 16.145,0.250 16.270,0.000 16.145,-0.250 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="8.000,5.788 7.750,5.288 8.000,5.413 8.250,5.288 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="8.000,5.788 7.750,5.288 8.000,5.413 8.250,5.288 "/>
+<path stroke="#000000" fill="none" stroke-width="0.100"  d="M 20.000,1.687 C 20.000,6.200 24.252,7.000 28.413,7.000 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="20.000,1.312 20.250,1.812 20.000,1.687 19.750,1.812 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="20.000,1.312 20.250,1.812 20.000,1.687 19.750,1.812 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="28.788,7.000 28.288,7.250 28.413,7.000 28.288,6.750 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="28.788,7.000 28.288,7.250 28.413,7.000 28.288,6.750 "/>
+<path stroke="#000000" fill="none" stroke-width="0.100"  d="M 2.414,7.000 C 1.074,7.000 0.475,8.950 1.758,11.515 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="2.789,7.000 2.289,7.250 2.414,7.000 2.289,6.750 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="2.789,7.000 2.289,7.250 2.414,7.000 2.289,6.750 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="1.925,11.850 1.478,11.515 1.758,11.515 1.925,11.291 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="1.925,11.850 1.478,11.515 1.758,11.515 1.925,11.291 "/>
+<path stroke="#000000" fill="none" stroke-width="0.100"  d="M 13.587,7.000 C 14.608,7.000 15.645,7.951 13.441,11.536 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="13.212,7.000 13.712,6.750 13.587,7.000 13.712,7.250 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="13.212,7.000 13.712,6.750 13.587,7.000 13.712,7.250 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="13.245,11.855 13.294,11.298 13.441,11.536 13.720,11.560 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="13.245,11.855 13.294,11.298 13.441,11.536 13.720,11.560 "/>
+<path stroke="#000000" fill="none" stroke-width="0.100"  d="M 39.587,7.000 C 42.889,7.000 46.149,14.000 45.633,17.468 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="39.212,7.000 39.712,6.750 39.587,7.000 39.712,7.250 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="39.212,7.000 39.712,6.750 39.587,7.000 39.712,7.250 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="45.578,17.839 45.404,17.308 45.633,17.468 45.899,17.382 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="45.578,17.839 45.404,17.308 45.633,17.468 45.899,17.382 "/>
+<path stroke="#000000" fill="none" stroke-width="0.100"  d="M 35.003,8.504 C 36.733,11.099 36.162,16.011 35.921,17.481 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="34.795,8.192 35.280,8.470 35.003,8.504 34.864,8.747 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="34.795,8.192 35.280,8.470 35.003,8.504 34.864,8.747 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="35.861,17.851 35.695,17.317 35.921,17.481 36.188,17.398 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="35.861,17.851 35.695,17.317 35.921,17.481 36.188,17.398 "/>
+<path stroke="#000000" fill="none" stroke-width="0.100"  d="M 19.243,17.515 C 22.525,10.950 22.901,8.850 28.420,7.930 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="19.075,17.850 19.075,17.291 19.243,17.515 19.522,17.515 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="19.075,17.850 19.075,17.291 19.243,17.515 19.522,17.515 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="28.790,7.868 28.338,8.197 28.420,7.930 28.256,7.704 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="28.790,7.868 28.338,8.197 28.420,7.930 28.256,7.704 "/>
+<path stroke="#000000" fill="none" stroke-width="0.100"  d="M 32.556,8.444 C 29.900,11.100 30.048,15.952 28.392,17.608 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="32.821,8.179 32.645,8.709 32.556,8.444 32.291,8.355 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="32.821,8.179 32.645,8.709 32.556,8.444 32.291,8.355 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="28.127,17.873 28.304,17.343 28.392,17.608 28.657,17.696 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="28.127,17.873 28.304,17.343 28.392,17.608 28.657,17.696 "/>
+<path stroke="#000000" fill="none" stroke-width="0.100"  d="M 18.308,20.533 C 17.869,24.050 17.601,24.951 21.212,27.659 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="18.355,20.161 18.541,20.688 18.308,20.533 18.045,20.626 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="18.355,20.161 18.541,20.688 18.308,20.533 18.045,20.626 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="21.512,27.884 20.962,27.784 21.212,27.659 21.262,27.384 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="21.512,27.884 20.962,27.784 21.212,27.659 21.262,27.384 "/>
+<path stroke="#000000" fill="none" stroke-width="0.100"  d="M 27.504,20.511 C 28.350,23.049 29.099,25.950 25.534,27.733 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="27.385,20.155 27.780,20.550 27.504,20.511 27.306,20.708 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="27.385,20.155 27.780,20.550 27.504,20.511 27.306,20.708 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="25.199,27.900 25.534,27.453 25.534,27.733 25.758,27.900 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="25.199,27.900 25.534,27.453 25.534,27.733 25.758,27.900 "/>
+<path stroke="#000000" fill="none" stroke-width="0.100"  d="M 27.537,29.000 C 32.783,29.000 30.217,28.950 35.463,28.950 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="27.162,29.000 27.662,28.750 27.537,29.000 27.662,29.250 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="27.162,29.000 27.662,28.750 27.537,29.000 27.662,29.250 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="35.838,28.950 35.338,29.200 35.463,28.950 35.338,28.700 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="35.838,28.950 35.338,29.200 35.463,28.950 35.338,28.700 "/>
+<path stroke="#000000" fill="none" stroke-width="0.100"  d="M 45.697,20.427 C 46.192,22.999 44.402,26.000 42.066,27.667 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="45.626,20.059 45.966,20.502 45.697,20.427 45.475,20.597 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="45.626,20.059 45.966,20.502 45.697,20.427 45.475,20.597 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="41.760,27.885 42.022,27.391 42.066,27.667 42.313,27.798 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="41.760,27.885 42.022,27.391 42.066,27.667 42.313,27.798 "/>
+<path stroke="#000000" fill="none" stroke-width="0.100"  d="M 37.177,20.273 C 39.131,22.000 38.350,26.000 39.352,27.542 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="36.896,20.024 37.437,20.168 37.177,20.273 37.105,20.543 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="36.896,20.024 37.437,20.168 37.177,20.273 37.105,20.543 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="39.556,27.856 39.074,27.573 39.352,27.542 39.494,27.301 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="39.556,27.856 39.074,27.573 39.352,27.542 39.494,27.301 "/>
+<path stroke="#000000" fill="none" stroke-width="0.100"  d="M 32.996,5.495 C 31.267,2.900 28.475,3.050 29.757,0.485 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="33.205,5.807 32.719,5.529 32.996,5.495 33.135,5.252 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="33.205,5.807 32.719,5.529 32.996,5.495 33.135,5.252 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="29.925,0.150 29.925,0.709 29.757,0.485 29.478,0.485 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="29.925,0.150 29.925,0.709 29.757,0.485 29.478,0.485 "/>
+<path stroke="#000000" fill="none" stroke-width="0.100"  d="M 36.636,5.682 C 40.200,3.900 42.738,2.049 43.120,0.521 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="36.300,5.850 36.636,5.403 36.636,5.682 36.859,5.850 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="36.300,5.850 36.636,5.403 36.636,5.682 36.859,5.850 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="43.211,0.157 43.332,0.703 43.120,0.521 42.847,0.582 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="43.211,0.157 43.332,0.703 43.120,0.521 42.847,0.582 "/>
+<path stroke="#000000" fill="none" stroke-width="0.100"  d="M 32.095,-2.367 C 35.225,-5.050 37.000,-6.950 37.000,-7.463 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="31.810,-2.123 32.027,-2.638 32.095,-2.367 32.352,-2.259 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="31.810,-2.123 32.027,-2.638 32.095,-2.367 32.352,-2.259 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="37.000,-7.838 37.250,-7.338 37.000,-7.463 36.750,-7.338 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="37.000,-7.838 37.250,-7.338 37.000,-7.463 36.750,-7.338 "/>
+<path stroke="#000000" fill="none" stroke-width="0.100"  d="M 38.783,-7.663 C 42.393,-4.955 44.263,-4.050 43.881,-2.522 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="38.483,-7.888 39.033,-7.788 38.783,-7.663 38.733,-7.388 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="38.483,-7.888 39.033,-7.788 38.783,-7.663 38.733,-7.388 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="43.790,-2.159 43.668,-2.704 43.881,-2.522 44.153,-2.583 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="43.790,-2.159 43.668,-2.704 43.881,-2.522 44.153,-2.583 "/>
+<path stroke="#000000" fill="none" stroke-width="0.100"  d="M 26.537,-9.000 C 32.358,-9.000 23.642,-9.000 29.463,-9.000 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="26.162,-9.000 26.662,-9.250 26.537,-9.000 26.662,-8.750 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="26.162,-9.000 26.662,-9.250 26.537,-9.000 26.662,-8.750 "/>
+<polygon fill="#000000" stroke="none" stroke-width="0.100" points="29.838,-9.000 29.338,-8.750 29.463,-9.000 29.338,-9.250 "/>
+<polygon fill="none" stroke="#000000" stroke-width="0.100"  points="29.838,-9.000 29.338,-8.750 29.463,-9.000 29.338,-9.250 "/>
+</svg>
